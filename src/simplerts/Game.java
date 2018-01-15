@@ -11,6 +11,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
+import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -21,7 +25,7 @@ public class Game implements Runnable {
     public static int WIDTH = 980;
     public static int HEIGHT = 720;
     public static float GAMESPEED = 1f;
-    public static int CELLSIZE = 50;
+    public static int CELLSIZE = 60;
     
     private int renderUpdates = 0;
     private long nextSecond = 0;
@@ -35,6 +39,45 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+        
+//        if(!glfwInit())
+//        {
+//            throw new IllegalStateException("Falied to initialize GLFW!");
+//        }
+//        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+//        long window = glfwCreateWindow(WIDTH, HEIGHT, "Simple RTS", 0, 0);
+//        
+//        if(window == 0) {
+//            throw new IllegalStateException("Failed to create window");
+//        }
+//        
+//        GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+//        glfwSetWindowPos(window, (videoMode.width() - WIDTH)/2, (videoMode.height() - HEIGHT)/2);
+//        glfwShowWindow(window);
+//        
+//        glfwMakeContextCurrent(window);
+//        GL.createCapabilities();
+//        
+//        while(!glfwWindowShouldClose(window))
+//        {
+//            glfwPollEvents();
+//            
+//            glClear(GL_COLOR_BUFFER_BIT);
+//            glBegin(GL_QUADS);
+//                glColor4f(1, 0, 0, 0);
+//                glVertex2f(-0.5f, 0.5f);
+//                glVertex2f(0.5f, 0.5f);
+//                glColor4f(0, 0, 1, 0);
+//                glVertex2f(0.5f, -0.5f);
+//                glVertex2f(-0.5f, -0.5f);
+//            glEnd();
+//            
+//            glfwSwapBuffers(window);
+//        }
+//        
+//        glfwTerminate();
+
+
         Display display = new Display(WIDTH, HEIGHT);
         players = new CopyOnWriteArrayList<>();
         SpriteHolder.setup();

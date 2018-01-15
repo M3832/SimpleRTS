@@ -55,14 +55,14 @@ public class Building extends Entity {
 //        super.render(g, offsetX, offsetY);
         
         g.drawImage(image, (int)(x - offsetX), (int)(y - offsetY), width, height, null);
-        if(currentTime < buildtime)
-        {
-            g.setColor(Color.gray);
-            g.fillRect((int)(x - offsetX), (int)((y + cellHeight * Game.CELLSIZE) - offsetY) + 5, cellWidth * Game.CELLSIZE, (int)(0.25f * Game.CELLSIZE));
-            g.setColor(Color.orange);
-            g.fillRect((int)(x - offsetX), (int)((y + cellHeight * Game.CELLSIZE) - offsetY) + 5, (int)((cellWidth * Game.CELLSIZE) * ((float)currentTime/(float)buildtime)), (int)(0.25f * Game.CELLSIZE));
-
-        }
+//        if(currentTime < buildtime)
+//        {
+//            g.setColor(Color.gray);
+//            g.fillRect((int)(x - offsetX), (int)((y + cellHeight * Game.CELLSIZE) - offsetY) + 5, cellWidth * Game.CELLSIZE, (int)(0.25f * Game.CELLSIZE));
+//            g.setColor(Color.orange);
+//            g.fillRect((int)(x - offsetX), (int)((y + cellHeight * Game.CELLSIZE) - offsetY) + 5, (int)((cellWidth * Game.CELLSIZE) * ((float)currentTime/(float)buildtime)), (int)(0.25f * Game.CELLSIZE));
+//
+//        }
     }
     
     @Override

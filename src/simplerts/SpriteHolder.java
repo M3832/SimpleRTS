@@ -5,6 +5,9 @@
  */
 package simplerts;
 
+import imageutils.BlendComposite;
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -25,17 +28,21 @@ public class SpriteHolder {
     private static BufferedImage[] tiles;
     public static TerrainPlacement dirt;    
     public static TerrainPlacement grass;
+    public static TerrainPlacement darkGrass;
+    public static TerrainPlacement trees;
 
     public static void setup() {
         GRASS = loadAndResizeImage("/grass.bmp", Game.CELLSIZE, Game.CELLSIZE);
         loadTiles(64);
-        dirt = new TerrainPlacement(new Integer[] {0, 23, 21, 16, 5, 17, 0, 8, 7, 18, 5, 17, 2, 10, 1, 9, 30, 31}, new Integer[]{11, 3, 9});
-        grass = new TerrainPlacement(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19}, new Integer[] {19, 20, 4, 12, 14});
+        dirt = loadTerrain("/dirt3.bmp");
+        grass = new TerrainPlacement(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19, 38, 39}, new Integer[] {19, 20, 4, 12, 14}, tiles);
+        darkGrass = loadTerrain("/darkgrass.bmp");
+        trees = loadTerrain("/forest.bmp");
     }
     
     private static void loadTiles(int tileSize)
     {
-        BufferedImage tileImage = loadToCompatibleImage("/tileset.png");
+        BufferedImage tileImage = loadToCompatibleImage("/tileset.bmp");
         tiles = new BufferedImage[(tileImage.getWidth()/tileSize) * (tileImage.getHeight() / tileSize)];
         int width = tileImage.getWidth()/tileSize;
         System.out.println(tiles.length);
@@ -43,6 +50,18 @@ public class SpriteHolder {
         {
             tiles[i] = tileImage.getSubimage((i%width) * tileSize, (i/width) * tileSize, tileSize, tileSize);
         }
+    }
+    
+    private static TerrainPlacement loadTerrain(String url)
+    {
+        BufferedImage tileMap = loadToCompatibleImage(url);
+        BufferedImage[] tempTiles = new BufferedImage[(tileMap.getWidth()/64) * (tileMap.getHeight() / 64)];
+        int width = tileMap.getWidth()/64;
+        for(int i = 0; i < tempTiles.length; i++)
+        {
+            tempTiles[i] = tileMap.getSubimage((i%width) * 64, (i/width) * 64, 64, 64);
+        }
+        return new TerrainPlacement(new Integer[]{15, 15, 15, 12, 15,15, 0, 6, 15, 14, 15, 13, 2, 8, 1, 7, 3, 9, 4, 5, 11, 10}, new Integer[]{0}, tempTiles );
     }
     
     public static BufferedImage getTile(int tileId)
@@ -98,6 +117,34 @@ public class SpriteHolder {
         g.drawImage(img, 0, 0, width, height, 0, 0, w, h, null);  
         g.dispose();  
         return dimg; 
+    }
+    
+    public static BufferedImage coverImageWithColor(Color color, BufferedImage image)
+    {
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D gbi = result.createGraphics();
+        BufferedImage x = image;
+
+        gbi.drawImage(x, 0, 0, null);
+        BufferedImage copy = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D midthing = copy.createGraphics();
+        midthing.drawImage(x, 0, 0, null);
+        midthing.setComposite(AlphaComposite.SrcAtop);
+        midthing.setColor(color);
+        midthing.fillRect(0, 0, image.getWidth(), image.getHeight());
+        
+        gbi.setComposite(BlendComposite.Overlay);
+        gbi.drawImage(copy, 0, 0, null);
+        return result;
+    }
+    
+    public static BufferedImage combineImages(BufferedImage base, BufferedImage teamColor)
+    {
+        BufferedImage result = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D gbi = result.createGraphics();
+        gbi.drawImage(base, 0, 0, null);
+        gbi.drawImage(teamColor, 0, 0, null);
+        return result;
     }
 
 }

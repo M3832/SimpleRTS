@@ -17,9 +17,9 @@ public class Bank extends Building {
     
     public Bank()
     {
-        super(0, 0, 2, 3);
+        super(0, 0, 3);
         try {
-            image = ImageIO.read(Image.class.getResource("/Bank.png"));
+            image = ImageIO.read(Image.class.getResource("/mineon.png"));
         } catch (IOException ex) {
         }
     }

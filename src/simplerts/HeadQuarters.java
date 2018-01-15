@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,8 +23,8 @@ public class HeadQuarters extends Building {
     
     public HeadQuarters()
     {
-        super(0, 0, 2);
-        image = SpriteHolder.loadAndResizeImage("/hus.png", 3 * Game.CELLSIZE, 3 * Game.CELLSIZE);
+        super(0, 0, 3);
+        image = SpriteHolder.loadAndResizeImage("/mine.png", 3 * Game.CELLSIZE, 3 * Game.CELLSIZE);
     }
     
     @Override

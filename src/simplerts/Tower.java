@@ -5,7 +5,9 @@
  */
 package simplerts;
 
+import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
@@ -17,9 +19,11 @@ public class Tower extends Building {
     
     public Tower()
     {
-        super(0, 0, 2, 3);
+        super(0, 0, 2, 2);
         try {
-            image = ImageIO.read(Image.class.getResource("/Torn.png"));
+            image = ImageIO.read(Image.class.getResource("/tower.png"));
+            BufferedImage teamColorImage = SpriteHolder.coverImageWithColor(new Color(185, 0, 0), ImageIO.read(Image.class.getResource("/towerteamcolor.png")));
+            image = SpriteHolder.combineImages(image, teamColorImage);
         } catch (IOException ex) {
         }
     }

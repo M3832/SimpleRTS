@@ -34,7 +34,7 @@ public class Map {
 
         for (Cell[] cell : cells) {
             for (int j = 0; j < cells[0].length; j++) {
-                cell[j] = new Cell(SpriteHolder.dirt);
+                cell[j] = new Cell(SpriteHolder.grass);
             }
         }
     }

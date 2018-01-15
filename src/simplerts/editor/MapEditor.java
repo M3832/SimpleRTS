@@ -38,10 +38,10 @@ public class MapEditor extends javax.swing.JFrame {
 
     private void initCustomComponents()
     {
-        map = new Map(25, 25);
+        map = new Map(50, 25);
         canvas = new Canvas();
         canvas.setSize(new Dimension(map.getSize()));
-        currentTerrain = SpriteHolder.dirt;
+        currentTerrain = SpriteHolder.darkGrass;
     }
 
     /**
@@ -70,6 +70,7 @@ public class MapEditor extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         terrainDirt = new javax.swing.JRadioButtonMenuItem();
         terrainGrass = new javax.swing.JRadioButtonMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -154,6 +155,14 @@ public class MapEditor extends javax.swing.JFrame {
         });
         jMenu3.add(terrainGrass);
 
+        jMenuItem4.setText("Tree");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
+
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
@@ -219,6 +228,10 @@ public class MapEditor extends javax.swing.JFrame {
         currentTerrain = SpriteHolder.dirt;
     }//GEN-LAST:event_terrainDirtActionPerformed
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        currentTerrain = SpriteHolder.trees;
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -247,69 +260,63 @@ public class MapEditor extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                MapEditor e = new MapEditor();
-                Canvas canvas = e.canvas;
-                e.scrollPane1.add(canvas);
-                
-                EditorMouseListener ml = new EditorMouseListener();
-                EditorMouseMotionListener mml = new EditorMouseMotionListener();
-                canvas.addMouseListener(ml);
-                canvas.addMouseMotionListener(mml);
-                
-                e.setVisible(true);
-                Thread thread = new Thread(new Runnable(){
-                    public void run() {
-                        canvas.setSize(e.map.getSize());
-                        canvas.createBufferStrategy(3);
-                        BufferStrategy bs;
-                        Graphics g;
-                        while(true)
+        java.awt.EventQueue.invokeLater(() -> {
+            MapEditor e = new MapEditor();
+            Canvas canvas1 = e.canvas;
+            e.scrollPane1.add(canvas1);
+            EditorMouseListener ml = new EditorMouseListener();
+            EditorMouseMotionListener mml = new EditorMouseMotionListener();
+            canvas1.addMouseListener(ml);
+            canvas1.addMouseMotionListener(mml);
+            e.setVisible(true);
+            Thread thread = new Thread(new Runnable() {
+                public void run() {
+                    canvas1.setSize(e.map.getSize());
+                    canvas1.createBufferStrategy(3);
+                    BufferStrategy bs;
+                    Graphics g;
+                    while (true) {
+                        if(ml.isMouseDown)
                         {
-                            if(ml.isMouseDown)
+                            for(int i = mml.posX / Game.CELLSIZE; i < mml.posX/Game.CELLSIZE + 2; i++)
                             {
-//                                map.getCells()[mml.posX/Game.CELLSIZE][mml.posY/Game.CELLSIZE].setTerrain(SpriteHolder.dirt);
-                                for(int i = mml.posX / Game.CELLSIZE; i < mml.posX/Game.CELLSIZE + 2; i++)
+                                for(int j = mml.posY / Game.CELLSIZE; j < mml.posY/Game.CELLSIZE + 2; j++)
                                 {
-                                    for(int j = mml.posY / Game.CELLSIZE; j < mml.posY/Game.CELLSIZE + 2; j++)
+                                    if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
                                     {
-                                        if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
-                                        {
-                                            Cell cell = e.map.getCells()[i][j];
-                                            cell.setTerrain(currentTerrain);
-                                        }
+                                        Cell cell = e.map.getCells()[i][j];
+                                        cell.setTerrain(currentTerrain);
                                     }
                                 }
-                                maskMap(e.map, currentTerrain);
                             }
-                            bs = canvas.getBufferStrategy();
-                            g = bs.getDrawGraphics();
-                            
-                            e.map.renderMapEditor(g);
-                            if(e.jCheckBoxMenuItem1.getState())
-                                e.map.renderGrid(g);
-
-                            bs.show();
-                            g.dispose();
+                            maskMap(e.map, mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE);
                         }
+                        bs = canvas1.getBufferStrategy();
+                        g = bs.getDrawGraphics();
+                        e.map.renderMapEditor(g);
+                        if(e.jCheckBoxMenuItem1.getState())
+                            e.map.renderGrid(g);
+                        bs.show();
+                        g.dispose();
                     }
-                });
-                thread.start();            
-            }
+                }
+            });
+            thread.start();
         });
     }
     
-    public static void maskMap(Map map, TerrainPlacement terrain)
+    public static void maskMap(Map map, int startX, int startY)
     {
         Cell[][] cells = map.getCells();
-        for(int y = 0; y < cells[0].length; y++)
+        TerrainPlacement terrain;
+        for(int y = startY-1; y < startY+3; y++)
         {
-            for(int x = 0; x < cells.length; x++)
+            for(int x = startX-1; x < startX+3; x++)
             {
                 int getTile = 0;
-                if(cells[x][y].getTerrain() == terrain)
+                if(y >= 0 && x >= 0 && y < cells[0].length && x < cells.length && cells[x][y].getTerrain() != SpriteHolder.grass)
                 {
+                    terrain = cells[x][y].getTerrain();
                     if((y-1) >= 0 && cells[x][y-1].getTerrain() == cells[x][y].getTerrain())
                         getTile += 1;
                     if((x+1) < cells.length && cells[x+1][y].getTerrain() == cells[x][y].getTerrain())
@@ -336,16 +343,13 @@ public class MapEditor extends javax.swing.JFrame {
                         if(NE && SE && SW && NW)
                             continue;
                         if(NE && SE && SW)
-                            cells[x][y].setTile(terrain.getSquare()[1]);
-                        if(SE && SW && NW)
-//                            cells[x][y].setTile(21);                            
-                            cells[x][y].setTile(terrain.getSquare()[2]);
+                            cells[x][y].setTile(terrain.getSquare()[18]);
+                        if(SE && SW && NW)                         
+                            cells[x][y].setTile(terrain.getSquare()[19]);
                         if(SW && NW && NE)
-//                            cells[x][y].setTile(5);
-                            cells[x][y].setTile(terrain.getSquare()[4]);
+                            cells[x][y].setTile(terrain.getSquare()[20]);
                         if(NW && NE && SE)
-//                            cells[x][y].setTile(7);
-                            cells[x][y].setTile(terrain.getSquare()[8]);
+                            cells[x][y].setTile(terrain.getSquare()[21]);
                         if(NW && SE && !NE && !SW)
                             cells[x][y].setTile(terrain.getSquare()[16]);
                         if(NE && SW && !NW && !SE)
@@ -369,6 +373,7 @@ public class MapEditor extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTree jTree1;

@@ -6,6 +6,7 @@
 package simplerts.editor;
 
 import java.awt.List;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,11 +18,13 @@ public class TerrainPlacement {
     
     public Integer[] terrainSquare;
     public Integer[] alternatives;
+    public BufferedImage[] tiles;
     
-    public TerrainPlacement(Integer[] terrainSquare, Integer[] alternatives)
+    public TerrainPlacement(Integer[] terrainSquare, Integer[] alternatives, BufferedImage[] tiles)
     {
         this.terrainSquare = terrainSquare;
         this.alternatives = alternatives;
+        this.tiles = tiles;
     }
     
     public Integer[] getSquare()

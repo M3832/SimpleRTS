@@ -5,8 +5,6 @@
  */
 package simplerts;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.util.Arrays;
 import simplerts.editor.TerrainPlacement;
@@ -47,7 +45,7 @@ public class Cell {
     public void setTile(int tileId)
     {
         this.tileId = tileId;
-        setImage(SpriteHolder.getTile(tileId));
+        setImage(terrain.tiles[tileId]);
     }
     
     public void setImage(Image image)
@@ -86,6 +84,6 @@ public class Cell {
     {
         this.terrain = terrain;
         this.tileId = terrain.getBaseTileId();
-        backgroundimage = SpriteHolder.getTile(terrain.getBaseTileId());
+        backgroundimage = terrain.tiles[terrain.getBaseTileId()];
     }
 }
