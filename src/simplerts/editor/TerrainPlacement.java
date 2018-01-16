@@ -5,10 +5,8 @@
  */
 package simplerts.editor;
 
-import java.awt.List;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -19,12 +17,18 @@ public class TerrainPlacement {
     public Integer[] terrainSquare;
     public Integer[] alternatives;
     public BufferedImage[] tiles;
+    private Color minimapColor;
+    public String name;
+    private final boolean walkable;
     
-    public TerrainPlacement(Integer[] terrainSquare, Integer[] alternatives, BufferedImage[] tiles)
+    public TerrainPlacement(Integer[] terrainSquare, Integer[] alternatives, BufferedImage[] tiles, String name, boolean walkable, Color color)
     {
         this.terrainSquare = terrainSquare;
         this.alternatives = alternatives;
         this.tiles = tiles;
+        this.name = name;
+        this.walkable = walkable;
+        minimapColor = color;
     }
     
     public Integer[] getSquare()
@@ -40,5 +44,26 @@ public class TerrainPlacement {
     public int getBaseTileId()
     {
         return terrainSquare[15];
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public boolean isWalkable()
+    {
+        return walkable;
+    }
+    
+    public Color getMinimapColor()
+    {
+        return minimapColor;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return name;
     }
 }

@@ -11,10 +11,12 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
-import static org.lwjgl.glfw.GLFW.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.GL;
-import static org.lwjgl.opengl.GL11.*;
+import simplerts.ui.GUI;
+//import javax.swing.JFileChooser;
+//import static org.lwjgl.glfw.GLFW.*;
+//import org.lwjgl.glfw.*;
+//import org.lwjgl.opengl.GL;
+//import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -23,7 +25,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Game implements Runnable {
 
     public static int WIDTH = 980;
-    public static int HEIGHT = 720;
+    public static int HEIGHT = 512;
     public static float GAMESPEED = 1f;
     public static int CELLSIZE = 60;
     
@@ -34,6 +36,8 @@ public class Game implements Runnable {
     public Camera camera;
 
     public Handler handler;
+    
+    public GUI gui;
 
     public CopyOnWriteArrayList<Player> players;
 
@@ -86,6 +90,7 @@ public class Game implements Runnable {
         map = Map.loadMap(openFile.getSelectedFile());
         camera = new Camera();
         handler = new Handler(this, map, camera, display);
+        gui = new GUI(map, handler);
 
         camera.setHandler(handler);
 
@@ -108,6 +113,7 @@ public class Game implements Runnable {
                 loops++;
             }
             render(display.getCanvas());
+            renderGUI(display.getGUICanvas());
         }
 
     }
@@ -128,6 +134,15 @@ public class Game implements Runnable {
         }
         renderUpdates++;
         players.stream().forEach(player -> player.render(g));
+        bs.show();
+        g.dispose();
+    }
+    
+    public void renderGUI(Canvas c)
+    {
+        BufferStrategy bs = c.getBufferStrategy();
+        Graphics g = bs.getDrawGraphics();
+        gui.render(g);
         bs.show();
         g.dispose();
     }

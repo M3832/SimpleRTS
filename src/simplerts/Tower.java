@@ -22,7 +22,7 @@ public class Tower extends Building {
         super(0, 0, 2, 2);
         try {
             image = ImageIO.read(Image.class.getResource("/tower.png"));
-            BufferedImage teamColorImage = SpriteHolder.coverImageWithColor(new Color(185, 0, 0), ImageIO.read(Image.class.getResource("/towerteamcolor.png")));
+            BufferedImage teamColorImage = SpriteHolder.coverImageWithColor(new Color(255, 168, 0), ImageIO.read(Image.class.getResource("/towerteamcolor.png")));
             image = SpriteHolder.combineImages(image, teamColorImage);
         } catch (IOException ex) {
         }

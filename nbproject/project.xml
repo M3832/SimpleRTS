@@ -6,8 +6,8 @@
             <name>SimpleRTS</name>
             <source-roots>
                 <root id="src.workingfiles.dir"/>
-                <root id="src.sprites.dir"/>
                 <root id="src.dir"/>
+                <root id="src.sprites.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>

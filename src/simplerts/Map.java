@@ -5,9 +5,12 @@
  */
 package simplerts;
 
+import composite.GraphicsUtil;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +20,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
+import simplerts.ui.MiniMap;
 
 /**
  *
@@ -47,7 +51,16 @@ public class Map {
     public void addEntity(Entity e)
     {
         entities.add(e);
-        updateOccupiedCells();
+        if(e instanceof Building)
+        {
+            for(int i = e.cellX; i < e.cellX + e.cellWidth; i++)
+            {
+                for(int j = e.cellY; j < e.cellY + e.cellHeight; j++)
+                {
+                    cells[i][j].available = false;
+                }
+            }
+        }
     }
     
     public Cell[][] getCells()
@@ -193,7 +206,10 @@ public class Map {
             {
                 for(int j = 0; j < tokens.length; j++)
                 {
-                    map.getCells()[j][tileIndex].setImage(SpriteHolder.getTile(Integer.parseInt(tokens[j])));
+                    String[] cellInfo = tokens[j].split(":");
+                    Cell c = map.getCells()[tileIndex][j];
+                    c.setTerrain(SpriteHolder.terrains.stream().filter(t -> t.getName().equals(cellInfo[1])).findFirst().get());
+                    c.setImage(c.getTerrain().tiles[Integer.parseInt(cellInfo[0])]);
                 }
                 tileIndex++;
             }
@@ -211,23 +227,45 @@ public class Map {
     public static void saveMap(File file, Map map) {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(file.getAbsolutePath()), "utf-8"))) {
-            writer.write(map.getCells().length + "," + map.getCells()[0].length + System.getProperty("line.separator"));
+            int width = map.getCells().length;
+            int height = map.getCells()[0].length;
+            writer.write(width + "," + height + System.getProperty("line.separator"));
             writer.write("tiles," + System.getProperty("line.separator"));
-            for(int i = 0; i < map.getCells().length; i++)
+            for(int i = 0; i < width; i++)
             {
-                for(int j = 0; j < map.getCells()[0].length; j++)
+                for(int j = 0; j < height; j++)
                 {
-                    writer.write(map.getCells()[j][i].getTileId() + ",");
+                    writer.write(map.getCells()[i][j].getTileId() + ":" + map.getCells()[i][j].getTerrain().getName() + ",");
                 }
+                    System.out.println(width + " " + i);
                 writer.write(System.getProperty("line.separator"));
             }
         } catch (Exception e) {
-
+            System.out.println(e);
         }
     }
     
     public Dimension getSize()
     {
         return new Dimension(cells.length * Game.CELLSIZE, cells[0].length * Game.CELLSIZE);
+    }
+    
+    public MiniMap getMiniMap(int width, int height)
+    {
+        BufferedImage minimap = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = minimap.createGraphics();
+        float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
+        System.out.println(squaresize);
+        
+        for(int i = 0; i < cells.length; i++)
+        {
+            for(int j = 0; j < cells[0].length; j++)
+            {
+//                g.setColor(cells[i][j].getTerrain().getMinimapColor());
+//                g.fillRect(i * squaresize, j * squaresize, squaresize, squaresize);
+                g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)squaresize, (int)squaresize), i * (int)squaresize, j * (int)squaresize, null);
+            }
+        }
+        return new MiniMap(minimap, squaresize);
     }
 }

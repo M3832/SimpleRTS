@@ -84,6 +84,7 @@ public class Cell {
     {
         this.terrain = terrain;
         this.tileId = terrain.getBaseTileId();
+        this.available = terrain.isWalkable();
         backgroundimage = terrain.tiles[terrain.getBaseTileId()];
     }
 }

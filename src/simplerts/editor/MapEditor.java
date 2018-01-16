@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFileChooser;
+import javax.swing.tree.DefaultMutableTreeNode;
 import simplerts.Cell;
 import simplerts.Game;
 import simplerts.Map;
@@ -42,6 +43,29 @@ public class MapEditor extends javax.swing.JFrame {
         canvas = new Canvas();
         canvas.setSize(new Dimension(map.getSize()));
         currentTerrain = SpriteHolder.darkGrass;
+        initTree();
+    }
+    
+    private void initTree()
+    {
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("JTree");
+        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Terrain");
+        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.grass);
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.darkGrass);
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.dirt);
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.trees);
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Resources");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Gold Mine");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Forest");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
     }
 
     /**
@@ -74,6 +98,8 @@ public class MapEditor extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         jScrollPane1.setViewportView(jTree1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -278,18 +304,7 @@ public class MapEditor extends javax.swing.JFrame {
                     while (true) {
                         if(ml.isMouseDown)
                         {
-                            for(int i = mml.posX / Game.CELLSIZE; i < mml.posX/Game.CELLSIZE + 2; i++)
-                            {
-                                for(int j = mml.posY / Game.CELLSIZE; j < mml.posY/Game.CELLSIZE + 2; j++)
-                                {
-                                    if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
-                                    {
-                                        Cell cell = e.map.getCells()[i][j];
-                                        cell.setTerrain(currentTerrain);
-                                    }
-                                }
-                            }
-                            maskMap(e.map, mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE);
+                            editorClick(mml, e);
                         }
                         bs = canvas1.getBufferStrategy();
                         g = bs.getDrawGraphics();
@@ -359,6 +374,29 @@ public class MapEditor extends javax.swing.JFrame {
                     System.out.println(terrain.terrainSquare[getTile] + " " + getTile);
                 }
             }
+        }
+    }
+    
+    public static void editorClick(EditorMouseMotionListener mml, MapEditor e)
+    {
+        if((e.jTree1.getSelectionPath()) != null)
+        {
+            DefaultMutableTreeNode selected = (DefaultMutableTreeNode)e.jTree1.getSelectionPath().getLastPathComponent();
+            if(selected.isLeaf() && selected.getParent().toString().equals("Terrain"))
+            {
+                for(int i = mml.posX / Game.CELLSIZE; i < mml.posX/Game.CELLSIZE + 2; i++)
+                    {
+                        for(int j = mml.posY / Game.CELLSIZE; j < mml.posY/Game.CELLSIZE + 2; j++)
+                        {
+                            if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
+                            {
+                                Cell cell = e.map.getCells()[i][j];
+                                cell.setTerrain(((TerrainPlacement)selected.getUserObject()));
+                            }
+                        }
+                    }
+                    maskMap(e.map, mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE);            
+            }            
         }
     }
 

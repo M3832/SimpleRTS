@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class Entity {
     
     protected int x, y, cellX, cellY, cellWidth, cellHeight, width, height;
+    protected int health, maxhealth;
     public Color color;
     public Map grid;
     private Point oldPos;
@@ -45,7 +46,6 @@ public class Entity {
         this.cellY = y/Game.CELLSIZE;
         width = size * Game.CELLSIZE;
         height = size * Game.CELLSIZE;
-        this.grid = grid;
     }
     
     public Entity(int x, int y, int cellWidth, int cellHeight)

@@ -15,6 +15,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import simplerts.editor.TerrainPlacement;
 
@@ -30,14 +31,17 @@ public class SpriteHolder {
     public static TerrainPlacement grass;
     public static TerrainPlacement darkGrass;
     public static TerrainPlacement trees;
+    public static ArrayList<TerrainPlacement> terrains;
 
     public static void setup() {
+        terrains = new ArrayList<>();
         GRASS = loadAndResizeImage("/grass.bmp", Game.CELLSIZE, Game.CELLSIZE);
         loadTiles(64);
-        dirt = loadTerrain("/dirt3.bmp");
-        grass = new TerrainPlacement(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19, 38, 39}, new Integer[] {19, 20, 4, 12, 14}, tiles);
-        darkGrass = loadTerrain("/darkgrass.bmp");
-        trees = loadTerrain("/forest.bmp");
+        dirt = loadTerrain("/dirt3.bmp", "dirt", true, new Color(129, 61, 0));
+        grass = new TerrainPlacement(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19, 38, 39}, new Integer[] {19, 20, 4, 12, 14}, tiles, "grass", true, Color.GREEN);
+        terrains.add(grass);
+        darkGrass = loadTerrain("/darkgrass2.bmp", "darkGrass", true, new Color(0, 200, 0));
+        trees = loadTerrain("/forest.bmp", "trees", false, new Color(0, 125, 0));
     }
     
     private static void loadTiles(int tileSize)
@@ -52,7 +56,7 @@ public class SpriteHolder {
         }
     }
     
-    private static TerrainPlacement loadTerrain(String url)
+    private static TerrainPlacement loadTerrain(String url, String name, boolean walkable, Color color)
     {
         BufferedImage tileMap = loadToCompatibleImage(url);
         BufferedImage[] tempTiles = new BufferedImage[(tileMap.getWidth()/64) * (tileMap.getHeight() / 64)];
@@ -61,7 +65,9 @@ public class SpriteHolder {
         {
             tempTiles[i] = tileMap.getSubimage((i%width) * 64, (i/width) * 64, 64, 64);
         }
-        return new TerrainPlacement(new Integer[]{15, 15, 15, 12, 15,15, 0, 6, 15, 14, 15, 13, 2, 8, 1, 7, 3, 9, 4, 5, 11, 10}, new Integer[]{0}, tempTiles );
+        TerrainPlacement tp = new TerrainPlacement(new Integer[]{15, 15, 15, 12, 15,15, 0, 6, 15, 14, 15, 13, 2, 8, 1, 7, 3, 9, 4, 5, 11, 10}, new Integer[]{0}, tempTiles, name, walkable, color );
+        terrains.add(tp);
+        return tp;
     }
     
     public static BufferedImage getTile(int tileId)
