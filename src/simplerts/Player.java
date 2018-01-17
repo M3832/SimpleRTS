@@ -5,6 +5,8 @@
  */
 package simplerts;
 
+import simplerts.input.KeyManager;
+import simplerts.input.MouseInput;
 import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -27,22 +29,24 @@ public class Player {
     
     private float boundary;
     
-    private RTSMouseListener ml;
-    private RTSMouseMotionListener mml;
+    private MouseInput ml;
+    private MouseInput guiml;
     private KeyManager km;
     
-    public Player(Map grid, Canvas canvas, Handler handler)
+    public Player(Handler handler)
     {
-        ml = new RTSMouseListener();
-        mml = new RTSMouseMotionListener();
+        ml = new MouseInput();
+        guiml = new MouseInput();
         km = new KeyManager();
         selectedEntities = new CopyOnWriteArrayList<>();
         availableEntities = new ArrayList<>();
-        this.grid = grid;
+        this.grid = handler.map;
         this.handler = handler;
-        canvas.addMouseListener(ml);
-        canvas.addMouseMotionListener(mml);
+        handler.getDisplay().getGamePanel().addMouseListener(ml);
+        handler.getDisplay().getGamePanel().addMouseMotionListener(ml);
         handler.getDisplay().window.addKeyListener(km);
+        handler.getDisplay().getGUICanvas().addMouseListener(guiml);
+        handler.getDisplay().getGUICanvas().addMouseMotionListener(guiml);
         entityplacer = new EntityPlacement(handler);
         gold = 300;
         boundary = 50;
@@ -75,7 +79,7 @@ public class Player {
         }
         if(entityplacer.entity != null)
         {
-            entityplacer.setPosition((int)(handler.getCamera().getOffsetX() + mml.posX - (entityplacer.getWidth() / 2)),(int)(handler.getCamera().getOffsetY() + mml.posY - (entityplacer.getHeight() / 2)));
+            entityplacer.setPosition((int)(handler.getCamera().getOffsetX() + ml.posX - (entityplacer.getWidth() / 2)),(int)(handler.getCamera().getOffsetY() + ml.posY - (entityplacer.getHeight() / 2)));
         }
         
         if(ml.isMouseClicked())
@@ -90,6 +94,12 @@ public class Player {
             }
         }
         
+        if(guiml.isMouseDown)
+        {
+            System.out.println(guiml.posX);
+            handler.game.gui.onClick(guiml.posX, guiml.posY);
+        }
+        
         
     }
     
@@ -102,22 +112,22 @@ public class Player {
         
         int scrollSpeed = 2;
         
-        if(mml.posX > handler.game.WIDTH - boundary)
+        if(ml.posX > handler.game.WIDTH - boundary && ml.isHovering)
         {
             handler.getCamera().addOffset(scrollSpeed, 0);
         }
         
-        if(mml.posX < 0 + boundary)
+        if(ml.posX < 0 + boundary && ml.isHovering)
         {
             handler.getCamera().addOffset(-scrollSpeed, 0);
         }
         
-        if(mml.posY > handler.game.HEIGHT - boundary * 2)
+        if(ml.posY > handler.game.HEIGHT - boundary && ml.isHovering)
         {
             handler.getCamera().addOffset(0, scrollSpeed);
         }
         
-        if(mml.posY < 0 + boundary)
+        if(ml.posY < 0 + boundary && ml.isHovering)
         {
             handler.getCamera().addOffset(0, -scrollSpeed);
         }

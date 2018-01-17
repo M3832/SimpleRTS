@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.display;
 
 import java.awt.Graphics;
+import simplerts.Game;
+import simplerts.Handler;
 
 /**
  *
@@ -28,25 +30,36 @@ public class Camera {
         
         if((handler.map.getCells().length * Game.CELLSIZE) > handler.game.WIDTH)
         {
-            if(offsetX < 0)
-                offsetX = 0;
-            if(offsetX > handler.map.getCells().length * Game.CELLSIZE - handler.game.WIDTH + 15)
-                offsetX = handler.map.getCells().length * Game.CELLSIZE - handler.game.WIDTH + 15;            
+            checkOffsetBounds();           
         } else {
             offsetX = -(handler.game.WIDTH / 2 - (handler.map.getCells().length * Game.CELLSIZE) / 2);
         }
         
         if(handler.map.getCells()[0].length * Game.CELLSIZE > handler.game.HEIGHT)
         {
-            if(offsetY < 0)
-                offsetY = 0;
-            if(offsetY > handler.map.getCells()[0].length * Game.CELLSIZE - handler.game.HEIGHT + 15)
-            {
-                offsetY = handler.map.getCells()[0].length * Game.CELLSIZE - handler.game.HEIGHT + 15;
-            }
+            checkOffsetBounds();
         } else {
             offsetY = -(handler.game.HEIGHT / 2 - (handler.map.getCells()[0].length * Game.CELLSIZE) / 2);
         }
+    }
+    
+    public void setOffset(int x, int y)
+    {
+        offsetX = x;
+        offsetY = y;
+        checkOffsetBounds();
+    }
+    
+    private void checkOffsetBounds()
+    {
+        if(offsetX < 0)
+            offsetX = 0;
+        if(offsetX > handler.map.getCells().length * Game.CELLSIZE - Game.WIDTH)
+            offsetX = handler.map.getCells().length * Game.CELLSIZE - handler.game.WIDTH;
+        if(offsetY < 0)
+            offsetY = 0;
+        if(offsetY > handler.map.getCells()[0].length * Game.CELLSIZE - handler.game.HEIGHT)
+            offsetY = handler.map.getCells()[0].length * Game.CELLSIZE - handler.game.HEIGHT;
     }
     
     public void render(Graphics g)

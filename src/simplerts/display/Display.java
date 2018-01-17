@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.display;
 
 import java.awt.Canvas;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -23,30 +26,39 @@ public class Display {
     public Canvas canvas;
     public Canvas guicanvas;
     
+    public GamePanel gamePanel;
+    public JPanel guiPanel;
+    
+    
     public Display(int width, int height)
     {
         window = new JFrame();
-        window.setSize(new Dimension(width, height + 200));
-        
-        JPanel panel = new JPanel();
-        
-        window.getContentPane().add(panel);
-        
-        canvas = new Canvas();
-        canvas.setSize(new Dimension(width, height));
-        canvas.setFocusable(false);
+//        window.setSize(new Dimension(width, height));
+        Container pane = window.getContentPane();
+        pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
+//        canvas = new Canvas();
+//        canvas.setSize(new Dimension(width, height));
+//        canvas.setFocusable(false);
+
+          gamePanel = new GamePanel();
+          gamePanel.setSize(new Dimension(width, height));
+          gamePanel.setMinimumSize(new Dimension(width, height));
+          gamePanel.setMaximumSize(new Dimension(width, height));
+          gamePanel.setPreferredSize(new Dimension(width, height));
         
         guicanvas = new Canvas();
-        guicanvas.setSize(new Dimension(width, 200));
+        guicanvas.setSize(new Dimension(width, 225));
         guicanvas.setFocusable(false);
         
-        panel.add(canvas);
-        panel.add(guicanvas);
-        panel.setBorder(new EmptyBorder(0, 0, 0, 0));
+//        pane.add(canvas);
+//        pane.setBorder(new EmptyBorder(0, 0, 0, 0));
+        pane.add(gamePanel);
+        pane.add(guicanvas);
         window.setVisible(true);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-        canvas.createBufferStrategy(2);
+        window.pack();
+//        canvas.createBufferStrategy(2);
         guicanvas.createBufferStrategy(2);
     }
     
@@ -62,5 +74,10 @@ public class Display {
     public Canvas getGUICanvas()
     {
         return guicanvas;
+    }
+    
+    public GamePanel getGamePanel()
+    {
+        return gamePanel;
     }
 }

@@ -14,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import simplerts.Cell;
 import simplerts.Game;
 import simplerts.Map;
-import simplerts.SpriteHolder;
+import simplerts.display.Assets;
 
 /**
  *
@@ -28,7 +28,7 @@ public class MapEditor extends javax.swing.JFrame {
      * Creates new form MapEditor
      */
     public MapEditor() {
-        SpriteHolder.setup();
+        Assets.setup();
         initComponents();
         initCustomComponents();
     }
@@ -39,10 +39,10 @@ public class MapEditor extends javax.swing.JFrame {
 
     private void initCustomComponents()
     {
-        map = new Map(50, 25);
+        map = new Map(50, 50);
         canvas = new Canvas();
         canvas.setSize(new Dimension(map.getSize()));
-        currentTerrain = SpriteHolder.darkGrass;
+        currentTerrain = Assets.darkGrass;
         initTree();
     }
     
@@ -50,13 +50,13 @@ public class MapEditor extends javax.swing.JFrame {
     {
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("JTree");
         javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Terrain");
-        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.grass);
+        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(Assets.grass);
         treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.darkGrass);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(Assets.darkGrass);
         treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.dirt);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(Assets.dirt);
         treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(SpriteHolder.trees);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(Assets.trees);
         treeNode2.add(treeNode3);
         treeNode1.add(treeNode2);
         treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Resources");
@@ -247,15 +247,15 @@ public class MapEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_variationsActionPerformed
 
     private void terrainGrassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terrainGrassActionPerformed
-        currentTerrain = SpriteHolder.grass;
+        currentTerrain = Assets.grass;
     }//GEN-LAST:event_terrainGrassActionPerformed
 
     private void terrainDirtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terrainDirtActionPerformed
-        currentTerrain = SpriteHolder.dirt;
+        currentTerrain = Assets.dirt;
     }//GEN-LAST:event_terrainDirtActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        currentTerrain = SpriteHolder.trees;
+        currentTerrain = Assets.trees;
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
@@ -329,7 +329,7 @@ public class MapEditor extends javax.swing.JFrame {
             for(int x = startX-1; x < startX+3; x++)
             {
                 int getTile = 0;
-                if(y >= 0 && x >= 0 && y < cells[0].length && x < cells.length && cells[x][y].getTerrain() != SpriteHolder.grass)
+                if(y >= 0 && x >= 0 && y < cells[0].length && x < cells.length && cells[x][y].getTerrain() != Assets.grass)
                 {
                     terrain = cells[x][y].getTerrain();
                     if((y-1) >= 0 && cells[x][y-1].getTerrain() == cells[x][y].getTerrain())

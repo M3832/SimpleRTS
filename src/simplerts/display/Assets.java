@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.display;
 
 import imageutils.BlendComposite;
 import java.awt.AlphaComposite;
@@ -17,13 +17,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import simplerts.Game;
 import simplerts.editor.TerrainPlacement;
 
 /**
  *
  * @author Markus
  */
-public class SpriteHolder {
+public class Assets {
 
     public static BufferedImage GRASS;
     private static BufferedImage[] tiles;
@@ -32,6 +33,7 @@ public class SpriteHolder {
     public static TerrainPlacement darkGrass;
     public static TerrainPlacement trees;
     public static ArrayList<TerrainPlacement> terrains;
+    public static BufferedImage GUI;
 
     public static void setup() {
         terrains = new ArrayList<>();
@@ -42,6 +44,7 @@ public class SpriteHolder {
         terrains.add(grass);
         darkGrass = loadTerrain("/darkgrass2.bmp", "darkGrass", true, new Color(0, 200, 0));
         trees = loadTerrain("/forest.bmp", "trees", false, new Color(0, 125, 0));
+        GUI = loadToCompatibleImage("/gui.bmp");
     }
     
     private static void loadTiles(int tileSize)

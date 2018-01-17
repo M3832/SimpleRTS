@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import simplerts.display.Assets;
 import java.awt.Image;
 import java.util.Arrays;
 import simplerts.editor.TerrainPlacement;
@@ -23,7 +24,7 @@ public class Cell {
     public Cell()
     {
         available = true;
-        backgroundimage = SpriteHolder.GRASS;
+        backgroundimage = Assets.GRASS;
     }
     
     public Cell(TerrainPlacement terrain)

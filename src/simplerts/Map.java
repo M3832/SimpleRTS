@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import simplerts.display.Assets;
 import composite.GraphicsUtil;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,7 +39,7 @@ public class Map {
 
         for (Cell[] cell : cells) {
             for (int j = 0; j < cells[0].length; j++) {
-                cell[j] = new Cell(SpriteHolder.grass);
+                cell[j] = new Cell(Assets.grass);
             }
         }
     }
@@ -208,7 +209,7 @@ public class Map {
                 {
                     String[] cellInfo = tokens[j].split(":");
                     Cell c = map.getCells()[tileIndex][j];
-                    c.setTerrain(SpriteHolder.terrains.stream().filter(t -> t.getName().equals(cellInfo[1])).findFirst().get());
+                    c.setTerrain(Assets.terrains.stream().filter(t -> t.getName().equals(cellInfo[1])).findFirst().get());
                     c.setImage(c.getTerrain().tiles[Integer.parseInt(cellInfo[0])]);
                 }
                 tileIndex++;
@@ -252,20 +253,18 @@ public class Map {
     
     public MiniMap getMiniMap(int width, int height)
     {
-        BufferedImage minimap = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage minimap = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = minimap.createGraphics();
-        float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
-        System.out.println(squaresize);
+        float tempSquaresize = Math.max((float)1000/cells.length, (float)1000/cells[0].length);
+        float squaresize = Math.max((float)width/cells.length, (float)height/cells[0].length);
         
         for(int i = 0; i < cells.length; i++)
         {
             for(int j = 0; j < cells[0].length; j++)
             {
-//                g.setColor(cells[i][j].getTerrain().getMinimapColor());
-//                g.fillRect(i * squaresize, j * squaresize, squaresize, squaresize);
-                g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)squaresize, (int)squaresize), i * (int)squaresize, j * (int)squaresize, null);
+                g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)tempSquaresize, (int)tempSquaresize), i * (int)tempSquaresize, j * (int)tempSquaresize, null);
             }
         }
-        return new MiniMap(minimap, squaresize);
+        return new MiniMap(GraphicsUtil.resize(minimap, width, height), squaresize);
     }
 }

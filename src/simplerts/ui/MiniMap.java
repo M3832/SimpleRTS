@@ -5,7 +5,11 @@
  */
 package simplerts.ui;
 
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import simplerts.Game;
+import simplerts.input.Clicker;
 
 /**
  *
@@ -15,11 +19,14 @@ public class MiniMap {
     
     private BufferedImage minimap;
     private float squaresize;
+    private float pixelRatio;
     
     public MiniMap(BufferedImage minimap, float squaresize)
     {
         this.minimap = minimap;
         this.squaresize = squaresize;
+        this.pixelRatio = squaresize/Game.CELLSIZE;
+        System.out.println("Minimap bounds: " + minimap.getWidth() + " " + minimap.getHeight());
     }
     
     public BufferedImage getMiniMap()
@@ -30,5 +37,10 @@ public class MiniMap {
     public float getSquareSize()
     {
         return squaresize;
+    }
+    
+    public float getPixelRatio()
+    {
+        return pixelRatio;
     }
 }

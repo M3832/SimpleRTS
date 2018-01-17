@@ -5,6 +5,9 @@
  */
 package simplerts;
 
+import simplerts.display.Camera;
+import simplerts.display.Display;
+
 /**
  *
  * @author Markus
@@ -25,8 +28,6 @@ public class Handler {
         this.map = map;
         this.camera = camera;
         this.display = display;
-        
-        map.setHandler(this);
     }
     
     public Camera getCamera()

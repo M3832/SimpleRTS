@@ -5,12 +5,16 @@
  */
 package simplerts;
 
+import simplerts.display.Assets;
+import simplerts.display.Camera;
+import simplerts.display.Display;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import simplerts.ui.GUI;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
@@ -36,6 +40,8 @@ public class Game implements Runnable {
     public Camera camera;
 
     public Handler handler;
+    
+    public Display display;
     
     public GUI gui;
 
@@ -81,20 +87,22 @@ public class Game implements Runnable {
 //        
 //        glfwTerminate();
 
-
-        Display display = new Display(WIDTH, HEIGHT);
         players = new CopyOnWriteArrayList<>();
-        SpriteHolder.setup();
+        Assets.setup();
+        camera = new Camera();
+        display = new Display(WIDTH, HEIGHT);
         JFileChooser openFile = new JFileChooser();
         openFile.showOpenDialog(display.window);
         map = Map.loadMap(openFile.getSelectedFile());
-        camera = new Camera();
         handler = new Handler(this, map, camera, display);
+        map.setHandler(handler);
+        display.getGamePanel().setHandler(handler);
+        
         gui = new GUI(map, handler);
-
+        
         camera.setHandler(handler);
 
-        Player player = new Player(map, display.getCanvas(), handler);
+        Player player = new Player(handler);
         players.add(player);
 
         int TICKS_PER_SECOND = 50;
@@ -112,7 +120,7 @@ public class Game implements Runnable {
                 next_game_tick += SKIP_TICKS;
                 loops++;
             }
-            render(display.getCanvas());
+            render();
             renderGUI(display.getGUICanvas());
         }
 
@@ -136,6 +144,11 @@ public class Game implements Runnable {
         players.stream().forEach(player -> player.render(g));
         bs.show();
         g.dispose();
+    }
+    
+    public void render()
+    {
+        display.getGamePanel().repaint();
     }
     
     public void renderGUI(Canvas c)
