@@ -45,8 +45,8 @@ public class Player {
         handler.getDisplay().getGamePanel().addMouseListener(ml);
         handler.getDisplay().getGamePanel().addMouseMotionListener(ml);
         handler.getDisplay().window.addKeyListener(km);
-        handler.getDisplay().getGUICanvas().addMouseListener(guiml);
-        handler.getDisplay().getGUICanvas().addMouseMotionListener(guiml);
+        handler.getDisplay().getGUIPanel().addMouseListener(guiml);
+        handler.getDisplay().getGUIPanel().addMouseMotionListener(guiml);
         entityplacer = new EntityPlacement(handler);
         gold = 300;
         boundary = 50;
@@ -96,7 +96,6 @@ public class Player {
         
         if(guiml.isMouseDown)
         {
-            System.out.println(guiml.posX);
             handler.game.gui.onClick(guiml.posX, guiml.posY);
         }
         

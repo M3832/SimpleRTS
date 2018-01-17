@@ -16,13 +16,11 @@ import static simplerts.Game.WIDTH;
  *
  * @author Markus
  */
-public class GamePanel extends JPanel {
+public class GUIPanel extends JPanel {
     
     private Handler handler;
-    private int renderUpdates = 0;
-    private long nextSecond = 0;
     
-    public GamePanel()
+    public GUIPanel()
     {
         super();
     }
@@ -36,17 +34,7 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         if(handler != null)
         {
-            handler.camera.render(g);
-
-            if(System.currentTimeMillis() > nextSecond)
-            {
-                System.out.println(renderUpdates);
-                renderUpdates = 0;
-                nextSecond = System.currentTimeMillis() + 1000;
-            }
-            renderUpdates++;
-            handler.game.players.stream().forEach(player -> player.render(g));
-            g.dispose();            
+            handler.game.gui.render(g);           
         }
     }
     

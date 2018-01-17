@@ -27,7 +27,7 @@ public class Display {
     public Canvas guicanvas;
     
     public GamePanel gamePanel;
-    public JPanel guiPanel;
+    public GUIPanel guiPanel;
     
     
     public Display(int width, int height)
@@ -46,20 +46,26 @@ public class Display {
           gamePanel.setMaximumSize(new Dimension(width, height));
           gamePanel.setPreferredSize(new Dimension(width, height));
         
-        guicanvas = new Canvas();
-        guicanvas.setSize(new Dimension(width, 225));
-        guicanvas.setFocusable(false);
+//        guicanvas = new Canvas();
+//        guicanvas.setSize(new Dimension(width, 225));
+//        guicanvas.setFocusable(false);
+          
+          guiPanel = new GUIPanel();
+          guiPanel.setSize(new Dimension(width, 225));
+          guiPanel.setMinimumSize(new Dimension(width, 225));
+          guiPanel.setMaximumSize(new Dimension(width, 225));
+          guiPanel.setPreferredSize(new Dimension(width, 225));
         
 //        pane.add(canvas);
 //        pane.setBorder(new EmptyBorder(0, 0, 0, 0));
         pane.add(gamePanel);
-        pane.add(guicanvas);
+        pane.add(guiPanel);
         window.setVisible(true);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
         window.pack();
 //        canvas.createBufferStrategy(2);
-        guicanvas.createBufferStrategy(2);
+//        guicanvas.createBufferStrategy(2);
     }
     
     public Graphics GetGraphics(){
@@ -79,5 +85,10 @@ public class Display {
     public GamePanel getGamePanel()
     {
         return gamePanel;
+    }
+    
+    public GUIPanel getGUIPanel()
+    {
+        return guiPanel;
     }
 }

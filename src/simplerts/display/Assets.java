@@ -114,6 +114,20 @@ public class Assets {
         return new_image;
     }
     
+    public static BufferedImage loadNoAlphaImage(String url)
+    {
+        BufferedImage image;
+            try {
+                image = ImageIO.read(Image.class.getResource(url));
+            } catch (IOException ex) {
+                return null;
+            }
+        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = (Graphics2D)newImage.getGraphics();
+        g.drawImage(image, 0, 0, null);
+        return newImage;
+    }
+    
     public static BufferedImage loadAndResizeImage(String url, int width, int height)
     {
         BufferedImage img = loadToCompatibleImage(url);

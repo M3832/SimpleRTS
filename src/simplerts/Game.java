@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import simplerts.ui.GUI;
@@ -97,6 +99,7 @@ public class Game implements Runnable {
         handler = new Handler(this, map, camera, display);
         map.setHandler(handler);
         display.getGamePanel().setHandler(handler);
+        display.getGUIPanel().setHandler(handler);
         
         gui = new GUI(map, handler);
         
@@ -108,11 +111,33 @@ public class Game implements Runnable {
         int TICKS_PER_SECOND = 50;
         int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
         int MAX_FRAMESKIP = 10;
+        
+        int RENDERS_PER_SECOND = 300;
+        int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
+        int MAX_RENDERSKIP = 10;
 
         long next_game_tick = System.currentTimeMillis();
         int loops;
 
         boolean game_is_running = true;
+        new Thread(() -> {while(game_is_running){renderGUI(); try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {}
+        }}).start();
+        new Thread(() -> {
+            int renderloops;
+            long next_game_render = System.currentTimeMillis();
+            while(game_is_running)
+            {
+                renderloops = 0;
+                while(System.currentTimeMillis() > next_game_render && renderloops < MAX_RENDERSKIP)
+                {
+                    render();
+                    next_game_render += SKIP_RENDERS;
+                    renderloops++;
+                }
+            }
+        }).start();
         while (game_is_running) {
             loops = 0;
             while (System.currentTimeMillis() > next_game_tick && loops < MAX_FRAMESKIP) {
@@ -120,8 +145,6 @@ public class Game implements Runnable {
                 next_game_tick += SKIP_TICKS;
                 loops++;
             }
-            render();
-            renderGUI(display.getGUICanvas());
         }
 
     }
@@ -151,13 +174,9 @@ public class Game implements Runnable {
         display.getGamePanel().repaint();
     }
     
-    public void renderGUI(Canvas c)
+    public void renderGUI()
     {
-        BufferStrategy bs = c.getBufferStrategy();
-        Graphics g = bs.getDrawGraphics();
-        gui.render(g);
-        bs.show();
-        g.dispose();
+        display.getGUIPanel().repaint();
     }
     
     public void update()

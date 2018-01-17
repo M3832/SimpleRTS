@@ -256,7 +256,7 @@ public class Map {
         BufferedImage minimap = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = minimap.createGraphics();
         float tempSquaresize = Math.max((float)1000/cells.length, (float)1000/cells[0].length);
-        float squaresize = Math.max((float)width/cells.length, (float)height/cells[0].length);
+        float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
         
         for(int i = 0; i < cells.length; i++)
         {
