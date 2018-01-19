@@ -45,6 +45,8 @@ public class GamePanel extends JPanel {
                 nextSecond = System.currentTimeMillis() + 1000;
             }
             renderUpdates++;
+            handler.game.controller.render(g);
+            handler.game.controller.scrolling();
             handler.game.players.stream().forEach(player -> player.render(g));
             g.dispose();            
         }

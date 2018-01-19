@@ -6,12 +6,16 @@
 package simplerts.ui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import simplerts.Entity;
 import simplerts.display.Assets;
 import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Map;
+import simplerts.Unit;
 
 /**
  *
@@ -24,12 +28,16 @@ public class GUI {
     private int height = 225;
     private Handler handler;
     private int mapOffsetX = 35, mapOffsetY = 31;
+    private ArrayList<Entity> entities;
+    public static Font HEADER = new Font(Font.MONOSPACED, Font.BOLD, 34);
+    public static Font BREAD = new Font(Font.MONOSPACED, Font.BOLD, 20);
     
     public GUI(Map map, Handler handler)
     {
         this.map = map;
         this.handler = handler;
         minimap = map.getMiniMap(175, 175);
+        entities = new ArrayList<>();
     }
     
     public void onClick(int posX, int posY)
@@ -42,12 +50,24 @@ public class GUI {
         }
     }
     
+    public void setSelectedEntities(ArrayList<Entity> elist)
+    {
+        entities = elist;
+    }
+    
     public void render(Graphics g)
     {
         g.drawImage(Assets.GUI, 0, 0, null);
-        g.drawImage(minimap.getMiniMap(), 35, 31, null);
+        g.drawImage(minimap.getMinimapWithEntities(), 35, 31, null);
         g.setColor(Color.WHITE);
         g.drawRect((int)(handler.getCamera().getOffsetX() * minimap.getPixelRatio()) + mapOffsetX, (int)(handler.getCamera().getOffsetY() * minimap.getPixelRatio()) + mapOffsetY, (int)(Game.WIDTH * minimap.getPixelRatio()), (int)(Game.HEIGHT * minimap.getPixelRatio()));
+        
+        if(entities != null && entities.size() == 1)
+        {
+            g.setColor(Color.WHITE);
+            g.setFont(HEADER);
+            entities.get(0).renderGUI(g);
+        }
     }
     
 }

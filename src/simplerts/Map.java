@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.ui.MiniMap;
@@ -31,6 +33,7 @@ public class Map {
     private final CopyOnWriteArrayList<Entity> entities;
     private final Cell[][] cells;
     private Handler handler;
+    private PathFinder pathFinder;
     
     public Map(int colSize, int rowSize)
     {
@@ -42,6 +45,7 @@ public class Map {
                 cell[j] = new Cell(Assets.grass);
             }
         }
+        pathFinder = new PathFinder(this);
     }
     
     public void setHandler(Handler handler)
@@ -61,6 +65,9 @@ public class Map {
                     cells[i][j].available = false;
                 }
             }
+        } else if (e instanceof Unit)
+        {
+            ((Unit)e).setMap(this);
         }
     }
     
@@ -107,6 +114,7 @@ public class Map {
                 g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE) - offsetX), (int)((j * Game.CELLSIZE) - offsetY), Game.CELLSIZE, Game.CELLSIZE, null);
             }
         }
+//        renderGrid(g, (int)offsetX, (int)offsetY);
         
         entities.stream()
                 .sorted((e1, e2) -> { return Integer.compare(e1.getCellY(), e2.getCellY());})
@@ -134,14 +142,14 @@ public class Map {
         }
     }
     
-    public void renderGrid(Graphics g)
+    public void renderGrid(Graphics g, int offsetX, int offsetY)
     {
         g.setColor(Color.YELLOW);
         for(int i = 0; i < cells.length; i++)
         {
             for(int j = 0; j < cells[0].length; j++)
             {
-                g.drawRect(i * Game.CELLSIZE, j * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE);
+                g.drawRect(i * Game.CELLSIZE - offsetX, j * Game.CELLSIZE - offsetY, Game.CELLSIZE, Game.CELLSIZE);
             }
         }
     }
@@ -169,86 +177,32 @@ public class Map {
         return false;
     }
     
-    public static Map loadMap(String url)
-    {
-        return loadMap(new File(url));
-    }
-    
-    public static Map loadMap(File file)
-    {
-        Scanner in;
-        ArrayList<String> mapData = new ArrayList<>();
-        int width = 0, height = 0;
-        Map map = new Map(1, 1);
-        try {
-            in = new Scanner(file);
-            while(in.hasNextLine())
-            {
-                mapData.add(in.nextLine());
-            }
-        } catch (FileNotFoundException ex) {
-            System.out.println(ex);
-        }
-        
-        
-        int tileIndex = 0;
-        boolean tiles = false;
-        for(int i = 0; i < mapData.size(); i++)
-        {
-            String[] tokens = mapData.get(i).split(",");
-            if(i == 0)
-            {
-                width = Integer.parseInt(tokens[0]);
-                height = Integer.parseInt(tokens[1]);
-                map = new Map(width, height);
-            }
-            
-            if(tiles)
-            {
-                for(int j = 0; j < tokens.length; j++)
-                {
-                    String[] cellInfo = tokens[j].split(":");
-                    Cell c = map.getCells()[tileIndex][j];
-                    c.setTerrain(Assets.terrains.stream().filter(t -> t.getName().equals(cellInfo[1])).findFirst().get());
-                    c.setImage(c.getTerrain().tiles[Integer.parseInt(cellInfo[0])]);
-                }
-                tileIndex++;
-            }
-            
-            if(tokens[0].equalsIgnoreCase("tiles"))
-            {
-                System.out.println("tokens is true");
-                tiles = true;
-            }
-        }
-        
-        return map;
-    }
-    
-    public static void saveMap(File file, Map map) {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(file.getAbsolutePath()), "utf-8"))) {
-            int width = map.getCells().length;
-            int height = map.getCells()[0].length;
-            writer.write(width + "," + height + System.getProperty("line.separator"));
-            writer.write("tiles," + System.getProperty("line.separator"));
-            for(int i = 0; i < width; i++)
-            {
-                for(int j = 0; j < height; j++)
-                {
-                    writer.write(map.getCells()[i][j].getTileId() + ":" + map.getCells()[i][j].getTerrain().getName() + ",");
-                }
-                    System.out.println(width + " " + i);
-                writer.write(System.getProperty("line.separator"));
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-    
     public Dimension getSize()
     {
         return new Dimension(cells.length * Game.CELLSIZE, cells[0].length * Game.CELLSIZE);
+    }
+    
+    public List<Entity> getEntitiesInSelection(Rectangle r)
+    {
+        ArrayList<Entity> list = new ArrayList<>();
+        entities.stream().forEach(e -> {
+            if(rectangleIntersectsEntity(r, e))
+            {
+                list.add(e);
+            }
+        });
+        
+        return list;
+    }
+    
+    public boolean checkUnitCollision(Rectangle r, Entity entity)
+    {
+       return entities.stream().anyMatch(e -> {if(e == entity){return false;} return rectangleIntersectsEntity(r, e);});
+    }
+    
+    private boolean rectangleIntersectsEntity(Rectangle r, Entity e)
+    {
+        return r.intersects(new Rectangle(e.x, e.y, e.width, e.height));
     }
     
     public MiniMap getMiniMap(int width, int height)
@@ -265,6 +219,23 @@ public class Map {
                 g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)tempSquaresize, (int)tempSquaresize), i * (int)tempSquaresize, j * (int)tempSquaresize, null);
             }
         }
-        return new MiniMap(GraphicsUtil.resize(minimap, width, height), squaresize);
+        return new MiniMap(GraphicsUtil.resize(minimap, width, height), squaresize, entities);
+    }
+
+    public boolean checkTerrainCollision(Rectangle rectangle) {
+        for(int i = (int)rectangle.getX()/Game.CELLSIZE; i  <(int)rectangle.getX()/Game.CELLSIZE + 2; i++)
+        {
+            for(int j = (int)rectangle.getY()/Game.CELLSIZE; j < (int)rectangle.getY()/Game.CELLSIZE + 2; j++)
+            {
+                if(i < cells.length && j < cells[0].length && !cells[i][j].available)
+                {
+                    if(rectangle.intersects(new Rectangle(i * Game.CELLSIZE, j * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE)))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

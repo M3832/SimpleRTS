@@ -14,6 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import simplerts.Cell;
 import simplerts.Game;
 import simplerts.Map;
+import simplerts.MapIO;
 import simplerts.display.Assets;
 
 /**
@@ -223,7 +224,7 @@ public class MapEditor extends javax.swing.JFrame {
         int result = fc.showSaveDialog(this);
         if(result == JFileChooser.APPROVE_OPTION)
         {
-            Map.saveMap(fc.getSelectedFile(), map);
+            MapIO.saveMap(fc.getSelectedFile(), map);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -231,7 +232,7 @@ public class MapEditor extends javax.swing.JFrame {
         int result = fc.showOpenDialog(this);
         if(result == JFileChooser.APPROVE_OPTION)
         {
-            map = Map.loadMap(fc.getSelectedFile());
+            map = MapIO.loadMap(fc.getSelectedFile());
             canvas.setSize(map.getSize());
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
@@ -310,7 +311,7 @@ public class MapEditor extends javax.swing.JFrame {
                         g = bs.getDrawGraphics();
                         e.map.renderMapEditor(g);
                         if(e.jCheckBoxMenuItem1.getState())
-                            e.map.renderGrid(g);
+                            e.map.renderGrid(g, 0, 0);
                         bs.show();
                         g.dispose();
                     }

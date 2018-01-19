@@ -24,7 +24,7 @@ public class Camera {
         offsetY = 0;
     }
     
-    public void addOffset(int x, int y){
+    public void addOffset(float x, float y){
         offsetX += x;
         offsetY += y;
         

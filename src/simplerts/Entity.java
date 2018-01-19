@@ -17,10 +17,9 @@ import java.util.ArrayList;
 public class Entity {
     
     protected int x, y, cellX, cellY, cellWidth, cellHeight, width, height;
-    protected int health, maxhealth;
+    protected int health, maxHealth;
     public Color color;
     public Map grid;
-    private Point oldPos;
     
     public Entity()
     {
@@ -33,6 +32,8 @@ public class Entity {
         color = new Color(0, 255, 0, 125);
         cellWidth = 1;
         cellHeight = 1;
+        maxHealth = 50;
+        health = maxHealth;
     }
     
     public Entity(int x, int y, int size)
@@ -69,7 +70,6 @@ public class Entity {
     
     public void setPosition(int x, int y)
     {
-        oldPos = new Point(this.x, this.y);
         this.x = x;
         this.y = y;
         this.cellX = x/Game.CELLSIZE;
@@ -115,6 +115,21 @@ public class Entity {
     public Entity duplicate()
     {
         return new Entity(x, y, cellWidth);
+    }
+    
+    public int getHealth()
+    {
+        return health;
+    }
+    
+    public int getMaxHealth()
+    {
+        return maxHealth;
+    }
+    
+    public void renderGUI(Graphics g)
+    {
+        
     }
     
 }

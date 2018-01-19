@@ -16,7 +16,7 @@ import java.awt.event.MouseMotionListener;
 public class MouseInput extends MouseAdapter implements MouseMotionListener {
 
     public int posX, posY;
-    public boolean isMouseDown, isMouseClicked;
+    public boolean isMouseDown, isMouseClicked, isRightMouseDown, isRightMouseClicked;
     public boolean isScrollDown;
     public boolean isHovering = true;
 
@@ -44,7 +44,7 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
         isHovering = true;
     }
     
-        public boolean isMouseClicked()
+    public boolean isMouseClicked()
     {
         if(isMouseDown)
         {
@@ -54,6 +54,18 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
         
         return false;
     }
+    
+    public boolean isRightMouseClicked()
+    {
+        if(isRightMouseDown)
+        {
+            isRightMouseDown = false;
+            return true;
+        }
+        
+        return false;
+        
+    }
         
     @Override
     public void mousePressed(MouseEvent e) {
@@ -61,10 +73,18 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
             isScrollDown = true;
         if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1)
             isMouseDown = true;
+        if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON3)
+            isRightMouseDown = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON1){
+            isRightMouseClicked = true;
+        }
+        if(isRightMouseDown && e.getButton() == MouseEvent.BUTTON1){
+            isRightMouseDown = false;
+        }
         if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1){
             isMouseClicked = true;
         }
