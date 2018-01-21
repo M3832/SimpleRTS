@@ -11,6 +11,7 @@ import simplerts.display.Camera;
 import simplerts.display.Display;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
+import simplerts.entities.Builder;
 import simplerts.ui.GUI;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
@@ -73,8 +74,7 @@ public class Game implements Runnable {
         Player player = new Player(handler);
         controller = new Controller(handler, player);
         players.add(player);
-        map.addEntity(new Unit());
-        map.addEntity(new Unit(300, 300));
+        map.addEntity(new Builder());
 
 
         int TICKS_PER_SECOND = 50;

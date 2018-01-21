@@ -5,10 +5,26 @@
  */
 package simplerts.entities;
 
+import java.awt.Color;
+import simplerts.display.Assets;
+import simplerts.gfx.Animation;
+
 /**
  *
  * @author Markus
  */
 public class Builder extends Unit{
+    
+    public Builder()
+    {
+        super();
+        color = Color.white;
+        ac.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/walk.png"),
+                                                     Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
+        ac.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/stand.png"),
+                                                     Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
+        moveSpeed = 3;
+        initGraphics();
+    }
     
 }

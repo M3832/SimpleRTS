@@ -5,19 +5,17 @@
  */
 package simplerts.entities;
 
-import simplerts.entities.Entity;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.Map;
 import simplerts.Utils;
 import simplerts.actions.Destination;
 import simplerts.display.Assets;
+import simplerts.gfx.Animation;
+import simplerts.gfx.AnimationController;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
 
@@ -39,15 +37,18 @@ public class Unit extends Entity {
     
     protected boolean collidedX = false, collidedY = false;
     
+    protected AnimationController ac;
+    
     public Unit()
     {
         super();
+        ac = new AnimationController();
         destinations = new CopyOnWriteArrayList<>();
-        x = 200;
+        x = 300;
         y = 500;
         width = Game.CELLSIZE;
         height = Game.CELLSIZE;
-        name = "Empty";
+        name = "Peasant";
         initGraphics();
         updateCells();
     }
@@ -63,7 +64,7 @@ public class Unit extends Entity {
         updateCells();
     }
     
-    private void initGraphics()
+    protected void initGraphics()
     {
         sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasant.png"), Assets.loadToCompatibleImage("/peasanttc.png"), color);
         icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));        
@@ -79,18 +80,22 @@ public class Unit extends Entity {
             if(deltaX > 0 + POSITION_BOUNDS/2)
             {
                 moveX = x + moveSpeed;
+                ac.setDirection(Animation.EAST);
             } else if (deltaX < 0 - POSITION_BOUNDS/2)
             {
                 moveX = x - moveSpeed;
+                ac.setDirection(Animation.WEST);
             }
 
             if(deltaY > 0 + POSITION_BOUNDS/2)
             {
                 moveY = y + moveSpeed;
+                ac.setDirection(Animation.SOUTH);
             }
             if(deltaY < 0 - POSITION_BOUNDS/2)
             {
                 moveY = y - moveSpeed;
+                ac.setDirection(Animation.NORTH);
             }
             
             if((-POSITION_BOUNDS < deltaX && deltaX < POSITION_BOUNDS) && (-POSITION_BOUNDS < deltaY && deltaY < POSITION_BOUNDS))
@@ -101,16 +106,36 @@ public class Unit extends Entity {
             if(deltaX != 0 || deltaY != 0)
             {
                 updateCells();
+                
+                if(deltaX > 0 + POSITION_BOUNDS/2 && deltaY > 0 + POSITION_BOUNDS/2)
+                    ac.setDirection(Animation.SOUTHEAST);
+                if(deltaX < 0 - POSITION_BOUNDS/2 && deltaY > 0 + POSITION_BOUNDS/2)
+                    ac.setDirection(Animation.SOUTHWEST);
+                if(deltaX < 0 - POSITION_BOUNDS/2 && deltaY < 0 - POSITION_BOUNDS/2)
+                    ac.setDirection(Animation.NORTHWEST);
+                if(deltaX > 0 + POSITION_BOUNDS/2 && deltaY < 0 - POSITION_BOUNDS/2)
+                    ac.setDirection(Animation.NORTHEAST);
             }
+            
             
             if(!map.checkUnitCollision(new Rectangle((int)moveX, y, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)moveX, y, width, height)))
             {
-                x = (int)moveX;
+                if(Math.abs(deltaX) < moveSpeed)
+                {
+                    x += deltaX;
+                }else {
+                    x = (int)moveX;
+                }
             }
             
             if(!map.checkUnitCollision(new Rectangle((int)x, (int)moveY, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)x, (int)moveY, width, height)))
             {
-                y = (int)moveY;
+                if(Math.abs(deltaY) < moveSpeed)
+                {
+                    y += deltaY;
+                } else {
+                    y = (int)moveY;
+                }
             }
         }
     }
@@ -141,7 +166,7 @@ public class Unit extends Entity {
     @Override
     public void render(Graphics g, float offsetX, float offsetY)
     {
-        g.drawImage(sprite, (int)(x - offsetX), (int)(y - offsetY), null);
+        g.drawImage(ac.getCurrentFrame(), (int)(x - offsetX), (int)(y - offsetY), null);
         
 //        destinations.forEach((d) -> {
 //            g.setColor(new Color(255, 255, 255, 50));
@@ -153,6 +178,13 @@ public class Unit extends Entity {
     public void update()
     {
         super.update();
+        if(destinations.size() > 0)
+        {
+            ac.playAnimation("walk");
+        } else {
+            ac.playAnimation("stand");
+        }
+        ac.update();
         move();
     }
     
