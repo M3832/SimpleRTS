@@ -10,12 +10,12 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import simplerts.Entity;
+import simplerts.entities.Entity;
 import simplerts.display.Assets;
 import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Map;
-import simplerts.Unit;
+import simplerts.entities.Unit;
 
 /**
  *
@@ -29,8 +29,8 @@ public class GUI {
     private Handler handler;
     private int mapOffsetX = 35, mapOffsetY = 31;
     private ArrayList<Entity> entities;
-    public static Font HEADER = new Font(Font.MONOSPACED, Font.BOLD, 34);
-    public static Font BREAD = new Font(Font.MONOSPACED, Font.BOLD, 20);
+    public static Font HEADER = new Font("Verdana", Font.PLAIN, 34);
+    public static Font BREAD = new Font("Verdana", Font.PLAIN, 16);
     
     public GUI(Map map, Handler handler)
     {
@@ -67,6 +67,12 @@ public class GUI {
             g.setColor(Color.WHITE);
             g.setFont(HEADER);
             entities.get(0).renderGUI(g);
+        } else if (entities != null && entities.size() > 1)
+        {
+            for(int i = 0; i < entities.size(); i++)
+            {
+                g.drawImage(entities.get(i).getIcon(), 275 + i * 75, 100, null);
+            }
         }
     }
     

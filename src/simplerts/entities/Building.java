@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.entities;
 
+import simplerts.entities.Entity;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import simplerts.Game;
 
 /**
  *
@@ -69,5 +71,10 @@ public class Building extends Entity {
     public Entity duplicate()
     {
         return new Building(x, y, cellWidth);
+    }
+    
+    public BufferedImage getSprite()
+    {
+        return image;
     }
 }

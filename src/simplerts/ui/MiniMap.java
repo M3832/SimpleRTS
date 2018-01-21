@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
-import simplerts.Entity;
+import simplerts.entities.Entity;
 import simplerts.Game;
 import simplerts.input.Clicker;
 

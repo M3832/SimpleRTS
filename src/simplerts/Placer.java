@@ -5,6 +5,8 @@
  */
 package simplerts;
 
+import simplerts.entities.Building;
+import simplerts.entities.Entity;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -15,7 +17,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Markus
  */
-public class EntityPlacement {
+public class Placer {
     
     Entity entity;
     private Color color;
@@ -24,7 +26,7 @@ public class EntityPlacement {
     private Handler handler;
     private BufferedImage image;
     
-    public EntityPlacement(Handler handler)
+    public Placer(Handler handler)
     {
         color = new Color(0, 0, 255, 150);
         errorColor = new Color(255, 0, 0, 150);
@@ -53,7 +55,7 @@ public class EntityPlacement {
         
         if(entity instanceof Building)
         {
-            image = ((Building)entity).image;
+            image = ((Building)entity).getSprite();
         }
         for(int i = cellX; i < cellWidth + cellX; i++)
         {

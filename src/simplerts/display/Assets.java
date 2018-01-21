@@ -34,6 +34,7 @@ public class Assets {
     public static TerrainPlacement trees;
     public static ArrayList<TerrainPlacement> terrains;
     public static BufferedImage GUI;
+    public static BufferedImage iconBG;
 
     public static void setup() {
         terrains = new ArrayList<>();
@@ -45,6 +46,7 @@ public class Assets {
         darkGrass = loadTerrain("/darkgrass2.bmp", "darkGrass", true, new Color(0, 200, 0));
         trees = loadTerrain("/forest.bmp", "trees", false, new Color(0, 125, 0));
         GUI = loadToCompatibleImage("/gui.bmp");
+        iconBG = loadToCompatibleImage("/iconbg.bmp");
     }
     
     private static void loadTiles(int tileSize)
@@ -71,6 +73,15 @@ public class Assets {
         TerrainPlacement tp = new TerrainPlacement(new Integer[]{15, 15, 15, 12, 15,15, 0, 6, 15, 14, 15, 13, 2, 8, 1, 7, 3, 9, 4, 5, 11, 10}, new Integer[]{0}, tempTiles, name, walkable, color );
         terrains.add(tp);
         return tp;
+    }
+    
+    public static BufferedImage makeIcon(Color color, BufferedImage icon)
+    {
+        BufferedImage newIcon = new BufferedImage(icon.getWidth() + 2, icon.getHeight() + 2, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = (Graphics2D) newIcon.getGraphics();
+        g.drawImage(coverImageWithColor(color, iconBG), 1, 1, null);
+        g.drawImage(icon, 1, 1, null);
+        return newIcon;
     }
     
     public static BufferedImage getTile(int tileId)
@@ -114,20 +125,6 @@ public class Assets {
         return new_image;
     }
     
-    public static BufferedImage loadNoAlphaImage(String url)
-    {
-        BufferedImage image;
-            try {
-                image = ImageIO.read(Image.class.getResource(url));
-            } catch (IOException ex) {
-                return null;
-            }
-        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = (Graphics2D)newImage.getGraphics();
-        g.drawImage(image, 0, 0, null);
-        return newImage;
-    }
-    
     public static BufferedImage loadAndResizeImage(String url, int width, int height)
     {
         BufferedImage img = loadToCompatibleImage(url);
@@ -142,7 +139,12 @@ public class Assets {
         return dimg; 
     }
     
-    public static BufferedImage coverImageWithColor(Color color, BufferedImage image)
+    public static BufferedImage makeTeamColor(BufferedImage baseSprite, BufferedImage tcSprite, Color color)
+    {
+        return combineImages(baseSprite, coverImageWithColor(color, tcSprite));
+    }
+    
+    private static BufferedImage coverImageWithColor(Color color, BufferedImage image)
     {
         BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D gbi = result.createGraphics();
@@ -161,7 +163,7 @@ public class Assets {
         return result;
     }
     
-    public static BufferedImage combineImages(BufferedImage base, BufferedImage teamColor)
+    private static BufferedImage combineImages(BufferedImage base, BufferedImage teamColor)
     {
         BufferedImage result = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D gbi = result.createGraphics();

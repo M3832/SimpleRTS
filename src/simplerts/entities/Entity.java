@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import simplerts.Game;
+import simplerts.Map;
 
 /**
  *
@@ -18,6 +21,7 @@ public class Entity {
     
     protected int x, y, cellX, cellY, cellWidth, cellHeight, width, height;
     protected int health, maxHealth;
+    protected BufferedImage sprite, icon;
     public Color color;
     public Map grid;
     
@@ -29,7 +33,7 @@ public class Entity {
         height = 0;
         cellX = 0;
         cellY = 0;
-        color = new Color(0, 255, 0, 125);
+        color = new Color(50, 200, 50);
         cellWidth = 1;
         cellHeight = 1;
         maxHealth = 50;
@@ -86,6 +90,16 @@ public class Entity {
         this.color = color;
     }
     
+    public int getX()
+    {
+        return x;
+    }
+    
+    public int getY()
+    {
+        return y;
+    }
+    
     public int getWidth()
     {
         return width;
@@ -125,6 +139,11 @@ public class Entity {
     public int getMaxHealth()
     {
         return maxHealth;
+    }
+    
+    public BufferedImage getIcon()
+    {
+        return icon;
     }
     
     public void renderGUI(Graphics g)

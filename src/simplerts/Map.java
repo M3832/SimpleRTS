@@ -5,6 +5,9 @@
  */
 package simplerts;
 
+import simplerts.entities.Building;
+import simplerts.entities.Unit;
+import simplerts.entities.Entity;
 import simplerts.display.Assets;
 import composite.GraphicsUtil;
 import java.awt.Color;
@@ -34,6 +37,7 @@ public class Map {
     private final Cell[][] cells;
     private Handler handler;
     private PathFinder pathFinder;
+    private Rectangle selectBox;
     
     public Map(int colSize, int rowSize)
     {
@@ -58,9 +62,9 @@ public class Map {
         entities.add(e);
         if(e instanceof Building)
         {
-            for(int i = e.cellX; i < e.cellX + e.cellWidth; i++)
+            for(int i = e.getCellX(); i < e.getCellX() + e.getCellWidth(); i++)
             {
-                for(int j = e.cellY; j < e.cellY + e.cellHeight; j++)
+                for(int j = e.getCellY(); j < e.getCellY() + e.getCellHeight(); j++)
                 {
                     cells[i][j].available = false;
                 }
@@ -202,7 +206,7 @@ public class Map {
     
     private boolean rectangleIntersectsEntity(Rectangle r, Entity e)
     {
-        return r.intersects(new Rectangle(e.x, e.y, e.width, e.height));
+        return r.intersects(new Rectangle(e.getX(), e.getY(), e.getWidth(), e.getHeight()));
     }
     
     public MiniMap getMiniMap(int width, int height)
@@ -237,5 +241,9 @@ public class Map {
             }
         }
         return false;
+    }
+
+    void setSelectBox(Rectangle selectBox) {
+        this.selectBox = selectBox;
     }
 }

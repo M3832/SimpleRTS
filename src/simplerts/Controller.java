@@ -5,6 +5,8 @@
  */
 package simplerts;
 
+import simplerts.entities.Unit;
+import simplerts.entities.Entity;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -24,7 +26,7 @@ public class Controller {
     private Player player;
     private Handler handler;
     
-    private EntityPlacement entityplacer;
+    private Placer entityplacer;
     
     private MouseInput ml;
     private MouseInput guiml;
@@ -75,7 +77,7 @@ public class Controller {
             for(Entity e : selected)
             {
                 g.setColor(Color.GREEN);
-                g.drawRect(e.x - (int)handler.camera.getOffsetX(), e.y - (int)handler.camera.getOffsetY(), e.width, e.height);
+                g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
             }
         }
         
@@ -125,6 +127,7 @@ public class Controller {
                 currentDragX = ml.posX + (int)handler.getCamera().getOffsetX();
                 currentDragY = ml.posY + (int)handler.getCamera().getOffsetY();
                 selectBox.setBounds((int)Math.min(startDragX, currentDragX), (int)Math.min(startDragY, currentDragY), (int)Math.abs(startDragX - currentDragX), (int)Math.abs(startDragY - currentDragY));
+                handler.map.setSelectBox(selectBox);
             }
         } else {
             if(selectBox != null)
@@ -142,7 +145,7 @@ public class Controller {
                 if(e instanceof Unit)
                 {
                     ((Unit)e).clearDestinations();
-                    ((Unit)e).destinations = new PathFinder(handler.map).findPath(new Destination(((Unit) e).x, ((Unit) e).y), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE) * Game.CELLSIZE, ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE) * Game.CELLSIZE));
+                    ((Unit)e).setDestinations(new PathFinder(handler.map).findPath(new Destination(((Unit) e).getX(), ((Unit) e).getY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE) * Game.CELLSIZE, ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE) * Game.CELLSIZE)));
                 }
             }
         }

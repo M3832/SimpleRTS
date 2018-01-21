@@ -7,7 +7,6 @@ package simplerts;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.actions.Destination;
 
@@ -16,9 +15,9 @@ import simplerts.actions.Destination;
  * @author Markus
  */
 public class PathFinder {
-    private ArrayList<Node> open;
-    private ArrayList<Node> closed;
-    private Map map;
+    private final ArrayList<Node> open;
+    private final ArrayList<Node> closed;
+    private final Map map;
     private Node[][] nodeMap;
     
     public PathFinder(Map map)

@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import simplerts.entities.Unit;
 import simplerts.display.Assets;
 import simplerts.display.Camera;
 import simplerts.display.Display;
@@ -29,7 +30,7 @@ public class Game implements Runnable {
     public static int CELLSIZE = 60;
     
     public static long millisSinceLastRender = 0;
-    public static int RENDERS_PER_SECOND = 300;
+    public static int RENDERS_PER_SECOND = 120;
     private long nextSecond = 0;
 
     public Map map;
