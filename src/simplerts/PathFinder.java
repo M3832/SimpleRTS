@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.actions.Destination;
+import simplerts.entities.Entity;
 
 /**
  *
@@ -27,7 +28,7 @@ public class PathFinder {
         closed = new ArrayList<>();
     }
     
-    public CopyOnWriteArrayList<Destination> findPath(Destination start, Destination goal)
+    public CopyOnWriteArrayList<Destination> findPath(Destination start, Destination goal, boolean accountForUnits)
     {
         //New pathfinding, clear previous paths
         open.clear();
@@ -42,13 +43,26 @@ public class PathFinder {
             for(int y = 0; y < nodeMap[0].length; y++)
             {
                 nodeMap[x][y] = new Node(x, y);
-                nodeMap[x][y].heuristic = (Math.abs(x - (int)goal.getX()/Game.CELLSIZE) + Math.abs(y - (int)goal.getY()/Game.CELLSIZE));
+                nodeMap[x][y].heuristic = (Math.abs(x - (int)goal.getX()) + Math.abs(y - (int)goal.getY()));
+            }
+        }
+        
+        if(accountForUnits)
+        {
+            for(Entity e : map.getEntities())
+            {
+                nodeMap[e.getGridX()][e.getGridY()].occupiedByUnit = true;
             }
         }
         
         //Get start and end node
-        Node startNode = nodeMap[(int)start.getX()/Game.CELLSIZE][(int)start.getY()/Game.CELLSIZE];
-        Node goalNode = nodeMap[(int)goal.getX()/Game.CELLSIZE][(int)goal.getY()/Game.CELLSIZE];
+        Node startNode = nodeMap[(int)start.getX()][(int)start.getY()];
+        Node goalNode = nodeMap[(int)goal.getX()][(int)goal.getY()];
+        
+        if(!map.getCells()[goalNode.gridX][goalNode.gridY].available)
+        {
+            goalNode = findCloseNode(goalNode);
+        }
         
         open.add(startNode);
         
@@ -69,26 +83,60 @@ public class PathFinder {
                 return finalPath;
             }
             
-            for(int x = current.colX - 1; x <= current.colX + 1; x++)
+            //Check diagonals
+//            for(int x = current.gridX - 1; x <= current.gridX + 1; x++)
+//            {
+//                for(int y = current.gridY - 1; y <= current.gridY + 1; y++)
+//                {
+//                    if(x > 0 && x < nodeMap.length && y > 0 && y < nodeMap[0].length)
+//                    {
+//                        int movecost = x != current.gridX && y != current.gridY ? Node.CORNERCOST : Node.MOVECOST;
+//                        checkNeighbor(nodeMap[x][y], current, movecost);
+//                    }
+//                }
+//            }
+            
+            for(int x = current.gridX - 1; x <= current.gridX + 1; x++)
             {
-                for(int y = current.colY - 1; y <= current.colY + 1; y++)
+                if(x > 0 && x < nodeMap.length)
+                {
+                    checkNeighbor(nodeMap[x][current.gridY], current, Node.MOVECOST);
+                }
+            }
+            for(int y = current.gridY - 1; y <= current.gridY + 1; y++)
+            {
+                if(y > 0 && y < nodeMap[0].length)
+                {
+                    checkNeighbor(nodeMap[current.gridX][y], current, Node.MOVECOST);
+                }
+            }
+        
+        }while(open.size() > 0);
+        
+        if(finalPath.isEmpty())
+            finalPath.add(goalNode.getDestination());
+        return finalPath;
+    }
+    
+    private Node findCloseNode(Node goalNode)
+    {
+            for(int x = goalNode.gridX - 1; x <= goalNode.gridX + 1; x++)
+            {
+                for(int y = goalNode.gridY - 1; y <= goalNode.gridY + 1; y++)
                 {
                     if(x > 0 && x < nodeMap.length && y > 0 && y < nodeMap[0].length)
                     {
-                        int movecost = x != current.colX && y != current.colY ? Node.CORNERCOST : Node.MOVECOST;
-                        checkNeighbor(nodeMap[x][y], current, movecost);
+                        if(!nodeMap[x][y].occupiedByUnit && map.getCells()[x][y].available)
+                            return nodeMap[x][y];
                     }
                 }
             }
-            
-        }while(open.size() > 0);
-        
-        return finalPath;
+            return goalNode;
     }
     
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
     {
-        if(closed.stream().anyMatch(node -> node == neighbor) || !map.getCells()[neighbor.colX][neighbor.colY].available)
+        if(closed.stream().anyMatch(node -> node == neighbor) || !map.getCells()[neighbor.gridX][neighbor.gridY].available || neighbor.occupiedByUnit)
             return;
         
         int calcCost = neighbor.heuristic + current.totalCost + moveCost;
@@ -109,14 +157,16 @@ class Node implements Comparable<Node>{
     
     public int heuristic;
     public int totalCost;
-    public int colX, colY;
+    public int gridX, gridY;
     public Node parent;
     
+    public boolean occupiedByUnit = false;
     
-    public Node(int colX, int colY)
+    
+    public Node(int gridX, int gridY)
     {
-        this.colX = colX;
-        this.colY = colY;
+        this.gridX = gridX;
+        this.gridY = gridY;
     }
     
     @Override
@@ -127,6 +177,6 @@ class Node implements Comparable<Node>{
     
     public Destination getDestination()
     {
-        return new Destination(colX * Game.CELLSIZE, colY * Game.CELLSIZE);
+        return new Destination(gridX, gridY);
     }
 }

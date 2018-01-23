@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import simplerts.ui.MiniMap;
 
 /**
@@ -62,9 +63,9 @@ public class Map {
         entities.add(e);
         if(e instanceof Building)
         {
-            for(int i = e.getCellX(); i < e.getCellX() + e.getCellWidth(); i++)
+            for(int i = e.getGridX(); i < e.getGridX() + e.getGridWidth(); i++)
             {
-                for(int j = e.getCellY(); j < e.getCellY() + e.getCellHeight(); j++)
+                for(int j = e.getGridY(); j < e.getGridY() + e.getGridHeight(); j++)
                 {
                     cells[i][j].available = false;
                 }
@@ -81,24 +82,20 @@ public class Map {
     }
     
     protected void updateOccupiedCells()
-    {
-        for(Cell[] cell : cells)
-        {
-            for(Cell c : cell)
-            {
-                c.available = true;
-            }
-        }
-        
+    {   
+//        for(Entity e : entities)
+//        {
+//            for(int i = e.getCellX(); i < e.getCellWidth() + e.getCellX(); i++)
+//            {
+//                for(int j = e.getCellY(); j < e.getCellHeight() + e.getCellY(); j++)
+//                {
+//                    cells[i][j].available = false;
+//                }
+//            }
+//        }
         for(Entity e : entities)
         {
-            for(int i = e.getCellX(); i < e.getCellWidth() + e.getCellX(); i++)
-            {
-                for(int j = e.getCellY(); j < e.getCellHeight() + e.getCellY(); j++)
-                {
-                    cells[i][j].available = false;
-                }
-            }
+            e.updateCells();
         }
     }
     
@@ -121,7 +118,7 @@ public class Map {
 //        renderGrid(g, (int)offsetX, (int)offsetY);
         
         entities.stream()
-                .sorted((e1, e2) -> { return Integer.compare(e1.getCellY(), e2.getCellY());})
+                .sorted((e1, e2) -> { return Integer.compare(e1.getGridY(), e2.getGridY());})
                 .forEach(e -> {
                     if (inView(e, offsetX, offsetY)) {
                     e.render(g, offsetX, offsetY);
@@ -166,7 +163,7 @@ public class Map {
         int startY = Math.max((int)offsetY / Game.CELLSIZE, 0);
         int endY = Math.min(1 + startY + handler.game.WIDTH / Game.CELLSIZE, cells[0].length);
         
-        return e.getCellX() > startX - 5 && e.getCellX() < endX && e.getCellY() > startY - 5 && e.getCellY() < endY;
+        return e.getGridX() > startX - 5 && e.getGridX() < endX && e.getGridY() > startY - 5 && e.getGridY() < endY;
     }
     
     public void update()
@@ -195,6 +192,10 @@ public class Map {
                 list.add(e);
             }
         });
+        if(list.stream().anyMatch(e -> e instanceof Unit))
+        {
+            return list.stream().filter(e -> e instanceof Unit).collect(Collectors.toList());
+        }
         
         return list;
     }
@@ -204,9 +205,14 @@ public class Map {
        return entities.stream().anyMatch(e -> {if(e == entity){return false;} return rectangleIntersectsEntity(r, e);});
     }
     
+    public CopyOnWriteArrayList<Entity> getEntities()
+    {
+        return entities;
+    }
+    
     private boolean rectangleIntersectsEntity(Rectangle r, Entity e)
     {
-        return r.intersects(new Rectangle(e.getX(), e.getY(), e.getWidth(), e.getHeight()));
+        return r.intersects(new Rectangle(e.getX() + 1, e.getY() + 1, e.getWidth() - 2, e.getHeight() - 2));
     }
     
     public MiniMap getMiniMap(int width, int height)
@@ -241,6 +247,11 @@ public class Map {
             }
         }
         return false;
+    }
+    
+    public PathFinder getPathFinder()
+    {
+        return pathFinder;
     }
 
     void setSelectBox(Rectangle selectBox) {

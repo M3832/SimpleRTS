@@ -25,7 +25,7 @@ public class Animation {
     public static final int NORTHEAST = 7;
     
     private BufferedImage[][] animationSheet;
-    private int animationSpeed = 100, animationIndex = 0;
+    private int animationSpeed = 75, animationIndex = 0;
     private long timeNextFrame = 0;
     
     public Animation(BufferedImage sheet)

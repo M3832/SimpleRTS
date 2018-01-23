@@ -39,8 +39,8 @@ public class Placer {
         this.entity = entity;
         cellX = 0;
         cellY = 0;
-        cellWidth = entity.getCellWidth();
-        cellHeight = entity.getCellHeight();
+        cellWidth = entity.getGridWidth();
+        cellHeight = entity.getGridHeight();
     }
     
     public void clear()

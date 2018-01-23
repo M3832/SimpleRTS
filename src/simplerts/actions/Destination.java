@@ -11,9 +11,9 @@ package simplerts.actions;
  */
 public class Destination {
     
-    private float x, y;
+    private int x, y;
     
-    public Destination(float x, float y)
+    public Destination(int x, int y)
     {
         this.x = x;
         this.y = y;
@@ -22,28 +22,28 @@ public class Destination {
     /**
      * @return the x
      */
-    public float getX() {
+    public int getX() {
         return x;
     }
 
     /**
      * @param x the x to set
      */
-    public void setX(float x) {
+    public void setX(int x) {
         this.x = x;
     }
 
     /**
      * @return the y
      */
-    public float getY() {
+    public int getY() {
         return y;
     }
 
     /**
      * @param y the y to set
      */
-    public void setY(float y) {
+    public void setY(int y) {
         this.y = y;
     }
     

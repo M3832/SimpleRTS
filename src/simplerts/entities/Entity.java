@@ -7,9 +7,7 @@ package simplerts.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Map;
 
@@ -19,7 +17,7 @@ import simplerts.Map;
  */
 public class Entity {
     
-    protected int x, y, cellX, cellY, cellWidth, cellHeight, width, height;
+    protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
     protected int health, maxHealth;
     protected BufferedImage sprite, icon;
     public Color color;
@@ -31,11 +29,11 @@ public class Entity {
         y = 0;
         width = 0;
         height = 0;
-        cellX = 0;
-        cellY = 0;
+        gridX = 0;
+        gridY = 0;
         color = new Color(50, 200, 50);
-        cellWidth = 1;
-        cellHeight = 1;
+        gridWidth = 1;
+        gridHeight = 1;
         maxHealth = 50;
         health = maxHealth;
     }
@@ -45,44 +43,37 @@ public class Entity {
         this();
         this.x = x;
         this.y = y;
-        this.cellWidth = size;
-        this.cellHeight = size;
-        this.cellX = x/Game.CELLSIZE;
-        this.cellY = y/Game.CELLSIZE;
-        width = size * Game.CELLSIZE;
-        height = size * Game.CELLSIZE;
-    }
-    
-    public Entity(int x, int y, int cellWidth, int cellHeight)
-    {
-        this();
-        this.x = x;
-        this.y = y;
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
-        this.cellX = x/Game.CELLSIZE;
-        this.cellY = y/Game.CELLSIZE;
-        width = cellWidth * Game.CELLSIZE;
-        height = cellHeight * Game.CELLSIZE;
+        this.width = size * Game.CELLSIZE;
+        this.height = size * Game.CELLSIZE;
+        this.gridX = x/Game.CELLSIZE;
+        this.gridY = y/Game.CELLSIZE;
+        this.gridWidth = size;
+        this.gridHeight = size;
     }
     
     public void render(Graphics g, float offsetX, float offsetY)
     {
         g.setColor(color);
-        g.fillRect((int)((cellX * Game.CELLSIZE) - offsetX), (int)((cellY * Game.CELLSIZE) - offsetY), cellWidth * Game.CELLSIZE, cellHeight * Game.CELLSIZE);
+        g.fillRect((int)((gridX * Game.CELLSIZE) - offsetX), (int)((gridY * Game.CELLSIZE) - offsetY), gridWidth * Game.CELLSIZE, gridHeight * Game.CELLSIZE);
     }
     
     public void setPosition(int x, int y)
     {
         this.x = x;
         this.y = y;
-        this.cellX = x/Game.CELLSIZE;
-        this.cellY = y/Game.CELLSIZE;
+        this.gridX = x/Game.CELLSIZE;
+        this.gridY = y/Game.CELLSIZE;
     }
     
     public void update()
     {
         
+    }
+    
+    public void updateCells()
+    {
+        gridX = (x + width/2)/Game.CELLSIZE;
+        gridY = (y + height/2)/Game.CELLSIZE;
     }
     
     public void setColor(Color color)
@@ -110,25 +101,25 @@ public class Entity {
         return height;
     }
     
-    public int getCellX(){
-        return cellX;
+    public int getGridX(){
+        return gridX;
     }
     
-    public int getCellY(){
-        return cellY;
+    public int getGridY(){
+        return gridY;
     }
     
-    public int getCellWidth(){
-        return cellWidth;
+    public int getGridWidth(){
+        return gridWidth;
     }
     
-    public int getCellHeight(){
-        return cellHeight;
+    public int getGridHeight(){
+        return gridHeight;
     }
     
     public Entity duplicate()
     {
-        return new Entity(x, y, cellWidth);
+        return new Entity(x, y, gridWidth);
     }
     
     public int getHealth()

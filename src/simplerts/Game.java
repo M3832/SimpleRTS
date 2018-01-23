@@ -12,6 +12,7 @@ import simplerts.display.Display;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
 import simplerts.entities.Builder;
+import simplerts.entities.Tower;
 import simplerts.ui.GUI;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
@@ -27,8 +28,8 @@ public class Game implements Runnable {
 
     public static int WIDTH = 980;
     public static int HEIGHT = 512;
-    public static float GAMESPEED = 1f;
-    public static int CELLSIZE = 60;
+    public static float GAMESPEED = 2f;
+    public static int CELLSIZE = 50;
     
     public static long millisSinceLastRender = 0;
     public static int RENDERS_PER_SECOND = 120;
@@ -75,9 +76,20 @@ public class Game implements Runnable {
         controller = new Controller(handler, player);
         players.add(player);
         map.addEntity(new Builder());
+        map.addEntity(new Builder(10, 6));
+        map.addEntity(new Builder(11, 6));
+        map.addEntity(new Builder(12, 6));
+        map.addEntity(new Builder(10, 7));
+        map.addEntity(new Builder(11, 7));
+        map.addEntity(new Builder(12, 7));
+        map.addEntity(new Builder(10, 8));
+        map.addEntity(new Builder(11, 8));
+        
+        map.addEntity(new Tower(6, 2, 2));
+        map.addEntity(new Tower(8, 4, 2));
 
 
-        int TICKS_PER_SECOND = 50;
+        int TICKS_PER_SECOND = 50 * (int)GAMESPEED;
         int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
         int MAX_FRAMESKIP = 10;
         

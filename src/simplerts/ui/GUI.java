@@ -8,14 +8,12 @@ package simplerts.ui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import simplerts.entities.Entity;
 import simplerts.display.Assets;
 import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Map;
-import simplerts.entities.Unit;
 
 /**
  *
@@ -67,11 +65,17 @@ public class GUI {
             g.setColor(Color.WHITE);
             g.setFont(HEADER);
             entities.get(0).renderGUI(g);
-        } else if (entities != null && entities.size() > 1)
+        } else if (entities != null && entities.size() > 1 && entities.size() < 6)
         {
             for(int i = 0; i < entities.size(); i++)
             {
                 g.drawImage(entities.get(i).getIcon(), 275 + i * 75, 100, null);
+            }
+        } else if (entities != null && entities.size() > 5)
+        {
+            for(int i = 0; i < entities.size(); i++)
+            {
+                g.drawImage(entities.get(i).getIcon(), (275 + ((i%5) * 75)), 100 + (75 * (i/5)), null);
             }
         }
     }

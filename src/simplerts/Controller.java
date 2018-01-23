@@ -8,14 +8,14 @@ package simplerts;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import simplerts.actions.Destination;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
+import simplerts.ui.GUI;
 
 /**
  *
@@ -71,13 +71,22 @@ public class Controller {
         {
             g.setColor(Color.GREEN);
             g.drawRect((int)(selectBox.getX() - handler.getCamera().getOffsetX()), (int)(selectBox.getY() - handler.getCamera().getOffsetY()), (int)selectBox.getWidth(), (int)selectBox.getHeight());
+            g.setColor(new Color(0, 255, 0, 100));
+            for(Entity e : (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox))
+            {
+                    g.drawRect(e.getX() - (int)handler.getCamera().getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
+            }
         }
         if(selected.size() > 0)
         {
-            for(Entity e : selected)
+            for(int i = 0; i < selected.size(); i++)
             {
+                Entity e = selected.get(i);
                 g.setColor(Color.GREEN);
                 g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
+                g.setColor(Color.WHITE);
+                g.setFont(GUI.HEADER);
+                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
             }
         }
         
@@ -88,7 +97,7 @@ public class Controller {
         int scrollSpeed = 1000;
         float frameScroll = scrollSpeed * ((float)Game.millisSinceLastRender/1000);
         
-        if(ml.posX > handler.game.WIDTH - boundary && ml.isHovering)
+        if(ml.posX > Game.WIDTH - boundary && ml.isHovering)
         {
             handler.getCamera().addOffset(frameScroll, 0);
         }
@@ -98,7 +107,7 @@ public class Controller {
             handler.getCamera().addOffset(-frameScroll, 0);
         }
         
-        if(ml.posY > handler.game.HEIGHT - boundary && ml.isHovering)
+        if(ml.posY > Game.HEIGHT - boundary && ml.isHovering)
         {
             handler.getCamera().addOffset(0, frameScroll);
         }
@@ -133,6 +142,7 @@ public class Controller {
             if(selectBox != null)
             {
                 selected = (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox);
+                selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
                 handler.game.gui.setSelectedEntities(selected);
                 selectBox = null;
             }
@@ -140,12 +150,26 @@ public class Controller {
         
         if(ml.isRightMouseClicked())
         {
+            int index = 0;
+            selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
             for(Entity e : selected)
             {
                 if(e instanceof Unit)
                 {
-                    ((Unit)e).clearDestinations();
-                    ((Unit)e).setDestinations(new PathFinder(handler.map).findPath(new Destination(((Unit) e).getX(), ((Unit) e).getY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE) * Game.CELLSIZE, ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE) * Game.CELLSIZE)));
+                    Unit u = (Unit) e;
+                    u.clearDestinations();
+                    if(selected.size() > 1)
+                    {
+                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
+                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
+                        int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
+                        int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
+                        u.setDestinations(new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(targetX, targetY), false));
+                    } else {
+                        u.setDestinations(new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE), ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE)), true));
+                        
+                    }
+                    index++;
                 }
             }
         }

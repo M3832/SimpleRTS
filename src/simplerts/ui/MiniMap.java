@@ -46,7 +46,7 @@ public class MiniMap {
         g.drawImage(minimap, 0, 0, null);
         for(Entity e: entities)
         {
-            g.fillRect((int)(e.getCellX() * squaresize), (int)(e.getCellY() * squaresize), (int)squaresize, (int)squaresize);
+            g.fillRect((int)(e.getGridX() * squaresize), (int)(e.getGridY() * squaresize), (int)(squaresize * e.getGridWidth()), (int)(squaresize * e.getGridHeight()));
         }
         return i;
     }
