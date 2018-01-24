@@ -6,13 +6,8 @@
 package simplerts;
 
 import simplerts.entities.Entity;
-import simplerts.input.KeyManager;
-import simplerts.input.MouseInput;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -33,7 +28,7 @@ public class Player {
         selectedEntities = new CopyOnWriteArrayList<>();
         this.handler = handler;
         gold = 300;
-        teamColor = new Color(0, 0, 255);
+        teamColor = new Color(0, 100, 0);
     }
     
     public void input()
@@ -46,6 +41,11 @@ public class Player {
     public void render(Graphics g)
     {
 
+    }
+    
+    public Color getColor()
+    {
+        return teamColor;
     }
     
     

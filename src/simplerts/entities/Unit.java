@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.Map;
+import simplerts.Player;
 import simplerts.Utils;
 import simplerts.actions.Destination;
 import simplerts.display.Assets;
@@ -55,20 +56,20 @@ public class Unit extends Entity {
         updateCells();
     }
     
-    public Unit(int x, int y)
+    public Unit(int x, int y, Player player)
     {
         this();
         this.x = x;
         this.y = y;
+        this.player = player;
         moveSpeed = 2;
-        color = new Color(255, 50, 50);
+        color = player.getColor();
         initGraphics();
         updateCells();
     }
     
     protected void initGraphics()
     {
-        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasant.png"), Assets.loadToCompatibleImage("/peasanttc.png"), color);
         icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));        
     }
     

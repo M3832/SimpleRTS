@@ -8,8 +8,11 @@ package simplerts.entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Map;
+import simplerts.Player;
+import simplerts.ui.UIAction;
 
 /**
  *
@@ -20,6 +23,8 @@ public class Entity {
     protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
     protected int health, maxHealth;
     protected BufferedImage sprite, icon;
+    protected ArrayList<UIAction> actions;
+    protected Player player;
     public Color color;
     public Map grid;
     
@@ -36,9 +41,10 @@ public class Entity {
         gridHeight = 1;
         maxHealth = 50;
         health = maxHealth;
+        setupActions();
     }
     
-    public Entity(int x, int y, int size)
+    public Entity(int x, int y, int size, Player player)
     {
         this();
         this.x = x;
@@ -49,6 +55,13 @@ public class Entity {
         this.gridY = y/Game.CELLSIZE;
         this.gridWidth = size;
         this.gridHeight = size;
+        this.player = player;
+        color = player.getColor();
+    }
+    
+    public void setupActions()
+    {
+        actions = new ArrayList<>();
     }
     
     public void render(Graphics g, float offsetX, float offsetY)
@@ -64,6 +77,8 @@ public class Entity {
         this.gridX = x/Game.CELLSIZE;
         this.gridY = y/Game.CELLSIZE;
     }
+    
+        
     
     public void update()
     {
@@ -119,7 +134,7 @@ public class Entity {
     
     public Entity duplicate()
     {
-        return new Entity(x, y, gridWidth);
+        return new Entity(x, y, gridWidth, player);
     }
     
     public int getHealth()
@@ -132,6 +147,11 @@ public class Entity {
         return maxHealth;
     }
     
+    public ArrayList<UIAction> getUIActions()
+    {
+        return actions;
+    }
+    
     public BufferedImage getIcon()
     {
         return icon;
@@ -140,6 +160,13 @@ public class Entity {
     public void renderGUI(Graphics g)
     {
         
+    }
+
+    public void setGridPosition(int gridX, int gridY) {
+        this.gridX = gridX;
+        this.gridY = gridY;
+        this.x = gridX * Game.CELLSIZE;
+        this.y = gridY * Game.CELLSIZE;
     }
     
 }

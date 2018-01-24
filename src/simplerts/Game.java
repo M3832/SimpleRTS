@@ -5,6 +5,8 @@
  */
 package simplerts;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import simplerts.entities.Unit;
 import simplerts.display.Assets;
 import simplerts.display.Camera;
@@ -14,7 +16,9 @@ import javax.swing.JFileChooser;
 import simplerts.entities.Builder;
 import simplerts.entities.Tower;
 import simplerts.entities.TownHall;
+import simplerts.input.MouseInput;
 import simplerts.ui.GUI;
+import simplerts.ui.UIImageButton;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
 //import org.lwjgl.glfw.*;
@@ -70,25 +74,26 @@ public class Game implements Runnable {
         display.getGUIPanel().setHandler(handler);
         
         gui = new GUI(map, handler);
+        setupGUI(gui);
         
         camera.setHandler(handler);
 
         Player player = new Player(handler);
         controller = new Controller(handler, player);
+        ((MouseInput)display.getGUIPanel().getMouseListeners()[0]).setGUI(gui);
         players.add(player);
-        map.addEntity(new Builder());
-        map.addEntity(new Builder(10, 6));
-        map.addEntity(new Builder(11, 6));
-        map.addEntity(new Builder(12, 6));
-        map.addEntity(new Builder(10, 7));
-        map.addEntity(new Builder(11, 7));
-        map.addEntity(new Builder(12, 7));
-        map.addEntity(new Builder(10, 8));
-        map.addEntity(new Builder(11, 8));
+        map.addEntity(new Builder(10, 6, player));
+        map.addEntity(new Builder(11, 6, player));
+        map.addEntity(new Builder(12, 6, player));
+        map.addEntity(new Builder(10, 7, player));
+        map.addEntity(new Builder(11, 7, player));
+        map.addEntity(new Builder(12, 7, player));
+        map.addEntity(new Builder(10, 8, player));
+        map.addEntity(new Builder(11, 8, player));
         
-        map.addEntity(new Tower(6, 2, 2));
-        map.addEntity(new Tower(8, 4, 2));
-        map.addEntity(new TownHall(0, 6, 4));
+        map.addEntity(new Tower(6, 2, 2, player));
+        map.addEntity(new Tower(8, 4, 2, player));
+        map.addEntity(new TownHall(4, 6, 4, player));
 
 
         int TICKS_PER_SECOND = 50 * (int)GAMESPEED;
@@ -178,4 +183,8 @@ public class Game implements Runnable {
 //        bs.show();
 //        g.dispose();
 //    }
+
+    private void setupGUI(GUI gui) {
+
+    }
 }

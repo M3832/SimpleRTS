@@ -51,6 +51,8 @@ public class Controller {
         
         selected = new ArrayList<>();
         
+        entityplacer = new Placer(handler);
+        
         handler.getDisplay().getGamePanel().addMouseListener(ml);
         handler.getDisplay().getGamePanel().addMouseMotionListener(ml);
         handler.getDisplay().getGUIPanel().addMouseListener(guiml);
@@ -63,6 +65,8 @@ public class Controller {
     public void update()
     {
         input();
+        handler.game.gui.update();
+        entityplacer.setPosition(ml.posX + (int)handler.camera.getOffsetX(), ml.posY + (int)handler.camera.getOffsetY());
     }
     
     public void render(Graphics g)
@@ -84,12 +88,19 @@ public class Controller {
                 Entity e = selected.get(i);
                 g.setColor(Color.GREEN);
                 g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
-                g.setColor(Color.WHITE);
-                g.setFont(GUI.HEADER);
-                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
+//                g.setColor(Color.WHITE);
+//                g.setFont(GUI.HEADER);
+//                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
             }
         }
+        if(entityplacer.entity != null)
+            entityplacer.render(g);
         
+    }
+    
+    public void setEntityPlacerEntity(Entity e)
+    {
+        entityplacer.setEntity(e);
     }
     
     public void scrolling()

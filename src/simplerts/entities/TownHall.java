@@ -6,7 +6,9 @@
 package simplerts.entities;
 
 import java.awt.Color;
+import simplerts.Player;
 import simplerts.display.Assets;
+import simplerts.ui.UIAction;
 
 /**
  *
@@ -14,11 +16,17 @@ import simplerts.display.Assets;
  */
 public class TownHall extends Building {
     
-    public TownHall(int x, int y, int gridSize) {
-        super(x, y, gridSize);
-        color = new Color(100, 100, 255);
+    public TownHall(int x, int y, int gridSize, Player player) {
+        super(x, y, gridSize, player);
         sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/townhall.png"),
                                                      Assets.loadToCompatibleImage("/townhalltc.png"), color);
+    }
+    
+    @Override
+    public void setupActions()
+    {
+        super.setupActions();
+        actions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.map.addEntity(new Builder(gridX, gridY, player));}));
     }
     
 }

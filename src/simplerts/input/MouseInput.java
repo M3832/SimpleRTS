@@ -8,6 +8,7 @@ package simplerts.input;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import simplerts.ui.GUI;
 
 /**
  *
@@ -19,6 +20,12 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
     public boolean isMouseDown, isMouseClicked, isRightMouseDown, isRightMouseClicked;
     public boolean isScrollDown;
     public boolean isHovering = true;
+    private GUI gui;
+    
+    public void setGUI(GUI gui)
+    {
+        this.gui = gui;
+    }
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -30,6 +37,9 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         posX = e.getX();
         posY = e.getY();
+        
+        if(gui != null)
+            gui.onMouseMove(e);
     }
     
     @Override
@@ -95,6 +105,9 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
             isScrollDown = false;
         posX = e.getX();
         posY = e.getY();
+        
+        if(gui != null)
+            gui.onMouseRelease(e);
     }
     
     public boolean isScrollDown()

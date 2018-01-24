@@ -63,8 +63,7 @@ public class Placer {
             {
                 if(i >= 0 && j >= 0 && i < handler.map.getCells().length && j < handler.map.getCells()[0].length)
                 {
-                    Color colorToUse = handler.map.checkCollision(i, j) ? color : errorColor;
-                    g.setColor(colorToUse);
+                    g.setColor(handler.map.checkCollision(i, j) ? color : errorColor);
                     g.fillRect(((i - offsetCellX) * Game.CELLSIZE) - (int)handler.getCamera().getOffsetX() % Game.CELLSIZE, (j - offsetCellY) * Game.CELLSIZE - (int)handler.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE);
                 }
             }

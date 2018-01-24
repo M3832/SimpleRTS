@@ -60,6 +60,10 @@ public class Map {
     
     public void addEntity(Entity e)
     {
+        while(entities.stream().anyMatch(entity -> entity.getGridX() == e.getGridX() && entity.getGridY() == e.getGridY()) || !cells[e.getGridX()][e.getGridY()].available)
+        {
+            e.setGridPosition(e.getGridX(), e.getGridY() + 1);
+        }
         entities.add(e);
         if(e instanceof Building)
         {

@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
+import simplerts.Player;
 
 /**
  *
@@ -21,9 +22,9 @@ public class Building extends Entity {
     protected int currentTime;
     protected long lastUpdate;
     
-    public Building(int x, int y, int cellSize)
+    public Building(int x, int y, int cellSize, Player player)
     {
-        super(x * Game.CELLSIZE, y * Game.CELLSIZE, cellSize);
+        super(x * Game.CELLSIZE, y * Game.CELLSIZE, cellSize, player);
         buildtime = 500;
         currentTime = 1;
     }
@@ -76,7 +77,7 @@ public class Building extends Entity {
     @Override
     public Entity duplicate()
     {
-        return new Building(x, y, gridWidth);
+        return new Building(x, y, gridWidth, player);
     }
     
     public BufferedImage getSprite()
