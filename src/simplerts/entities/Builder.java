@@ -19,7 +19,7 @@ public class Builder extends Unit{
     public Builder()
     {
         super();
-        color = new Color(255, 50, 50);
+        color = new Color(100, 100, 255);
         ac.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/walk.png"),
                                                      Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
         ac.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/stand.png"),

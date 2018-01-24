@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
 import simplerts.entities.Builder;
 import simplerts.entities.Tower;
+import simplerts.entities.TownHall;
 import simplerts.ui.GUI;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
@@ -87,6 +88,7 @@ public class Game implements Runnable {
         
         map.addEntity(new Tower(6, 2, 2));
         map.addEntity(new Tower(8, 4, 2));
+        map.addEntity(new TownHall(0, 6, 4));
 
 
         int TICKS_PER_SECOND = 50 * (int)GAMESPEED;

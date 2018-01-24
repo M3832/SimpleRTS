@@ -12,15 +12,13 @@ import simplerts.display.Assets;
  *
  * @author Markus
  */
-public class Tower extends Building{
+public class TownHall extends Building {
     
-    public Tower(int x, int y, int gridSize)
-    {
+    public TownHall(int x, int y, int gridSize) {
         super(x, y, gridSize);
         color = new Color(100, 100, 255);
-        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/tower.png"),
-                                                     Assets.loadToCompatibleImage("/towerteamcolor.png"), color);
+        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/townhall.png"),
+                                                     Assets.loadToCompatibleImage("/townhalltc.png"), color);
     }
-    
     
 }
