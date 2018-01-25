@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import simplerts.actions.Build;
 import simplerts.actions.Destination;
+import simplerts.actions.Follow;
 import simplerts.actions.MoveTo;
 import simplerts.entities.Builder;
 import simplerts.entities.Building;
@@ -147,7 +148,7 @@ public class Controller {
         
         if(ml.isMouseClicked())
         {
-            if(entityplacer.entity != null)
+            if(entityplacer.entity != null && entityplacer.isPlaceable())
             {
                 if(selected.get(0) instanceof Builder)
                 {
@@ -201,15 +202,23 @@ public class Controller {
                 {
                     Unit u = (Unit) e;
                     u.clearActions();
-                    if(selected.size() > 1)
+                    int gridX = (int)(ml.posX + handler.camera.getOffsetX()) / Game.CELLSIZE;
+                    int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
+                    if(handler.map.getCells()[gridX][gridY].getEntity() != null)
                     {
-                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
-                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                        int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
-                        int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
-                        u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY), false))));
+                        System.out.println("Adding a follow action");
+                        u.addAction(new Follow(u, handler.map.getCells()[gridX][gridY].getEntity()));
                     } else {
-                        u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE), ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE)), true))));                       
+                        if(selected.size() > 1)
+                        {
+                            int offsetX = (int)(index%(Math.sqrt(selected.size())));
+                            int offsetY = (int)(index/(Math.sqrt(selected.size())));
+                            int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
+                            int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
+                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY), false))));
+                        } else {
+                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE), ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE)), true))));                       
+                        }                        
                     }
                     index++;
                 }

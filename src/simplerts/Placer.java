@@ -64,7 +64,7 @@ public class Placer {
             {
                 if(i >= 0 && j >= 0 && i < handler.map.getCells().length && j < handler.map.getCells()[0].length)
                 {
-                    g.setColor(handler.map.checkCollision(i, j) ? color : errorColor);
+                    g.setColor(!handler.map.checkCollision(i, j) ? color : errorColor);
                     g.fillRect(((i - offsetCellX) * Game.CELLSIZE) - (int)handler.getCamera().getOffsetX() % Game.CELLSIZE, (j - offsetCellY) * Game.CELLSIZE - (int)handler.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE);
                 }
             }
@@ -91,26 +91,20 @@ public class Placer {
         this.cellY = y/Game.CELLSIZE;
     }
     
-    public Entity place()
+    public boolean isPlaceable()
     {
         boolean placeable = true;
         for(int i = cellX; i < cellWidth + cellX; i++)
         {
             for(int j = cellY; j < cellHeight + cellY; j++)
             {
-                if(!handler.map.checkCollision(i, j))
+                if(handler.map.checkCollision(i, j))
                 {
                     placeable = false;
                 }
             }
         }
-        if(placeable)
-        {            
-            Entity e = entity.duplicate();
-            e.setPosition(cellX * Game.CELLSIZE, cellY * Game.CELLSIZE);
-            return e;
-        }
-        return null;
+        return placeable;
     }
     
     public Destination getDestination()

@@ -9,6 +9,7 @@ import simplerts.display.Assets;
 import java.awt.Image;
 import java.util.Arrays;
 import simplerts.editor.TerrainPlacement;
+import simplerts.entities.Entity;
 
 /**
  *
@@ -20,6 +21,7 @@ public class Cell {
     public boolean available;
     private int tileId;
     private TerrainPlacement terrain;
+    private Entity entity;
     
     public Cell()
     {
@@ -87,5 +89,15 @@ public class Cell {
         this.tileId = terrain.getBaseTileId();
         this.available = terrain.isWalkable();
         backgroundimage = terrain.tiles[terrain.getBaseTileId()];
+    }
+    
+    public void setEntity(Entity e)
+    {
+        entity = e;
+    }
+    
+    public Entity getEntity()
+    {
+        return entity;
     }
 }

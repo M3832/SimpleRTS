@@ -126,7 +126,7 @@ public class PathFinder {
                 {
                     if(x > 0 && x < nodeMap.length && y > 0 && y < nodeMap[0].length)
                     {
-                        if(!nodeMap[x][y].occupiedByUnit && map.getCells()[x][y].available)
+                        if(map.getCells()[x][y].getEntity() == null && map.getCells()[x][y].available)
                             return nodeMap[x][y];
                     }
                 }
@@ -136,7 +136,7 @@ public class PathFinder {
     
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
     {
-        if(closed.stream().anyMatch(node -> node == neighbor) || !map.getCells()[neighbor.gridX][neighbor.gridY].available || neighbor.occupiedByUnit)
+        if(closed.stream().anyMatch(node -> node == neighbor) || map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null || !map.getCells()[neighbor.gridX][neighbor.gridY].available)
             return;
         
         int calcCost = neighbor.heuristic + current.totalCost + moveCost;

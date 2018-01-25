@@ -16,15 +16,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import simplerts.actions.Destination;
@@ -46,9 +39,9 @@ public class Map {
         entities = new CopyOnWriteArrayList();
         cells = new Cell[colSize][rowSize];
 
-        for (Cell[] cell : cells) {
+        for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                cell[j] = new Cell(Assets.grass);
+                cells[i][j] = new Cell(Assets.grass);
             }
         }
         pathFinder = new PathFinder(this);
@@ -61,21 +54,15 @@ public class Map {
     
     public void addEntity(Entity e)
     {
-        while(entities.stream().anyMatch(entity -> entity.getGridX() == e.getGridX() && entity.getGridY() == e.getGridY()) || !cells[e.getGridX()][e.getGridY()].available)
+        for(int x = e.getGridX(); x < e.getGridX()+e.getGridWidth(); x++)
         {
-            e.setGridPosition(e.getGridX(), e.getGridY() + 1);
+            for(int y = e.getGridY(); y < e.getGridY()+e.getGridHeight(); y++)
+            {
+                cells[x][y].setEntity(e);
+            }
         }
         entities.add(e);
-        if(e instanceof Building)
-        {
-            for(int i = e.getGridX(); i < e.getGridX() + e.getGridWidth(); i++)
-            {
-                for(int j = e.getGridY(); j < e.getGridY() + e.getGridHeight(); j++)
-                {
-                    cells[i][j].available = false;
-                }
-            }
-        } else if (e instanceof Unit)
+        if (e instanceof Unit)
         {
             ((Unit)e).setMap(this);
         }
@@ -179,7 +166,10 @@ public class Map {
     public boolean checkCollision(int cellX, int cellY)
     {
         if(cellX >= 0 && cellX < cells.length && cellY >= 0 && cellY < cells[0].length)
-            return cells[cellX][cellY].available;
+        {
+//            System.out.println(cellX + " " + cellY);
+            return isCellBlocked(cellX, cellY);
+        }
         return false;
     }
     
@@ -257,37 +247,63 @@ public class Map {
     public Destination getAvailableNeighborCell(Entity e)
     {
         Destination d = new Destination(0, 0);
-        for(int ex = e.getGridX(); ex < e.getGridX() + e.getGridWidth(); ex++)
+        for(int x = e.getGridX() - 1; x <= e.getGridX() + e.getGridWidth(); x++)
         {
-            for(int ey = e.getGridY(); ey < e.getGridY() + e.getGridHeight(); ey++)
+            if(x > 0 && x < cells.length && e.getGridY()-1 > 0 && e.getGridY()-1 < cells[0].length)
             {
-                for(int x = ex - 1; x <= ex + 1; x++)
+                if(!isCellBlocked(x, e.getGridY()-1))
                 {
-                    for(int y = ey - 1; y <= ey + 1; y++)
-                    {
-                        if(x > 0 && x < cells.length && y > 0 && y < cells[0].length)
-                        {
-                            if(cells[x][y].available && !checkCell(x, y))
-                            {
-                                return new Destination(x, y);
-                            }
-                        }
-                    }
+                    return new Destination(x, e.getGridY()-1);
                 }
-            }        
+            }
+            if(x > 0 && x < cells.length && e.getGridY()+1 > 0 && e.getGridY()+1 < cells[0].length)
+            {
+                if(!isCellBlocked(x, e.getGridY()+e.getGridHeight()))
+                {
+                    return new Destination(x, e.getGridY()+e.getGridHeight());
+                }
+            }
+        }
+
+        for(int y = e.getGridY(); y <= e.getGridY() + e.getGridHeight(); y++)
+        {
+            if(e.getGridX()-1 > 0 && e.getGridX()-1 < cells.length && y > 0 && y < cells[0].length)
+            {
+                if(!isCellBlocked(e.getGridX()-1, y))
+                {
+                    return new Destination(e.getGridX()-1, y);
+                }
+            }
+            if(e.getGridX()+1 > 0 && e.getGridX()+1 < cells.length && y > 0 && y < cells[0].length)
+            {
+                if(!isCellBlocked(e.getGridX()+e.getGridWidth(), y))
+                {
+                    return new Destination(e.getGridX()+e.getGridWidth(), y);
+                }
+            }
         }
         
         return d;
     }
     
-    private boolean checkCell(int x, int y)
+    private boolean isCellBlocked(int x, int y)
     {
-        return entities.stream().anyMatch(e -> e.getGridX() == x && e.getGridY() == y);
+        return cells[x][y].getEntity() != null || !cells[x][y].available;
+    }
+    
+    public void updateEntityCell(int x, int y, Entity e)
+    {
+        cells[x][y].setEntity(e);
     }
     
     public PathFinder getPathFinder()
     {
         return pathFinder;
+    }
+    
+    public Handler getHandler()
+    {
+        return handler;
     }
 
     void setSelectBox(Rectangle selectBox) {
