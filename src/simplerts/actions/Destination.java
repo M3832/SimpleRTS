@@ -18,6 +18,12 @@ public class Destination {
         this.x = x;
         this.y = y;
     }
+    
+    public Destination(Destination d)
+    {
+        this.x = d.getX();
+        this.y = d.getY();
+    }
 
     /**
      * @return the x
@@ -45,6 +51,12 @@ public class Destination {
      */
     public void setY(int y) {
         this.y = y;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Destination: " + x + ", " + y;
     }
     
     

@@ -42,6 +42,8 @@ public abstract class Unit extends Entity {
     protected String name;
     protected int attackDamage;
     
+    protected int trainTime;
+    
     private boolean collided = false;
     
     protected AnimationController ac;
@@ -53,6 +55,7 @@ public abstract class Unit extends Entity {
         actions = new CopyOnWriteArrayList<>();
         x = 300;
         y = 500;
+        trainTime = 100;
         width = Game.CELLSIZE;
         height = Game.CELLSIZE;
         name = "Peasant";
@@ -87,6 +90,9 @@ public abstract class Unit extends Entity {
         tempX = x;
         tempY = y;
 
+        int tempGridX = gridX;
+        int tempGridY = gridY;
+        
         if(getDeltaX() > 0 + POSITION_BOUNDS/2)
         {
             moveX = x + moveSpeed;
@@ -139,6 +145,14 @@ public abstract class Unit extends Entity {
             if(getDeltaX() > 0 + POSITION_BOUNDS/2 && getDeltaY() < 0 - POSITION_BOUNDS/2)
                 ac.setDirection(Animation.NORTHEAST);
         }
+        
+        gridX = x/Game.CELLSIZE;
+        gridY = y/Game.CELLSIZE;
+        if(tempGridX != gridX || tempGridY != gridY)
+        {
+            map.updateEntityCell(tempGridX, tempGridY, null);
+            map.updateEntityCell(gridX, gridY, this);
+        }
     }
     
     public void setMap(Map map)
@@ -155,11 +169,10 @@ public abstract class Unit extends Entity {
     public void render(Graphics g, float offsetX, float offsetY)
     {
         g.drawImage(ac.getCurrentFrame(), (int)(x - offsetX), (int)(y - offsetY), null);
-        
-//        destinations.forEach((d) -> {
-//            g.setColor(new Color(255, 255, 255, 50));
-//            g.fillRect((int)(d.getX() * Game.CELLSIZE - offsetX), (int)(d.getY() * Game.CELLSIZE - offsetY), Game.CELLSIZE, Game.CELLSIZE);
-//        });
+        if(!actions.isEmpty() && actions.get(0) instanceof MoveTo)
+        {
+//            ((MoveTo)actions.get(0)).render(g);
+        }
     }
     
     @Override
@@ -172,13 +185,11 @@ public abstract class Unit extends Entity {
             actions.get(0).performAction();
         }
         
-        if(actions.size() > 0)
+        if(deltaX > 0 || deltaY > 0)
         {
-            if(actions.get(0) instanceof MoveTo)
-            {
-                ac.playAnimation("walk");
-            }
-        } else 
+            ac.playAnimation("walk");
+        }
+        else 
         {
             ac.playAnimation("stand");
         }
@@ -247,6 +258,11 @@ public abstract class Unit extends Entity {
         this.collided = collided;
     }
     
+    public int getTrainTime()
+    {
+        return trainTime;
+    }
+    
     public int getTempX()
     {
         return tempX;
@@ -264,6 +280,10 @@ public abstract class Unit extends Entity {
 
     public void addAction(Action action) {
         actions.add(action);
+    }
+    
+    public void addAction(int index, Action action) {
+        actions.add(index, action);
     }
 
     public void removeAction(Action action) {

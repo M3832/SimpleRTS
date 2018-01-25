@@ -19,8 +19,8 @@ public class Tower extends Building{
     {
         super(x, y, gridSize, player, false);
         color = player.getColor();
-        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/tower.png"),
-                                                     Assets.loadToCompatibleImage("/towerteamcolor.png"), color);
+        sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/tower.png", width, height),
+                                                     Assets.loadAndResizeImage("/towerteamcolor.png", width, height), color);
         this.player = player;
         setupActions();
     }

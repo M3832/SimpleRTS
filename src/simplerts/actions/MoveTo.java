@@ -5,7 +5,10 @@
  */
 package simplerts.actions;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
+import simplerts.Game;
 import simplerts.entities.Unit;
 
 /**
@@ -22,11 +25,14 @@ public class MoveTo extends Action {
         super(owner);
         this.destinations = destinations;
         nextRePathing = System.currentTimeMillis() + 1000;
-
     }
 
     @Override
     public void performAction() {
+        if(destinations.isEmpty())
+        {
+            return;
+        }
         if(destinations.size() > 0)
         {
             owner.move(destinations.get(0));
@@ -37,16 +43,10 @@ public class MoveTo extends Action {
             owner.setCollided(false);
         }
         
-        if(owner.getTempX() == owner.getX() && owner.getTempY() == owner.getY())
-            findNewPath();
-        
-
+//        if(owner.getTempX() == owner.getX() && owner.getTempY() == owner.getY())
+//            findNewPath();
         }
         
-        if(destinations.isEmpty())
-        {
-            owner.removeAction(this);
-        }
     }
     
     private void findNewPath()
@@ -73,6 +73,14 @@ public class MoveTo extends Action {
             nextRePathing = System.currentTimeMillis() + 1000;
             repaths++;
         }
+    }
+    
+    public void render(Graphics g)
+    {
+        destinations.forEach((d) -> {
+            g.setColor(new Color(255, 255, 255, 50));
+            g.fillRect((int)(d.getX() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetX()), (int)(d.getY() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
+        });
     }
     
 }

@@ -25,7 +25,8 @@ public abstract class Entity {
     protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
     protected int health, maxHealth;
     protected BufferedImage sprite, icon;
-    protected ArrayList<UIObject> uiActions, uiObjects;
+    protected ArrayList<UIObject> uiObjects;
+    protected ArrayList<UIAction> uiActions;
     protected Player player;
     protected boolean isVisible, isDead;
     public Color color;
@@ -157,7 +158,7 @@ public abstract class Entity {
         return uiObjects;
     }
     
-    public ArrayList<UIObject> getUIActions()
+    public ArrayList<UIAction> getUIActions()
     {
         return uiActions;
     }

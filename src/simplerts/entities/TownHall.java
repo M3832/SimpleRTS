@@ -22,7 +22,7 @@ public class TownHall extends Building {
         super(x, y, gridSize, player, false);
         sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/Buildings/TownHall/sprite.png"),
                                                      Assets.loadToCompatibleImage("/Buildings/TownHall/teamcolor.png"), color);
-        icon = Assets.makeIcon(color, Assets.resizeImage(sprite, 100, 100));
+        icon = Assets.makeIcon(color, Assets.resizeImage(sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height), 100, 100));
         uiObjects = new ArrayList<>();
         uiActions = new ArrayList<>();
     }
@@ -38,7 +38,7 @@ public class TownHall extends Building {
     public void setupActions()
     {
         super.setupActions();
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.map.addEntity(new Builder(player.handler.map.getAvailableNeighborCell(this), player));}));
+        uiActions.add(new UIAction(Assets.resizeImage(Builder.getUIIcon(color), 55, 55), () -> {train((new Builder(player.handler.map.getAvailableNeighborCell(this), player)));}));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.handler.camera.centerOnEntity(this);}));
     }
 

@@ -55,16 +55,12 @@ public class GUI {
     public void setSelectedEntities(ArrayList<Entity> elist)
     {
         entities = elist;
-    }
-    
-    public void update()
-    {
-        if(entities != null && entities.size() == 1)
+        objects.clear();
+        if(entities.size() == 1)
         {
-            objects.clear();
             if(!entities.get(0).getUIActions().isEmpty())
             {
-                for(UIObject a : entities.get(0).getUIActions())
+                for(UIAction a : entities.get(0).getUIActions())
                 {
                     addUIAction(a);
                 }
@@ -75,8 +71,12 @@ public class GUI {
                 {
                     addUIObject(a);
                 }
-            }
+            }            
         }
+    }
+    
+    public void update()
+    {
         objects.stream().forEach((UIObject o) -> o.tick());
     }
     
@@ -106,7 +106,7 @@ public class GUI {
             }
         }
         
-        objects.stream().forEach((UIObject o) -> o.render(g));
+        objects.stream().forEach((UIObject o) -> {o.render(g);});
     }
     
     public void onMouseMove(MouseEvent e)
@@ -119,10 +119,11 @@ public class GUI {
         objects.stream().forEach((UIObject o) -> o.onMouseRelease(e));
     }
     
-    public void addUIAction(UIObject o)
+    public void addUIAction(UIAction o)
     {
         o.setY(24 + (o.getHeight() + 7) * (objects.size()/3));
         o.setX(777 + (o.getWidth() + 8) * (objects.size()%3));
+        o.updateBounds();
         objects.add(o);
     }
     

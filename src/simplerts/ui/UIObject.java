@@ -106,6 +106,18 @@ public abstract class UIObject {
     public void setHeight(int height) {
         this.height = height;
     }
+    
+    public void setPosition(float x, float y)
+    {
+        this.x = x;
+        this.y = y;
+        bounds = new Rectangle((int)x, (int)y, width, height);
+    }
+    
+    public void updateBounds()
+    {
+        bounds = new Rectangle((int)x, (int)y, width, height);
+    }
 
     /**
      * @return the hovering

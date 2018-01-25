@@ -7,12 +7,14 @@ package simplerts.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.Utils;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
+import simplerts.ui.UIAction;
 import simplerts.ui.UIObject;
 
 /**
@@ -23,10 +25,12 @@ public abstract class Building extends Entity {
     
     protected int buildTime;
     protected int currentTime;
+    protected int trainTime, currentTrainTime;
     protected int armor;
     protected long lastUpdate;
     protected String name;
     protected Builder builder;
+    protected Unit unitTraining;
     
     public Building(int x, int y, int cellSize, Player player, boolean built)
     {
@@ -36,6 +40,8 @@ public abstract class Building extends Entity {
         armor = 2;
         name = getClass().getSimpleName();
         if(built) setBuilt();
+        trainTime = 0;
+        currentTrainTime = 0;
     }
     
     public Building(int x, int y, int gridWidth, int gridHeight){
@@ -79,6 +85,18 @@ public abstract class Building extends Entity {
             builder = null;
             setupActions();
         }
+        
+        if(unitTraining != null && currentTrainTime < trainTime)
+        {
+            currentTrainTime += 1 * Game.GAMESPEED;
+        } else if (unitTraining != null && currentTrainTime == trainTime)
+        {
+            unitTraining.setPosition(player.handler.map.getAvailableNeighborCell(this));
+            player.handler.map.addEntity(unitTraining);
+            unitTraining = null;
+            uiObjects.stream().forEach((object) -> {if(!((UIAction)object).isVisible()){((UIAction)object).setVisible(true);}});
+
+        }
     }
     
     @Override
@@ -87,14 +105,6 @@ public abstract class Building extends Entity {
 //        super.render(g, offsetX, offsetY);
         
         g.drawImage(sprite.getSubimage(width * (int)((1f * currentTime/buildTime) * (sprite.getWidth()/width - 1)), 0, width, height), (int)(x - offsetX), (int)(y - offsetY), width, height, null);
-//        if(currentTime < buildTime)
-//        {
-//            g.setColor(Color.gray);
-//            g.fillRect((int)(x - offsetX), (int)((y + gridHeight * Game.CELLSIZE) - offsetY) + 5, gridWidth * Game.CELLSIZE, (int)(0.25f * Game.CELLSIZE));
-//            g.setColor(Color.orange);
-//            g.fillRect((int)(x - offsetX), (int)((y + gridHeight * Game.CELLSIZE) - offsetY) + 5, (int)((gridWidth * Game.CELLSIZE) * ((float)currentTime/(float)buildTime)), (int)(0.25f * Game.CELLSIZE));
-//
-//        }
     }
     
     public Building build(Builder b)
@@ -102,6 +112,14 @@ public abstract class Building extends Entity {
         b.isVisible = false;
         builder = b;
         return this;
+    }
+    
+    public void train(Unit u)
+    {
+        currentTrainTime = 0;
+        trainTime = u.getTrainTime();
+        unitTraining = u;
+        uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
     }
     
     public BufferedImage getSprite()
@@ -116,23 +134,40 @@ public abstract class Building extends Entity {
         //Render name
         Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, 75);
         
-        for(UIObject o : uiObjects)
-        {
-            o.render(g);
-        }
-        
         if(currentTime < buildTime)
         {
-            g.setColor(Color.green);
-            g.fillRect(Game.WIDTH/2 - 100, 125, (int)(200 * (1f * currentTime/buildTime)), 25);
-            g.setColor(Color.black);
-            g.drawRect(Game.WIDTH/2 - 100, 125, (int)(200), 25);
+            renderBuilding(g);
+        } else if (currentTrainTime < trainTime) 
+        {
+            renderTraining(g);
         } else {
+            
+            for(UIObject o : uiObjects)
+            {
+                o.render(g);
+            }
+                    
             //Render stats
             g.setFont(GUI.BREAD);
             Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, 125);
             Utils.drawWithShadow(g, "Armor: " + armor, 300, 150);
         }
         
+    }
+    
+    public void renderBuilding(Graphics g)
+    {
+        g.setColor(Color.green);
+        g.fillRect(Game.WIDTH/2 - 100, 125, (int)(200 * (1f * currentTime/buildTime)), 25);
+        g.setColor(Color.black);
+        g.drawRect(Game.WIDTH/2 - 100, 125, (int)(200), 25);        
+    }
+    
+    public void renderTraining(Graphics g)
+    {
+        g.setColor(Color.green);
+        g.fillRect(Game.WIDTH/2 - 100, 125, (int)(200 * (1f * currentTrainTime/trainTime)), 25);
+        g.setColor(Color.black);
+        g.drawRect(Game.WIDTH/2 - 100, 125, (int)(200), 25);        
     }
 }

@@ -16,13 +16,24 @@ public class UIAction extends UIObject {
 
     private ClickListener clicker;
     private BufferedImage icon;
+    private boolean visible;
+    
+    public UIAction(BufferedImage icon, ClickListener clicker)
+    {
+        super(0, 0, icon.getWidth(), icon.getHeight());
+        this.icon = icon;
+        this.clicker = clicker;
+        visible = true;
+    }
     
     public UIAction(float x, float y, BufferedImage icon, ClickListener clicker)
     {
         super(x, y, icon.getWidth(), icon.getHeight());
         this.icon = icon;
         this.clicker = clicker;
+        visible = true;
     }
+    
     @Override
     public void tick() {
         
@@ -30,12 +41,27 @@ public class UIAction extends UIObject {
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(icon, (int)x, (int)y, null);
+        if(visible)
+            g.drawImage(icon, (int)x, (int)y, null);
     }
 
     @Override
     public void onClick() {
         clicker.onClick();
+    }
+
+    /**
+     * @return the visible
+     */
+    public boolean isVisible() {
+        return visible;
+    }
+
+    /**
+     * @param visible the visible to set
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
     
 }

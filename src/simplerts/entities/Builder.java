@@ -6,6 +6,7 @@
 package simplerts.entities;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Placer;
 import simplerts.Player;
@@ -50,18 +51,18 @@ public class Builder extends Unit{
     public void setupActions()
     {
         super.setupActions();
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
-        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.handler.camera.centerOnEntity(this);}));
     }
 
     @Override
     public Entity duplicate() {
         return new Builder(gridX, gridY, player);
+    }
+    
+    public static BufferedImage getUIIcon(Color color)
+    {
+        return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));
     }
     
 }
