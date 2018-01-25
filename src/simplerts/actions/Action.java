@@ -5,12 +5,21 @@
  */
 package simplerts.actions;
 
+import simplerts.entities.Unit;
+
 /**
  *
  * @author Markus
  */
-public interface Action {
+public abstract class Action {
     
-    public void performAction();
+    protected Unit owner;
+    
+    public Action(Unit owner)
+    {
+        this.owner = owner;
+    }
+    
+    public abstract void performAction();
     
 }

@@ -59,6 +59,24 @@ public class GUI {
     
     public void update()
     {
+        if(entities != null && entities.size() == 1)
+        {
+            objects.clear();
+            if(!entities.get(0).getUIActions().isEmpty())
+            {
+                for(UIObject a : entities.get(0).getUIActions())
+                {
+                    addUIAction(a);
+                }
+            }
+            if(!entities.get(0).getUIObjects().isEmpty())
+            {
+                for(UIObject a : entities.get(0).getUIObjects())
+                {
+                    addUIObject(a);
+                }
+            }
+        }
         objects.stream().forEach((UIObject o) -> o.tick());
     }
     
@@ -74,11 +92,6 @@ public class GUI {
             g.setColor(Color.WHITE);
             g.setFont(HEADER);
             entities.get(0).renderGUI(g);
-            objects.clear();
-            for(UIAction a : entities.get(0).getUIActions())
-            {
-                objects.add(a);
-            }
         } else if (entities != null && entities.size() > 1 && entities.size() < 6)
         {
             for(int i = 0; i < entities.size(); i++)
@@ -106,7 +119,14 @@ public class GUI {
         objects.stream().forEach((UIObject o) -> o.onMouseRelease(e));
     }
     
-    public void addObject(UIObject o)
+    public void addUIAction(UIObject o)
+    {
+        o.setY(24 + (o.getHeight() + 7) * (objects.size()/3));
+        o.setX(777 + (o.getWidth() + 8) * (objects.size()%3));
+        objects.add(o);
+    }
+    
+    public void addUIObject(UIObject o)
     {
         objects.add(o);
     }

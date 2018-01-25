@@ -56,9 +56,9 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
     
     public boolean isMouseClicked()
     {
-        if(isMouseDown)
+        if(isMouseClicked)
         {
-            isMouseDown = false;
+            isMouseClicked = false;
             return true;
         }
         
@@ -89,17 +89,17 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON1){
-            isRightMouseClicked = true;
-        }
-        if(isRightMouseDown && e.getButton() == MouseEvent.BUTTON1){
+        if(isRightMouseDown && e.getButton() == MouseEvent.BUTTON2){
             isRightMouseDown = false;
         }
-        if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1){
-            isMouseClicked = true;
+        if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON2){
+            isRightMouseClicked = true;
         }
         if(isMouseDown && e.getButton() == MouseEvent.BUTTON1){
             isMouseDown = false;
+        }
+        if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1){
+            isMouseClicked = true;
         }
         if(isScrollDown && e.getButton() == MouseEvent.BUTTON2)
             isScrollDown = false;

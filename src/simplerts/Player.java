@@ -28,7 +28,7 @@ public class Player {
         selectedEntities = new CopyOnWriteArrayList<>();
         this.handler = handler;
         gold = 300;
-        teamColor = new Color(0, 100, 0);
+        teamColor = new Color(255, 150, 200);
     }
     
     public void input()

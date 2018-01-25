@@ -8,6 +8,7 @@ package simplerts.display;
 import java.awt.Graphics;
 import simplerts.Game;
 import simplerts.Handler;
+import simplerts.entities.Entity;
 
 /**
  *
@@ -75,6 +76,11 @@ public class Camera {
     public void setHandler(Handler handler)
     {
         this.handler = handler;
+    }
+    
+    public void centerOnEntity(Entity e)
+    {
+        setOffset(e.getX() - Game.WIDTH/2 + e.getWidth()/2, e.getY() - Game.HEIGHT/2 + e.getHeight()/2);
     }
     
     public float getOffsetX()

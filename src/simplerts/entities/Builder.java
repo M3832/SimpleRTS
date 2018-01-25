@@ -9,6 +9,7 @@ import java.awt.Color;
 import simplerts.Game;
 import simplerts.Placer;
 import simplerts.Player;
+import simplerts.actions.Destination;
 import simplerts.display.Assets;
 import simplerts.gfx.Animation;
 import simplerts.ui.UIAction;
@@ -36,14 +37,31 @@ public class Builder extends Unit{
         ac.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/stand.png"),
                                                      Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
         initGraphics();
+        setupActions();
         setPosition(x * Game.CELLSIZE, y * Game.CELLSIZE);
+    }
+    
+    public Builder(Destination d, Player player)
+    {
+        this(d.getX(), d.getY(), player);
     }
     
     @Override
     public void setupActions()
     {
         super.setupActions();
-        actions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.handler.camera.centerOnEntity(this);}));
+    }
+
+    @Override
+    public Entity duplicate() {
+        return new Builder(gridX, gridY, player);
     }
     
 }

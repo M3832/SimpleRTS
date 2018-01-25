@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import simplerts.actions.Destination;
 
 /**
  *
@@ -110,5 +111,10 @@ public class Placer {
             return e;
         }
         return null;
+    }
+    
+    public Destination getDestination()
+    {
+        return new Destination(cellX, cellY);
     }
 }

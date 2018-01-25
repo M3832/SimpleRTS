@@ -12,19 +12,22 @@ import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Map;
 import simplerts.Player;
+import simplerts.actions.Destination;
 import simplerts.ui.UIAction;
+import simplerts.ui.UIObject;
 
 /**
  *
  * @author Markus
  */
-public class Entity {
+public abstract class Entity {
     
     protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
     protected int health, maxHealth;
     protected BufferedImage sprite, icon;
-    protected ArrayList<UIAction> actions;
+    protected ArrayList<UIObject> uiActions, uiObjects;
     protected Player player;
+    protected boolean isVisible, isDead;
     public Color color;
     public Map grid;
     
@@ -40,8 +43,9 @@ public class Entity {
         gridWidth = 1;
         gridHeight = 1;
         maxHealth = 50;
+        isVisible = true;
+        isDead = false;
         health = maxHealth;
-        setupActions();
     }
     
     public Entity(int x, int y, int size, Player player)
@@ -61,7 +65,8 @@ public class Entity {
     
     public void setupActions()
     {
-        actions = new ArrayList<>();
+        uiObjects = new ArrayList<>();
+        uiActions = new ArrayList<>();
     }
     
     public void render(Graphics g, float offsetX, float offsetY)
@@ -78,7 +83,10 @@ public class Entity {
         this.gridY = y/Game.CELLSIZE;
     }
     
-        
+     public void setPosition(Destination d)
+     {
+         setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE);
+     }
     
     public void update()
     {
@@ -132,10 +140,7 @@ public class Entity {
         return gridHeight;
     }
     
-    public Entity duplicate()
-    {
-        return new Entity(x, y, gridWidth, player);
-    }
+    public abstract Entity duplicate();
     
     public int getHealth()
     {
@@ -147,9 +152,14 @@ public class Entity {
         return maxHealth;
     }
     
-    public ArrayList<UIAction> getUIActions()
+    public ArrayList<UIObject> getUIObjects()
     {
-        return actions;
+        return uiObjects;
+    }
+    
+    public ArrayList<UIObject> getUIActions()
+    {
+        return uiActions;
     }
     
     public BufferedImage getIcon()
@@ -160,6 +170,21 @@ public class Entity {
     public void renderGUI(Graphics g)
     {
         
+    }
+    
+    public Destination getDestination()
+    {
+        return new Destination(gridX, gridY);
+    }
+    
+    public Player getPlayer()
+    {
+        return player;
+    }
+    
+    public boolean isVisible()
+    {
+        return isVisible;
     }
 
     public void setGridPosition(int gridX, int gridY) {

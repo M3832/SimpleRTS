@@ -6,6 +6,8 @@
 package simplerts.entities;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import simplerts.Game;
 import simplerts.Player;
 import simplerts.display.Assets;
 import simplerts.ui.UIAction;
@@ -17,16 +19,32 @@ import simplerts.ui.UIAction;
 public class TownHall extends Building {
     
     public TownHall(int x, int y, int gridSize, Player player) {
-        super(x, y, gridSize, player);
-        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/townhall.png"),
-                                                     Assets.loadToCompatibleImage("/townhalltc.png"), color);
+        super(x, y, gridSize, player, false);
+        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/Buildings/TownHall/sprite.png"),
+                                                     Assets.loadToCompatibleImage("/Buildings/TownHall/teamcolor.png"), color);
+        icon = Assets.makeIcon(color, Assets.resizeImage(sprite, 100, 100));
+        uiObjects = new ArrayList<>();
+        uiActions = new ArrayList<>();
+    }
+    
+    public TownHall(int x, int y, int gridSize, Player player, boolean built)
+    {
+        this(x, y, gridSize, player);
+        if(built) setBuilt();
+        setupActions();
     }
     
     @Override
     public void setupActions()
     {
         super.setupActions();
-        actions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.map.addEntity(new Builder(gridX, gridY, player));}));
+        uiActions.add(new UIAction(777, 24, Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.map.addEntity(new Builder(player.handler.map.getAvailableNeighborCell(this), player));}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.handler.camera.centerOnEntity(this);}));
+    }
+
+    @Override
+    public TownHall duplicate() {
+        return new TownHall(gridX, gridY, gridWidth, player);
     }
     
 }

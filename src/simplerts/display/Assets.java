@@ -79,7 +79,7 @@ public class Assets {
     {
         BufferedImage newIcon = new BufferedImage(icon.getWidth() + 2, icon.getHeight() + 2, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = (Graphics2D) newIcon.getGraphics();
-        g.drawImage(coverImageWithColor(color, iconBG), 1, 1, null);
+        g.drawImage(coverImageWithColor(color, resizeImage(iconBG, icon.getWidth(), icon.getHeight())), 1, 1, null);
         g.drawImage(icon, 1, 1, null);
         return newIcon;
     }
@@ -137,6 +137,17 @@ public class Assets {
         g.drawImage(img, 0, 0, width, height, 0, 0, w, h, null);  
         g.dispose();  
         return dimg; 
+    }
+    
+    public static BufferedImage resizeImage(BufferedImage img, int width, int height)
+    {
+        BufferedImage dimg = new BufferedImage(width, height, img.getType());  
+        Graphics2D g = dimg.createGraphics();  
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BILINEAR);  
+        g.drawImage(img, 0, 0, width, height, 0, 0, img.getWidth(), img.getHeight(), null);  
+        g.dispose();  
+        return dimg;
     }
     
     public static BufferedImage makeTeamColor(BufferedImage baseSprite, BufferedImage tcSprite, Color color)

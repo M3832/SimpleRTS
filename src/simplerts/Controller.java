@@ -12,10 +12,13 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Comparator;
+import simplerts.actions.Build;
 import simplerts.actions.Destination;
+import simplerts.actions.MoveTo;
+import simplerts.entities.Builder;
+import simplerts.entities.Building;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
-import simplerts.ui.GUI;
 
 /**
  *
@@ -129,6 +132,12 @@ public class Controller {
         }
     }
     
+    public void selectEntity(Entity e)
+    {
+        selected.clear();
+        selected.add(e);
+    }
+    
     private void input()
     {       
         if(guiml.isMouseDown)
@@ -136,7 +145,24 @@ public class Controller {
             handler.game.gui.onClick(guiml.posX, guiml.posY);
         }
         
-        if(ml.isMouseDown)
+        if(ml.isMouseClicked())
+        {
+            if(entityplacer.entity != null)
+            {
+                if(selected.get(0) instanceof Builder)
+                {
+                    Builder b = ((Builder)selected.get(0));
+                    Building building = (Building)entityplacer.entity.duplicate();
+                    building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
+                    b.addAction(new MoveTo(b, player.handler.map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2), true)));
+                    b.addAction(new Build(b, building));
+                }
+                entityplacer.entity = null;
+                return;
+            }
+        }
+        
+        if(ml.isMouseDown && entityplacer.entity == null)
         {
             if(selectBox == null)
             {
@@ -150,17 +176,23 @@ public class Controller {
                 handler.map.setSelectBox(selectBox);
             }
         } else {
-            if(selectBox != null)
+            if(selectBox != null && selectBox.getSize().getHeight() > 5 && selectBox.getSize().getWidth() > 5)
             {
                 selected = (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox);
                 selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
                 handler.game.gui.setSelectedEntities(selected);
-                selectBox = null;
             }
+            
+            selectBox = null;
         }
         
         if(ml.isRightMouseClicked())
         {
+            if(entityplacer.entity != null)
+            {
+                entityplacer.entity = null;
+                return;
+            }
             int index = 0;
             selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
             for(Entity e : selected)
@@ -168,17 +200,16 @@ public class Controller {
                 if(e instanceof Unit)
                 {
                     Unit u = (Unit) e;
-                    u.clearDestinations();
+                    u.clearActions();
                     if(selected.size() > 1)
                     {
                         int offsetX = (int)(index%(Math.sqrt(selected.size())));
                         int offsetY = (int)(index/(Math.sqrt(selected.size())));
                         int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
                         int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
-                        u.setDestinations(new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(targetX, targetY), false));
+                        u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY), false))));
                     } else {
-                        u.setDestinations(new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE), ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE)), true));
-                        
+                        u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE), ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE)), true))));                       
                     }
                     index++;
                 }

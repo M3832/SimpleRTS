@@ -13,32 +13,36 @@ import simplerts.Game;
 import simplerts.Map;
 import simplerts.Player;
 import simplerts.Utils;
+import simplerts.actions.Action;
 import simplerts.actions.Destination;
+import simplerts.actions.MoveTo;
 import simplerts.display.Assets;
 import simplerts.gfx.Animation;
 import simplerts.gfx.AnimationController;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
+import simplerts.ui.UIObject;
 
 /**
  *
  * @author Markus
  */
-public class Unit extends Entity {
+public abstract class Unit extends Entity {
     public static int POSITION_BOUNDS = 0;
+    private float deltaX;
+    private float deltaY;
     
-    protected float deltaX, deltaY, moveX, moveY;
+    protected float moveX, moveY;
+    protected int tempX, tempY;
     protected int moveSpeed = 5;
     
-    protected CopyOnWriteArrayList<Destination> destinations;
+    protected CopyOnWriteArrayList<Action> actions;
     protected Map map;
     
     protected String name;
     protected int attackDamage;
     
-    protected long nextRePathing = 0;
-    protected int repaths = 0;
-    protected boolean collided = false;
+    private boolean collided = false;
     
     protected AnimationController ac;
     
@@ -46,14 +50,12 @@ public class Unit extends Entity {
     {
         super();
         ac = new AnimationController();
-        destinations = new CopyOnWriteArrayList<>();
+        actions = new CopyOnWriteArrayList<>();
         x = 300;
         y = 500;
         width = Game.CELLSIZE;
         height = Game.CELLSIZE;
         name = "Peasant";
-        initGraphics();
-        updateCells();
     }
     
     public Unit(int x, int y, Player player)
@@ -64,8 +66,13 @@ public class Unit extends Entity {
         this.player = player;
         moveSpeed = 2;
         color = player.getColor();
-        initGraphics();
-        updateCells();
+        gridX = (x + width/2)/Game.CELLSIZE;
+        gridY = (y + height/2)/Game.CELLSIZE;
+    }
+    
+    public Unit(Destination d, Player player)
+    {
+        this(d.getX(), d.getY(), player);
     }
     
     protected void initGraphics()
@@ -73,103 +80,65 @@ public class Unit extends Entity {
         icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));        
     }
     
-    public void move()
+    public void move(Destination d)
     {
-        if(destinations.size() > 0)
-        {
-            deltaX = destinations.get(0).getX() * Game.CELLSIZE - x;
-            deltaY = destinations.get(0).getY() * Game.CELLSIZE - y;
-            int tempX = x;
-            int tempY = y;
-            
-            if(deltaX > 0 + POSITION_BOUNDS/2)
-            {
-                moveX = x + moveSpeed;
-                ac.setDirection(Animation.EAST);
-            } else if (deltaX < 0 - POSITION_BOUNDS/2)
-            {
-                moveX = x - moveSpeed;
-                ac.setDirection(Animation.WEST);
-            }
+        deltaX = d.getX() * Game.CELLSIZE - x;
+        deltaY = d.getY() * Game.CELLSIZE - y;
+        tempX = x;
+        tempY = y;
 
-            if(deltaY > 0 + POSITION_BOUNDS/2)
-            {
-                moveY = y + moveSpeed;
-                ac.setDirection(Animation.SOUTH);
-            }
-            if(deltaY < 0 - POSITION_BOUNDS/2)
-            {
-                moveY = y - moveSpeed;
-                ac.setDirection(Animation.NORTH);
-            }
-            
-            if(deltaX == 0 && deltaY == 0)
-            {
-                destinations.remove(0);
-                collided = false;
-            }
-            
-            if(Math.abs(deltaX) < moveSpeed)
-            {
-                    moveX = x + deltaX;
-            }
-            if(!map.checkUnitCollision(new Rectangle((int)moveX, y, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)moveX, y, width, height)))
-            {
-                x = (int)moveX;
-            }
-            if(Math.abs(deltaY) < moveSpeed)
-            {
-                moveY = y + deltaY;
-            }
-            
-            if(!map.checkUnitCollision(new Rectangle((int)x, (int)moveY, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)x, (int)moveY, width, height)))
-            {
-                y = (int)moveY;
-            }
-            
-            if(deltaX != 0 || deltaY != 0)
-            {
-                updateCells();
-                
-                if(deltaX > 0 + POSITION_BOUNDS/2 && deltaY > 0 + POSITION_BOUNDS/2)
-                    ac.setDirection(Animation.SOUTHEAST);
-                if(deltaX < 0 - POSITION_BOUNDS/2 && deltaY > 0 + POSITION_BOUNDS/2)
-                    ac.setDirection(Animation.SOUTHWEST);
-                if(deltaX < 0 - POSITION_BOUNDS/2 && deltaY < 0 - POSITION_BOUNDS/2)
-                    ac.setDirection(Animation.NORTHWEST);
-                if(deltaX > 0 + POSITION_BOUNDS/2 && deltaY < 0 - POSITION_BOUNDS/2)
-                    ac.setDirection(Animation.NORTHEAST);
-                
-                if(tempX == x && tempY == y)
-                    findNewPath();
-            }
-        }
-    }
-    
-    private void findNewPath()
-    {
-        if(repaths > 0)
+        if(getDeltaX() > 0 + POSITION_BOUNDS/2)
         {
-            destinations = map.getPathFinder().findPath(new Destination(gridX, gridY), destinations.get(destinations.size() - 1), true);
-            repaths = 0;
-            return;
-        }
-        if(System.currentTimeMillis() > nextRePathing && destinations.size() > 1)
+            moveX = x + moveSpeed;
+            ac.setDirection(Animation.EAST);
+        } else if (getDeltaX() < 0 - POSITION_BOUNDS/2)
         {
-//            destinations = map.getPathFinder().findPath(new Destination(gridX, gridY), destinations.get(destinations.size() - 1), (++repaths > 3));
-            destinations.get(0).setX(destinations.get(0).getX() + (1 * (deltaY > 0 ? 1 : -1)) * (deltaY == 0 ? 0 : 1));
-            destinations.get(0).setY(destinations.get(0).getY() + (1 * (deltaX > 0 ? 1 : -1)) * (deltaX == 0 ? 0 : 1));
-            nextRePathing = System.currentTimeMillis() + 1000;
-            repaths++;
-        } else if (System.currentTimeMillis() > nextRePathing && destinations.size() == 1)
-        {
-            int x = destinations.get(0).getX() + 1 * (deltaY > 0 ? 1 : -1) * (deltaY == 0 ? 0 : 1);
-            int y = destinations.get(0).getY() + 1 * (deltaX > 0 ? 1 : -1) * (deltaX == 0 ? 0 : 1);
-            destinations.add(0, new Destination(x, y));
-            nextRePathing = System.currentTimeMillis() + 1000;
-            repaths++;
+            moveX = x - moveSpeed;
+            ac.setDirection(Animation.WEST);
         }
-        
+
+        if(getDeltaY() > 0 + POSITION_BOUNDS/2)
+        {
+            moveY = y + moveSpeed;
+            ac.setDirection(Animation.SOUTH);
+        }
+        if(getDeltaY() < 0 - POSITION_BOUNDS/2)
+        {
+            moveY = y - moveSpeed;
+            ac.setDirection(Animation.NORTH);
+        }
+
+        if(Math.abs(getDeltaX()) < moveSpeed)
+        {
+                moveX = x + getDeltaX();
+        }
+        if(!map.checkUnitCollision(new Rectangle((int)moveX, y, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)moveX, y, width, height)))
+        {
+            x = (int)moveX;
+        }
+        if(Math.abs(getDeltaY()) < moveSpeed)
+        {
+            moveY = y + getDeltaY();
+        }
+
+        if(!map.checkUnitCollision(new Rectangle((int)x, (int)moveY, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)x, (int)moveY, width, height)))
+        {
+            y = (int)moveY;
+        }
+
+        if(getDeltaX() != 0 || getDeltaY() != 0)
+        {
+            updateCells();
+
+            if(getDeltaX() > 0 + POSITION_BOUNDS/2 && getDeltaY() > 0 + POSITION_BOUNDS/2)
+                ac.setDirection(Animation.SOUTHEAST);
+            if(getDeltaX() < 0 - POSITION_BOUNDS/2 && getDeltaY() > 0 + POSITION_BOUNDS/2)
+                ac.setDirection(Animation.SOUTHWEST);
+            if(getDeltaX() < 0 - POSITION_BOUNDS/2 && getDeltaY() < 0 - POSITION_BOUNDS/2)
+                ac.setDirection(Animation.NORTHWEST);
+            if(getDeltaX() > 0 + POSITION_BOUNDS/2 && getDeltaY() < 0 - POSITION_BOUNDS/2)
+                ac.setDirection(Animation.NORTHEAST);
+        }
     }
     
     public void setMap(Map map)
@@ -177,16 +146,9 @@ public class Unit extends Entity {
         this.map = map;
     }
     
-    public void addDestination(Destination d)
+    public void clearActions()
     {
-        d.setX(d.getX());
-        d.setY(d.getY());
-        destinations.add(d);
-    }
-    
-    public void clearDestinations()
-    {
-        destinations.clear();
+        actions.clear();
     }
     
     @Override
@@ -204,14 +166,23 @@ public class Unit extends Entity {
     public void update()
     {
         super.update();
-        if(destinations.size() > 0)
+        
+        if(actions.size() > 0)
         {
-            ac.playAnimation("walk");
-        } else {
+            actions.get(0).performAction();
+        }
+        
+        if(actions.size() > 0)
+        {
+            if(actions.get(0) instanceof MoveTo)
+            {
+                ac.playAnimation("walk");
+            }
+        } else 
+        {
             ac.playAnimation("stand");
         }
         ac.update();
-        move();
     }
     
     public String getName()
@@ -219,16 +190,14 @@ public class Unit extends Entity {
         return name;
     }
     
-    public CopyOnWriteArrayList<Destination> getDestinations()
+    public CopyOnWriteArrayList<Action> getActions()
     {
-        return destinations;
+        return actions;
     }
     
-    public void setDestinations(CopyOnWriteArrayList<Destination> destinations)
+    public void setActions(CopyOnWriteArrayList<Action> actions)
     {
-        this.destinations = destinations;
-        nextRePathing = System.currentTimeMillis() + 1000;
-        repaths = 0;
+        this.actions = actions;
     }
     
     @Override
@@ -244,7 +213,60 @@ public class Unit extends Entity {
         Utils.drawWithShadow(g, "Damage: " + attackDamage, 300, 150);
         Utils.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, 175);
         
-        //Render icon
-        g.drawImage(icon, Game.WIDTH/2 + 100, 110, null);
+        for(UIObject o : uiObjects)
+        {
+            o.render(g);
+        }
+    }
+
+    /**
+     * @return the deltaX
+     */
+    public float getDeltaX() {
+        return deltaX;
+    }
+
+    /**
+     * @return the deltaY
+     */
+    public float getDeltaY() {
+        return deltaY;
+    }
+
+    /**
+     * @return the collided
+     */
+    public boolean isCollided() {
+        return collided;
+    }
+
+    /**
+     * @param collided the collided to set
+     */
+    public void setCollided(boolean collided) {
+        this.collided = collided;
+    }
+    
+    public int getTempX()
+    {
+        return tempX;
+    }
+    
+    public int getTempY()
+    {
+        return tempY;
+    }
+    
+    public Map getMap()
+    {
+        return map;
+    }
+
+    public void addAction(Action action) {
+        actions.add(action);
+    }
+
+    public void removeAction(Action action) {
+        actions.remove(action);
     }
 }

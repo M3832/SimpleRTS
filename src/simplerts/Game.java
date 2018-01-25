@@ -33,7 +33,7 @@ public class Game implements Runnable {
 
     public static int WIDTH = 980;
     public static int HEIGHT = 512;
-    public static float GAMESPEED = 2f;
+    public static float GAMESPEED = 1f;
     public static int CELLSIZE = 50;
     
     public static long millisSinceLastRender = 0;
@@ -91,9 +91,9 @@ public class Game implements Runnable {
         map.addEntity(new Builder(10, 8, player));
         map.addEntity(new Builder(11, 8, player));
         
-        map.addEntity(new Tower(6, 2, 2, player));
-        map.addEntity(new Tower(8, 4, 2, player));
-        map.addEntity(new TownHall(4, 6, 4, player));
+        map.addEntity(new Tower(6, 2, 2, player, true));
+        map.addEntity(new Tower(8, 4, 2, player, true));
+        map.addEntity(new TownHall(4, 6, 4, player, true));
 
 
         int TICKS_PER_SECOND = 50 * (int)GAMESPEED;

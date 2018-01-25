@@ -19,7 +19,7 @@ public class UIAction extends UIObject {
     
     public UIAction(float x, float y, BufferedImage icon, ClickListener clicker)
     {
-        super(x, y, 55, 55);
+        super(x, y, icon.getWidth(), icon.getHeight());
         this.icon = icon;
         this.clicker = clicker;
     }

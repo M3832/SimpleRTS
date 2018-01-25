@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import simplerts.actions.Destination;
 import simplerts.ui.MiniMap;
 
 /**
@@ -124,8 +125,8 @@ public class Map {
         entities.stream()
                 .sorted((e1, e2) -> { return Integer.compare(e1.getGridY(), e2.getGridY());})
                 .forEach(e -> {
-                    if (inView(e, offsetX, offsetY)) {
-                    e.render(g, offsetX, offsetY);
+                    if (inView(e, offsetX, offsetY) && e.isVisible()) {
+                        e.render(g, offsetX, offsetY);
                     }
                 });
     }
@@ -191,7 +192,7 @@ public class Map {
     {
         ArrayList<Entity> list = new ArrayList<>();
         entities.stream().forEach(e -> {
-            if(rectangleIntersectsEntity(r, e))
+            if(e.isVisible() && rectangleIntersectsEntity(r, e))
             {
                 list.add(e);
             }
@@ -206,7 +207,7 @@ public class Map {
     
     public boolean checkUnitCollision(Rectangle r, Entity entity)
     {
-       return entities.stream().anyMatch(e -> {if(e == entity){return false;} return rectangleIntersectsEntity(r, e);});
+       return entities.stream().anyMatch(e -> {if(e == entity || !e.isVisible()){return false;} return rectangleIntersectsEntity(r, e);});
     }
     
     public CopyOnWriteArrayList<Entity> getEntities()
@@ -251,6 +252,37 @@ public class Map {
             }
         }
         return false;
+    }
+    
+    public Destination getAvailableNeighborCell(Entity e)
+    {
+        Destination d = new Destination(0, 0);
+        for(int ex = e.getGridX(); ex < e.getGridX() + e.getGridWidth(); ex++)
+        {
+            for(int ey = e.getGridY(); ey < e.getGridY() + e.getGridHeight(); ey++)
+            {
+                for(int x = ex - 1; x <= ex + 1; x++)
+                {
+                    for(int y = ey - 1; y <= ey + 1; y++)
+                    {
+                        if(x > 0 && x < cells.length && y > 0 && y < cells[0].length)
+                        {
+                            if(cells[x][y].available && !checkCell(x, y))
+                            {
+                                return new Destination(x, y);
+                            }
+                        }
+                    }
+                }
+            }        
+        }
+        
+        return d;
+    }
+    
+    private boolean checkCell(int x, int y)
+    {
+        return entities.stream().anyMatch(e -> e.getGridX() == x && e.getGridY() == y);
     }
     
     public PathFinder getPathFinder()
