@@ -148,9 +148,9 @@ public class Controller {
         
         if(ml.isMouseClicked())
         {
-            if(entityplacer.entity != null && entityplacer.isPlaceable())
+            if(entityplacer.entity != null)
             {
-                if(selected.get(0) instanceof Builder)
+                if(selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
                 {
                     Builder b = ((Builder)selected.get(0));
                     Building building = (Building)entityplacer.entity.duplicate();

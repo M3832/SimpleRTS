@@ -173,6 +173,15 @@ public class Map {
         return false;
     }
     
+    public boolean checkCollision(int cellX, int cellY, Entity excludeThis)
+    {
+        if(cellX >= 0 && cellX < cells.length && cellY >= 0 && cellY < cells[0].length)
+        {
+            return isCellBlocked(cellX, cellY, excludeThis);
+        }
+        return false;
+    }
+    
     public Dimension getSize()
     {
         return new Dimension(cells.length * Game.CELLSIZE, cells[0].length * Game.CELLSIZE);
@@ -289,6 +298,11 @@ public class Map {
     private boolean isCellBlocked(int x, int y)
     {
         return cells[x][y].getEntity() != null || !cells[x][y].available;
+    }
+    
+    private boolean isCellBlocked(int x, int y, Entity excludeEntity)
+    {
+        return (cells[x][y].getEntity() != null && cells[x][y].getEntity() != excludeEntity) || !cells[x][y].available;
     }
     
     public void updateEntityCell(int x, int y, Entity e)

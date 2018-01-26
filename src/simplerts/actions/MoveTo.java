@@ -31,6 +31,8 @@ public class MoveTo extends Action {
     public void performAction() {
         if(destinations.isEmpty())
         {
+            if(owner.getActions().contains(this))
+                owner.getActions().remove(this);
             return;
         }
         if(destinations.size() > 0)

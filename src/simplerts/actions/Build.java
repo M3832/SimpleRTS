@@ -25,6 +25,7 @@ public class Build extends Action {
 
     @Override
     public void performAction() {
+        System.out.println("Building?");
         Building newBuilding = building.build((Builder)owner);
         owner.getMap().addEntity(newBuilding);
         owner.removeAction(this);

@@ -56,7 +56,7 @@ public class Placer {
         
         if(entity instanceof Building)
         {
-            image = ((Building)entity).getSprite();
+            image = ((Building)entity).getFinalSprite();
         }
         for(int i = cellX; i < cellWidth + cellX; i++)
         {
@@ -91,14 +91,14 @@ public class Placer {
         this.cellY = y/Game.CELLSIZE;
     }
     
-    public boolean isPlaceable()
+    public boolean isPlaceable(Entity excludeThis)
     {
         boolean placeable = true;
         for(int i = cellX; i < cellWidth + cellX; i++)
         {
             for(int j = cellY; j < cellHeight + cellY; j++)
             {
-                if(handler.map.checkCollision(i, j))
+                if(handler.map.checkCollision(i, j, excludeThis))
                 {
                     placeable = false;
                 }

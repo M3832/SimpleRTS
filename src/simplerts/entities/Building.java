@@ -109,7 +109,7 @@ public abstract class Building extends Entity {
     
     public Building build(Builder b)
     {
-        b.isVisible = false;
+        b.setInvisible();
         builder = b;
         return this;
     }

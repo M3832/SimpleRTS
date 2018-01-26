@@ -65,4 +65,10 @@ public class Builder extends Unit{
         return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));
     }
     
+    public void setInvisible()
+    {
+        isVisible = false;
+        map.getCells()[gridX][gridY].setEntity(null);
+    }
+    
 }

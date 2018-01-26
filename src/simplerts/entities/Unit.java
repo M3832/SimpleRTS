@@ -185,7 +185,7 @@ public abstract class Unit extends Entity {
             actions.get(0).performAction();
         }
         
-        if(deltaX > 0 || deltaY > 0)
+        if(Math.abs(deltaX) > 0 || Math.abs(deltaY) > 0 || (actions.size() > 0 && actions.get(0) instanceof MoveTo))
         {
             ac.playAnimation("walk");
         }

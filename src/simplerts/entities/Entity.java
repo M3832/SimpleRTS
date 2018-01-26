@@ -195,4 +195,9 @@ public abstract class Entity {
         this.y = gridY * Game.CELLSIZE;
     }
     
+    public BufferedImage getFinalSprite()
+    {
+        return sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height);
+    }
+    
 }
