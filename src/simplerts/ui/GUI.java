@@ -27,7 +27,7 @@ public class GUI {
     private MiniMap minimap;
     private int height = 225;
     private Handler handler;
-    private int mapOffsetX = 35, mapOffsetY = 31;
+    private int mapOffsetX = 35, mapOffsetY = Game.HEIGHT + 31;
     private ArrayList<Entity> entities;
     public static Font HEADER = new Font("Verdana", Font.PLAIN, 34);
     public static Font BREAD = new Font("Verdana", Font.PLAIN, 16);
@@ -45,6 +45,7 @@ public class GUI {
     
     public void onClick(int posX, int posY)
     {
+        
         if(posX > mapOffsetX && posX < mapOffsetX + minimap.getMiniMap().getWidth() && posY > mapOffsetY && posY < mapOffsetY + minimap.getMiniMap().getHeight())
         {
             int x1 = (int)((posX - mapOffsetX) / minimap.getPixelRatio()) - Game.WIDTH / 2;
@@ -83,8 +84,8 @@ public class GUI {
     
     public void render(Graphics g)
     {
-        g.drawImage(Assets.GUI, 0, 0, null);
-        g.drawImage(minimap.getMinimapWithEntities(), 35, 31, null);
+        g.drawImage(Assets.GUI, 0, Game.HEIGHT, null);
+        g.drawImage(minimap.getMinimapWithEntities(), 35, Game.HEIGHT + 31, null);
         g.setColor(Color.WHITE);
         g.drawRect((int)(handler.getCamera().getOffsetX() * minimap.getPixelRatio()) + mapOffsetX, (int)(handler.getCamera().getOffsetY() * minimap.getPixelRatio()) + mapOffsetY, (int)(Game.WIDTH * minimap.getPixelRatio()), (int)(Game.HEIGHT * minimap.getPixelRatio()));
         
@@ -97,13 +98,13 @@ public class GUI {
         {
             for(int i = 0; i < entities.size(); i++)
             {
-                g.drawImage(entities.get(i).getIcon(), 275 + i * 75, 100, null);
+                g.drawImage(entities.get(i).getIcon(), 275 + i * 75, Game.HEIGHT + 100, null);
             }
         } else if (entities != null && entities.size() > 5)
         {
             for(int i = 0; i < entities.size(); i++)
             {
-                g.drawImage(entities.get(i).getIcon(), (275 + ((i%5) * 75)), 100 + (75 * (i/5)), null);
+                g.drawImage(entities.get(i).getIcon(), (275 + ((i%5) * 75)), Game.HEIGHT + 100 + (75 * (i/5)), null);
             }
         }
         
@@ -122,7 +123,7 @@ public class GUI {
     
     public void addUIAction(UIAction o)
     {
-        o.setY(24 + (o.getHeight() + 7) * (objects.size()/3));
+        o.setY(Game.HEIGHT + 24 + (o.getHeight() + 7) * (objects.size()/3));
         o.setX(777 + (o.getWidth() + 8) * (objects.size()%3));
         o.updateBounds();
         objects.add(o);

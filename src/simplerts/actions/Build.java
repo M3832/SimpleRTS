@@ -7,8 +7,6 @@ package simplerts.actions;
 
 import simplerts.entities.Builder;
 import simplerts.entities.Building;
-import simplerts.entities.Entity;
-import simplerts.entities.Unit;
 
 /**
  *

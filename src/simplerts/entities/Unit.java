@@ -37,7 +37,6 @@ public abstract class Unit extends Entity {
     protected int moveSpeed = 5;
     
     protected CopyOnWriteArrayList<Action> actions;
-    protected Map map;
     
     protected String name;
     protected int attackDamage;
@@ -51,31 +50,27 @@ public abstract class Unit extends Entity {
     public Unit()
     {
         super();
-        ac = new AnimationController();
-        actions = new CopyOnWriteArrayList<>();
-        x = 300;
-        y = 500;
-        trainTime = 100;
-        width = Game.CELLSIZE;
-        height = Game.CELLSIZE;
-        name = "Peasant";
+        initVariables();
     }
     
     public Unit(int x, int y, Player player)
     {
-        this();
-        this.x = x;
-        this.y = y;
-        this.player = player;
-        moveSpeed = 2;
-        color = player.getColor();
-        gridX = (x + width/2)/Game.CELLSIZE;
-        gridY = (y + height/2)/Game.CELLSIZE;
+        super(x, y, 1, player);
+        initVariables();
     }
     
     public Unit(Destination d, Player player)
     {
         this(d.getX(), d.getY(), player);
+    }
+    
+    private void initVariables()
+    {
+        ac = new AnimationController();
+        actions = new CopyOnWriteArrayList<>();
+        moveSpeed = 2;
+        trainTime = 100;
+        name = "Peasant";
     }
     
     protected void initGraphics()
@@ -118,7 +113,7 @@ public abstract class Unit extends Entity {
         {
                 moveX = x + getDeltaX();
         }
-        if(!map.checkUnitCollision(new Rectangle((int)moveX, y, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)moveX, y, width, height)))
+        if(!grid.checkUnitCollision(new Rectangle((int)moveX, y, width, height), this) && !grid.checkTerrainCollision(new Rectangle((int)moveX, y, width, height)))
         {
             x = (int)moveX;
         }
@@ -127,7 +122,7 @@ public abstract class Unit extends Entity {
             moveY = y + getDeltaY();
         }
 
-        if(!map.checkUnitCollision(new Rectangle((int)x, (int)moveY, width, height), this) && !map.checkTerrainCollision(new Rectangle((int)x, (int)moveY, width, height)))
+        if(!grid.checkUnitCollision(new Rectangle((int)x, (int)moveY, width, height), this) && !grid.checkTerrainCollision(new Rectangle((int)x, (int)moveY, width, height)))
         {
             y = (int)moveY;
         }
@@ -150,14 +145,9 @@ public abstract class Unit extends Entity {
         gridY = y/Game.CELLSIZE;
         if(tempGridX != gridX || tempGridY != gridY)
         {
-            map.updateEntityCell(tempGridX, tempGridY, null);
-            map.updateEntityCell(gridX, gridY, this);
+            grid.updateEntityCell(tempGridX, tempGridY, null);
+            grid.updateEntityCell(gridX, gridY, this);
         }
-    }
-    
-    public void setMap(Map map)
-    {
-        this.map = map;
     }
     
     public void clearActions()
@@ -216,13 +206,13 @@ public abstract class Unit extends Entity {
     {
         g.setColor(new Color(255, 155, 111));
         //Render name
-        Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, 75);
+        Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
         
         //Render stats
         g.setFont(GUI.BREAD);
-        Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, 125);
-        Utils.drawWithShadow(g, "Damage: " + attackDamage, 300, 150);
-        Utils.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, 175);
+        Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
+        Utils.drawWithShadow(g, "Damage: " + attackDamage, 300, Game.HEIGHT + 150);
+        Utils.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, Game.HEIGHT + 175);
         
         for(UIObject o : uiObjects)
         {
@@ -275,7 +265,7 @@ public abstract class Unit extends Entity {
     
     public Map getMap()
     {
-        return map;
+        return grid;
     }
 
     public void addAction(Action action) {

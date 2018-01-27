@@ -45,6 +45,7 @@ public class GamePanel extends JPanel {
             handler.game.controller.render(g);
             handler.game.controller.scrolling();
             handler.game.mm.render(g);
+            handler.game.gui.render(g);
             g.dispose();            
         }
     }

@@ -8,13 +8,10 @@ package simplerts.display;
 import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -30,7 +27,7 @@ public class Display {
     public GUIPanel guiPanel;
     
     
-    public Display(int width, int height)
+    public Display(int width, int height, int guiheight)
     {
         window = new JFrame();
 //        window.setSize(new Dimension(width, height));
@@ -41,25 +38,25 @@ public class Display {
 //        canvas.setFocusable(false);
 
           gamePanel = new GamePanel();
-          gamePanel.setSize(new Dimension(width, height));
-          gamePanel.setMinimumSize(new Dimension(width, height));
-          gamePanel.setMaximumSize(new Dimension(width, height));
-          gamePanel.setPreferredSize(new Dimension(width, height));
+          gamePanel.setSize(new Dimension(width, height + guiheight));
+          gamePanel.setMinimumSize(new Dimension(width, height + guiheight));
+          gamePanel.setMaximumSize(new Dimension(width, height + guiheight));
+          gamePanel.setPreferredSize(new Dimension(width, height + guiheight));
         
 //        guicanvas = new Canvas();
 //        guicanvas.setSize(new Dimension(width, 225));
 //        guicanvas.setFocusable(false);
           
-          guiPanel = new GUIPanel();
-          guiPanel.setSize(new Dimension(width, 225));
-          guiPanel.setMinimumSize(new Dimension(width, 225));
-          guiPanel.setMaximumSize(new Dimension(width, 225));
-          guiPanel.setPreferredSize(new Dimension(width, 225));
+//          guiPanel = new GUIPanel();
+//          guiPanel.setSize(new Dimension(width, 225));
+//          guiPanel.setMinimumSize(new Dimension(width, 225));
+//          guiPanel.setMaximumSize(new Dimension(width, 225));
+//          guiPanel.setPreferredSize(new Dimension(width, 225));
         
 //        pane.add(canvas);
 //        pane.setBorder(new EmptyBorder(0, 0, 0, 0));
         pane.add(gamePanel);
-        pane.add(guiPanel);
+//        pane.add(guiPanel);
         window.setVisible(true);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         

@@ -42,10 +42,8 @@ public class TownHall extends Building implements FoodProvider {
     public void setupActions()
     {
         super.setupActions();
-        uiActions.add(new UIAction(Assets.resizeImage(Builder.getUIIcon(color), 55, 55), () -> {
-            train(new Builder(player.getHandler().map.getAvailableNeighborCell(this), player));
-        }));
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
+        uiActions.add(Builder.getUIAction(player, this));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
     }
 
     @Override

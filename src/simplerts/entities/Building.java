@@ -85,7 +85,7 @@ public abstract class Building extends Entity {
         } else if (builder != null && currentTime == buildTime)
         {
             builder.isVisible = true;
-            builder.setPosition(player.getHandler().map.getAvailableNeighborCell(this));
+            grid.setEntityPosition(builder, grid.getAvailableNeighborCell(this));
             builder = null;
             setupActions();
         }
@@ -141,7 +141,7 @@ public abstract class Building extends Entity {
     {
         g.setColor(new Color(255, 155, 111));
         //Render name
-        Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, 75);
+        Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
         
         if(currentTime < buildTime)
         {
@@ -158,8 +158,8 @@ public abstract class Building extends Entity {
                     
             //Render stats
             g.setFont(GUI.BREAD);
-            Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, 125);
-            Utils.drawWithShadow(g, "Armor: " + armor, 300, 150);
+            Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
+            Utils.drawWithShadow(g, "Armor: " + armor, 300, Game.HEIGHT + 150);
         }
         
     }
@@ -167,17 +167,17 @@ public abstract class Building extends Entity {
     public void renderBuilding(Graphics g)
     {
         g.setColor(Color.green);
-        g.fillRect(Game.WIDTH/2 - 100, 125, (int)(200 * (1f * currentTime/buildTime)), 25);
+        g.fillRect(Game.WIDTH/2 - 100, Game.HEIGHT + 125, (int)(200 * (1f * currentTime/buildTime)), 25);
         g.setColor(Color.black);
-        g.drawRect(Game.WIDTH/2 - 100, 125, (int)(200), 25);        
+        g.drawRect(Game.WIDTH/2 - 100, Game.HEIGHT + 125, (int)(200), 25);        
     }
     
     public void renderTraining(Graphics g)
     {
         g.setColor(Color.green);
-        g.fillRect(Game.WIDTH/2 - 100, 125, (int)(200 * (1f * currentTrainTime/trainTime)), 25);
+        g.fillRect(Game.WIDTH/2 - 100, Game.HEIGHT + 125, (int)(200 * (1f * currentTrainTime/trainTime)), 25);
         g.setColor(Color.black);
-        g.drawRect(Game.WIDTH/2 - 100, 125, (int)(200), 25);        
+        g.drawRect(Game.WIDTH/2 - 100, Game.HEIGHT + 125, (int)(200), 25);        
     }
     
     public static UIAction getUIAction(Player player){

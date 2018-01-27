@@ -5,15 +5,11 @@
  */
 package simplerts.ui;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.Entity;
 import simplerts.Game;
-import simplerts.input.Clicker;
 
 /**
  *

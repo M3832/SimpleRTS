@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import simplerts.actions.Destination;
+import simplerts.entities.Builder;
 import simplerts.ui.MiniMap;
 
 /**
@@ -54,19 +55,9 @@ public class Map {
     
     public void addEntity(Entity e)
     {
-        for(int x = e.getGridX(); x < e.getGridX()+e.getGridWidth(); x++)
-        {
-            for(int y = e.getGridY(); y < e.getGridY()+e.getGridHeight(); y++)
-            {
-                cells[x][y].setEntity(e);
-            }
-        }
         entities.add(e);
+        updateEntityCell(e.getGridX(), e.getGridY(), e);
         e.getPlayer().addEntity(e);
-        if (e instanceof Unit)
-        {
-            ((Unit)e).setMap(this);
-        }
     }
     
     public Cell[][] getCells()
@@ -74,23 +65,23 @@ public class Map {
         return cells;
     }
     
-    protected void updateOccupiedCells()
-    {   
+//    protected void updateOccupiedCells()
+//    {   
+////        for(Entity e : entities)
+////        {
+////            for(int i = e.getCellX(); i < e.getCellWidth() + e.getCellX(); i++)
+////            {
+////                for(int j = e.getCellY(); j < e.getCellHeight() + e.getCellY(); j++)
+////                {
+////                    cells[i][j].available = false;
+////                }
+////            }
+////        }
 //        for(Entity e : entities)
 //        {
-//            for(int i = e.getCellX(); i < e.getCellWidth() + e.getCellX(); i++)
-//            {
-//                for(int j = e.getCellY(); j < e.getCellHeight() + e.getCellY(); j++)
-//                {
-//                    cells[i][j].available = false;
-//                }
-//            }
+//            e.updateCells();
 //        }
-        for(Entity e : entities)
-        {
-            e.updateCells();
-        }
-    }
+//    }
     
     public void render(Graphics g, float offsetX, float offsetY)
     {
@@ -290,7 +281,18 @@ public class Map {
     
     public void updateEntityCell(int x, int y, Entity e)
     {
-        cells[x][y].setEntity(e);
+        if(e != null)
+        {
+            for(int x1 = e.getGridX(); x1 < e.getGridX()+e.getGridWidth(); x1++)
+            {
+                for(int y1 = e.getGridY(); y1 < e.getGridY()+e.getGridHeight(); y1++)
+                {
+                    cells[x1][y1].setEntity(e);
+                }
+            }
+        } else {
+            cells[x][y].setEntity(e);
+        }
     }
     
     public PathFinder getPathFinder()
@@ -305,5 +307,10 @@ public class Map {
 
     void setSelectBox(Rectangle selectBox) {
         this.selectBox = selectBox;
+    }
+
+    public void setEntityPosition(Entity entity, Destination destination) {
+        entity.setPosition(destination);
+        updateEntityCell(entity.getGridX(), entity.getGridY(), entity);
     }
 }

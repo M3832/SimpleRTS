@@ -63,10 +63,10 @@ public class Camera {
             offsetY = handler.map.getCells()[0].length * Game.CELLSIZE - handler.game.HEIGHT;
     }
     
-    private void repaintGUI()
-    {
-        handler.game.renderGUI();
-    }
+//    private void repaintGUI()
+//    {
+//        handler.game.renderGUI();
+//    }
     
     public void render(Graphics g)
     {

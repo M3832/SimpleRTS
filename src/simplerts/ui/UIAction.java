@@ -8,6 +8,7 @@ package simplerts.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import simplerts.Game;
 import simplerts.Utils;
 
 /**
@@ -53,17 +54,17 @@ public class UIAction extends UIObject {
             if(hovering && action)
             {
                 g.setColor(new Color(25, 25, 25, 245));
-                g.fillRect(768 - 100, 24, 100, 100);
+                g.fillRect((int)x - 25, (int)y - 100, 100, 100);
                 g.setColor(Color.black);
-                g.drawRect(768 - 100, 24, 100, 100);
+                g.drawRect((int)x - 25, (int)y - 100, 100, 100);
                 g.setColor(Color.WHITE);
                 g.setFont(GUI.SMALL);
                 if(title != null)
-                    Utils.drawWithShadow(g, title, 718 - g.getFontMetrics(GUI.SMALL).stringWidth(title)/2, 24 + g.getFontMetrics(GUI.SMALL).getHeight());
+                    Utils.drawWithShadow(g, title, (int)x + 25 - g.getFontMetrics(GUI.SMALL).stringWidth(title)/2, (int)y - 100 + g.getFontMetrics(GUI.SMALL).getHeight());
                 if(goldCost != null)
-                    Utils.drawWithShadow(g, "Gold: " + goldCost, 680, 40 + g.getFontMetrics(GUI.SMALL).getHeight());
+                    Utils.drawWithShadow(g, "Gold: " + goldCost, (int)x - 20, (int)y - 100 + 20 + g.getFontMetrics(GUI.SMALL).getHeight());
                 if(lumberCost != null)
-                    Utils.drawWithShadow(g, "Wood: " + lumberCost, 680, 56 + g.getFontMetrics(GUI.SMALL).getHeight());
+                    Utils.drawWithShadow(g, "Wood: " + lumberCost, (int)x - 20, (int)y - 100 + 35 + g.getFontMetrics(GUI.SMALL).getHeight());
             }
         }
     }

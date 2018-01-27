@@ -36,6 +36,7 @@ public class Game implements Runnable {
 
     public static int WIDTH = 980;
     public static int HEIGHT = 512;
+    public static int GUIHEIGHT = 225;
     public static float GAMESPEED = 1f;
     public static int CELLSIZE = 50;
     
@@ -67,7 +68,7 @@ public class Game implements Runnable {
         
         camera = new Camera();
         
-        display = new Display(WIDTH, HEIGHT);
+        display = new Display(WIDTH, HEIGHT, GUIHEIGHT);
         
         JFileChooser openFile = new JFileChooser();
 //        openFile.showOpenDialog(display.window);
@@ -80,7 +81,7 @@ public class Game implements Runnable {
         
         map.setHandler(handler);
         display.getGamePanel().setHandler(handler);
-        display.getGUIPanel().setHandler(handler);
+//        display.getGUIPanel().setHandler(handler);
         
         gui = new GUI(map, handler);
         
@@ -88,7 +89,7 @@ public class Game implements Runnable {
 
         Player player = new Player(handler);
         controller = new Controller(handler, player);
-        ((MouseInput)display.getGUIPanel().getMouseListeners()[0]).setGUI(gui);
+        ((MouseInput)display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
         players.add(player);
         map.addEntity(new Builder(10, 6, player));
 //        map.addEntity(new Builder(11, 6, player));
@@ -116,14 +117,14 @@ public class Game implements Runnable {
 
         boolean game_is_running = true;
         
-        new Thread(() -> {
-            while(game_is_running){
-                renderGUI(); 
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ex) {}
-            }
-        }).start();
+//        new Thread(() -> {
+//            while(game_is_running){
+//                renderGUI(); 
+//                try {
+//                    Thread.sleep(5);
+//                } catch (InterruptedException ex) {}
+//            }
+//        }).start();
         
         new Thread(() -> {
             int renderloops;
@@ -161,10 +162,10 @@ public class Game implements Runnable {
         display.getGamePanel().repaint();
     }
     
-    public void renderGUI()
-    {
-        display.getGUIPanel().repaint();
-    }
+//    public void renderGUI()
+//    {
+//        display.getGUIPanel().repaint();
+//    }
     
     public void update()
     {

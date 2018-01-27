@@ -55,16 +55,17 @@ public abstract class Entity {
     public Entity(int x, int y, int size, Player player)
     {
         this();
-        this.x = x;
-        this.y = y;
+        this.x = x * Game.CELLSIZE;
+        this.y = y * Game.CELLSIZE;
         this.width = size * Game.CELLSIZE;
         this.height = size * Game.CELLSIZE;
-        this.gridX = x/Game.CELLSIZE;
-        this.gridY = y/Game.CELLSIZE;
+        this.gridX = x;
+        this.gridY = y;
         this.gridWidth = size;
         this.gridHeight = size;
         this.player = player;
         color = player.getColor();
+        grid = player.getHandler().map;
     }
     
     public void setupActions()
@@ -90,6 +91,7 @@ public abstract class Entity {
      public void setPosition(Destination d)
      {
          setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE);
+         updateCells();
      }
     
     public void update()
