@@ -12,8 +12,10 @@ import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.Utils;
+import simplerts.display.Assets;
 import simplerts.display.ErrorMessage;
 import simplerts.display.Message;
+import static simplerts.entities.Tower.GOLDCOST;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
 import simplerts.ui.UIAction;
@@ -176,5 +178,11 @@ public abstract class Building extends Entity {
         g.fillRect(Game.WIDTH/2 - 100, 125, (int)(200 * (1f * currentTrainTime/trainTime)), 25);
         g.setColor(Color.black);
         g.drawRect(Game.WIDTH/2 - 100, 125, (int)(200), 25);        
+    }
+    
+    public static UIAction getUIAction(Player player){
+        UIAction a = new UIAction(Assets.resizeImage(Tower.getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Tower(0, 0, 2, player));});
+        a.setTitle("PLACEHOLDER");
+        return a;
     }
 }
