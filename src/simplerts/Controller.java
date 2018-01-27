@@ -13,10 +13,9 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Comparator;
-import simplerts.actions.Build;
-import simplerts.actions.Destination;
-import simplerts.actions.Follow;
-import simplerts.actions.MoveTo;
+import simplerts.entities.actions.Build;
+import simplerts.entities.actions.Follow;
+import simplerts.entities.actions.MoveTo;
 import simplerts.entities.Builder;
 import simplerts.entities.Building;
 import simplerts.input.KeyManager;
@@ -115,7 +114,7 @@ public class Controller {
     public void scrolling()
     {
         int scrollSpeed = 1000;
-        float frameScroll = scrollSpeed * ((float)Game.millisSinceLastRender/1000);
+        float frameScroll = scrollSpeed * ((float)Game.TIME_SINCE_LAST_RENDER/1000);
         
         if(ml.posX > Game.WIDTH - boundary && ml.isHovering)
         {
@@ -220,7 +219,7 @@ public class Controller {
                         int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
                         if(handler.map.getCells()[gridX][gridY].getEntity() != null)
                         {
-                            u.addAction(new Follow(u, handler.map.getCells()[gridX][gridY].getEntity()));
+                            u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
                         } else {
                             int offsetX = (int)(index%(Math.sqrt(selected.size())));
                             int offsetY = (int)(index/(Math.sqrt(selected.size())));
@@ -249,6 +248,16 @@ public class Controller {
         Utils.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
         g.setColor(new Color(255, 50, 50));
         Utils.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
+    }
+
+    public void removeFromSelection(Entity e) {
+        if(selected != null)
+        {
+            if(selected.contains(e))
+            {
+                selected.remove(e);
+            }
+        }
     }
     
 }

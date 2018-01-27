@@ -13,10 +13,11 @@ import simplerts.Game;
 import simplerts.Map;
 import simplerts.Player;
 import simplerts.Utils;
-import simplerts.actions.Action;
-import simplerts.actions.Destination;
-import simplerts.actions.MoveTo;
-import simplerts.display.Assets;
+import simplerts.entities.actions.Action;
+import simplerts.Destination;
+import simplerts.entities.actions.Follow;
+import simplerts.entities.actions.MoveTo;
+import simplerts.gfx.Assets;
 import simplerts.gfx.Animation;
 import simplerts.gfx.AnimationController;
 import simplerts.ui.GUI;
@@ -156,8 +157,9 @@ public abstract class Unit extends Entity {
     }
     
     @Override
-    public void render(Graphics g, float offsetX, float offsetY)
+    public void render(Graphics g)
     {
+        super.render(g);
         g.drawImage(ac.getCurrentFrame(), (int)(x - offsetX), (int)(y - offsetY), null);
         if(!actions.isEmpty() && actions.get(0) instanceof MoveTo)
         {
@@ -173,6 +175,9 @@ public abstract class Unit extends Entity {
         if(actions.size() > 0)
         {
             actions.get(0).performAction();
+        } else {
+            deltaX = 0;
+            deltaY = 0;
         }
         
         if(Math.abs(deltaX) > 0 || Math.abs(deltaY) > 0 || (actions.size() > 0 && actions.get(0) instanceof MoveTo))
@@ -278,5 +283,14 @@ public abstract class Unit extends Entity {
 
     public void removeAction(Action action) {
         actions.remove(action);
+    }
+    
+    public void rightClickAction(Entity e)
+    {
+        addAction(new Follow(this, e));
+    }
+
+    public int getCost() {
+        return goldCost;
     }
 }

@@ -5,7 +5,7 @@
  */
 package simplerts;
 
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 import java.awt.Image;
 import java.util.Arrays;
 import simplerts.editor.TerrainPlacement;

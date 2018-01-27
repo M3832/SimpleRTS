@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Map;
 import simplerts.Player;
-import simplerts.actions.Destination;
+import simplerts.Destination;
 import simplerts.ui.UIAction;
 import simplerts.ui.UIObject;
 
@@ -25,6 +25,7 @@ public abstract class Entity {
     protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
     protected int goldCost, lumberCost;
     protected int health, maxHealth;
+    protected int offsetX, offsetY;
     protected BufferedImage sprite, icon;
     protected ArrayList<UIObject> uiObjects;
     protected ArrayList<UIAction> uiActions;
@@ -66,18 +67,14 @@ public abstract class Entity {
         this.player = player;
         color = player.getColor();
         grid = player.getHandler().map;
-    }
-    
-    public void setupActions()
-    {
-        uiObjects = new ArrayList<>();
         uiActions = new ArrayList<>();
+        uiObjects = new ArrayList<>();
     }
     
-    public void render(Graphics g, float offsetX, float offsetY)
+    public void render(Graphics g)
     {
-        g.setColor(color);
-        g.fillRect((int)((gridX * Game.CELLSIZE) - offsetX), (int)((gridY * Game.CELLSIZE) - offsetY), gridWidth * Game.CELLSIZE, gridHeight * Game.CELLSIZE);
+        offsetX = (int)player.getHandler().getCamera().getOffsetX();
+        offsetY = (int)player.getHandler().getCamera().getOffsetY();
     }
     
     public void setPosition(int x, int y)
@@ -101,8 +98,9 @@ public abstract class Entity {
     
     public void updateCells()
     {
-        gridX = (x + width/2)/Game.CELLSIZE;
-        gridY = (y + height/2)/Game.CELLSIZE;
+        gridX = (x)/Game.CELLSIZE;
+        gridY = (y)/Game.CELLSIZE;
+        grid.updateEntityCell(gridX, gridY, this);
     }
     
     public void setColor(Color color)
@@ -203,6 +201,11 @@ public abstract class Entity {
     public BufferedImage getFinalSprite()
     {
         return sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height);
+    }
+    
+    public int getGoldCost()
+    {
+        return goldCost;
     }
     
 }

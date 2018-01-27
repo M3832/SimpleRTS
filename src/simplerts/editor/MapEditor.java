@@ -15,7 +15,7 @@ import simplerts.Cell;
 import simplerts.Game;
 import simplerts.Map;
 import simplerts.MapIO;
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 
 /**
  *

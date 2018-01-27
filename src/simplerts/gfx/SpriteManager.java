@@ -6,7 +6,6 @@
 package simplerts.gfx;
 
 import java.awt.Color;
-import simplerts.display.Assets;
 
 /**
  *

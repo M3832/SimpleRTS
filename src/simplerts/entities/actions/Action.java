@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.actions;
+package simplerts.entities.actions;
 
 import simplerts.entities.Unit;
 

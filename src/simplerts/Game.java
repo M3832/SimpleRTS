@@ -5,23 +5,17 @@
  */
 package simplerts;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import simplerts.entities.Unit;
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 import simplerts.display.Camera;
 import simplerts.display.Display;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
-import simplerts.display.Message;
-import simplerts.display.MessageManager;
+import simplerts.messaging.Message;
+import simplerts.messaging.MessageManager;
 import simplerts.entities.Builder;
-import simplerts.entities.Tower;
-import simplerts.entities.TownHall;
+import simplerts.entities.Goldmine;
 import simplerts.input.MouseInput;
 import simplerts.ui.GUI;
-import simplerts.ui.UIImageButton;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
 //import org.lwjgl.glfw.*;
@@ -37,109 +31,75 @@ public class Game implements Runnable {
     public static int WIDTH = 980;
     public static int HEIGHT = 512;
     public static int GUIHEIGHT = 225;
-    public static float GAMESPEED = 1f;
     public static int CELLSIZE = 50;
+    public static float GAMESPEED = 1f;
     
-    public static long millisSinceLastRender = 0;
-    public static int RENDERS_PER_SECOND = 120;
     public static int TICKS_PER_SECOND = 50;
+    public static int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    public static int MAX_FRAMESKIP = 10;
+    public static long TIME_SINCE_LAST_UPDATE = 0;
+        
+    public static int RENDERS_PER_SECOND = 120;
+    public static int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
+    public static int MAX_RENDERSKIP = 10;
+    public static long TIME_SINCE_LAST_RENDER = 0;
+    
     private long nextSecond = 0;
 
     public Map map;
     public Camera camera;
-
     public Handler handler;
-    
     public Display display;
-    
     public GUI gui;
-    
     public MessageManager mm;
-
     public CopyOnWriteArrayList<Player> players;
-    
     public Controller controller;
 
     @Override
     public void run() {
         Assets.setup();
-        
-        players = new CopyOnWriteArrayList<>();
-        
-        camera = new Camera();
-        
-        display = new Display(WIDTH, HEIGHT, GUIHEIGHT);
-        
         JFileChooser openFile = new JFileChooser();
+        players = new CopyOnWriteArrayList<>();
+        camera = new Camera();
+        display = new Display(WIDTH, HEIGHT, GUIHEIGHT);
 //        openFile.showOpenDialog(display.window);
 //        map = MapIO.loadMap(openFile.getSelectedFile());
         map = MapIO.loadMap("/asd");
-        
         handler = new Handler(this, map, camera, display);
-        
         mm = new MessageManager(handler);
-        
-        map.setHandler(handler);
-        display.getGamePanel().setHandler(handler);
-//        display.getGUIPanel().setHandler(handler);
-        
         gui = new GUI(map, handler);
-        
-        camera.setHandler(handler);
 
+        
         Player player = new Player(handler);
         controller = new Controller(handler, player);
-        ((MouseInput)display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
         players.add(player);
+
+        ((MouseInput)display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
+        
         map.addEntity(new Builder(10, 6, player));
-//        map.addEntity(new Builder(11, 6, player));
-//        map.addEntity(new Builder(12, 6, player));
-//        map.addEntity(new Builder(10, 7, player));
-//        map.addEntity(new Builder(11, 7, player));
-//        map.addEntity(new Builder(12, 7, player));
-//        map.addEntity(new Builder(10, 8, player));
-//        map.addEntity(new Builder(11, 8, player));
         
-//        map.addEntity(new Tower(6, 2, 2, player, true));
-//        map.addEntity(new Tower(8, 4, 2, player, true));
-//        map.addEntity(new TownHall(4, 6, 4, player, true));
+        map.addEntity(new Goldmine(15, 6, map.getNeutral()));
 
-
-
-        int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-        int MAX_FRAMESKIP = 10;
-        
-        int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
-        int MAX_RENDERSKIP = 10;
 
         long next_game_tick = System.currentTimeMillis();
         int loops;
 
         boolean game_is_running = true;
         
-//        new Thread(() -> {
-//            while(game_is_running){
-//                renderGUI(); 
-//                try {
-//                    Thread.sleep(5);
-//                } catch (InterruptedException ex) {}
-//            }
-//        }).start();
-        
         new Thread(() -> {
             int renderloops;
             long next_game_render = System.currentTimeMillis();
-            long b = System.currentTimeMillis();
+            long lastRender = System.currentTimeMillis();
             while(game_is_running)
             {
                 renderloops = 0;
                 while(System.currentTimeMillis() > next_game_render && renderloops < MAX_RENDERSKIP)
                 {
-                    millisSinceLastRender = System.currentTimeMillis() - b;
+                    TIME_SINCE_LAST_RENDER = System.currentTimeMillis() - lastRender;
                     render();
                     next_game_render += SKIP_RENDERS;
                     renderloops++;
-                    b = System.currentTimeMillis();
+                    lastRender = System.currentTimeMillis();
                 }
             }
         }).start();
@@ -161,11 +121,6 @@ public class Game implements Runnable {
     {
         display.getGamePanel().repaint();
     }
-    
-//    public void renderGUI()
-//    {
-//        display.getGUIPanel().repaint();
-//    }
     
     public void update()
     {

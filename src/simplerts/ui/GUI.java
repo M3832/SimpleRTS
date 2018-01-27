@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.Entity;
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Map;

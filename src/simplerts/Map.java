@@ -5,10 +5,9 @@
  */
 package simplerts;
 
-import simplerts.entities.Building;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 import composite.GraphicsUtil;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-import simplerts.actions.Destination;
-import simplerts.entities.Builder;
 import simplerts.ui.MiniMap;
 
 /**
@@ -29,11 +26,14 @@ import simplerts.ui.MiniMap;
  * @author Markus
  */
 public class Map {
+    
+    
     private final CopyOnWriteArrayList<Entity> entities;
     private final Cell[][] cells;
     private Handler handler;
     private PathFinder pathFinder;
     private Rectangle selectBox;
+    private Player neutral;
     
     public Map(int colSize, int rowSize)
     {
@@ -51,6 +51,7 @@ public class Map {
     public void setHandler(Handler handler)
     {
         this.handler = handler;
+        setNeutral(new Player(handler));
     }
     
     public void addEntity(Entity e)
@@ -105,7 +106,7 @@ public class Map {
                 .sorted((e1, e2) -> { return Integer.compare(e1.getGridY(), e2.getGridY());})
                 .forEach(e -> {
                     if (inView(e, offsetX, offsetY) && e.isVisible()) {
-                        e.render(g, offsetX, offsetY);
+                        e.render(g);
                     }
                 });
     }
@@ -312,5 +313,47 @@ public class Map {
     public void setEntityPosition(Entity entity, Destination destination) {
         entity.setPosition(destination);
         updateEntityCell(entity.getGridX(), entity.getGridY(), entity);
+    }
+
+    /**
+     * @return the neutral
+     */
+    public Player getNeutral() {
+        return neutral;
+    }
+
+    /**
+     * @param neutral the neutral to set
+     */
+    public void setNeutral(Player neutral) {
+        this.neutral = neutral;
+    }
+    
+    public Destination getClosestCell(Entity owner, Entity target)
+    {
+        Integer[][] destinations = new Integer[target.getGridWidth() + 2][target.getGridHeight() + 2];
+        
+        for(int x = target.getGridX() - 1; x < target.getGridX() + target.getGridWidth() + 1; x++)
+        {
+            for(int y = target.getGridY() - 1; y < target.getGridY() + target.getGridHeight() + 1; y++)
+            {
+                destinations[x - target.getGridX() + 1][y - target.getGridY() + 1] = Math.abs(owner.getGridX() - x) + (Math.abs(owner.getGridY() - y));
+            }
+        }
+        int indexX = 0, indexY = 0, score = 100;
+        for(int x = 0; x < destinations.length; x++)
+        {
+            for(int y = 0; y < destinations[0].length; y++)
+            {
+                if(destinations[x][y] < score && !checkCollision(target.getGridX() - 1 + x, target.getGridY() - 1 + y))
+                {
+                    score = destinations[x][y];
+                    indexX = x;
+                    indexY = y;
+                } else {
+                }
+            }
+        }
+        return new Destination(target.getGridX() - 1 + indexX, target.getGridY() - 1 + indexY);
     }
 }

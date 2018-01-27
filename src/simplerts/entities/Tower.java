@@ -8,7 +8,7 @@ package simplerts.entities;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import simplerts.Player;
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 import simplerts.ui.UIAction;
 
 /**
@@ -17,16 +17,14 @@ import simplerts.ui.UIAction;
  */
 public class Tower extends Building{
     
-    public static int GOLDCOST = 50;
+    private static int GOLDCOST = 50;
     
     public Tower(int x, int y, int gridSize, Player player)
     {
         super(x, y, gridSize, player, false);
-        color = player.getColor();
         sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/tower.png", width, height),
                                                      Assets.loadAndResizeImage("/towerteamcolor.png", width, height), color);
-        this.player = player;
-        setupActions();
+        goldCost = GOLDCOST;
     }
     
     public Tower(int x, int y, int gridSize, Player player, boolean built)
@@ -38,12 +36,6 @@ public class Tower extends Building{
     @Override
     public Entity duplicate() {
         return new Tower(gridX, gridY, gridWidth, player);
-    }
-    
-    @Override
-    public void setupActions()
-    {
-        super.setupActions();
     }
     
     public static BufferedImage getUIIcon(Color color)

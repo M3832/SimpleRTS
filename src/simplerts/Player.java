@@ -8,8 +8,9 @@ package simplerts;
 import simplerts.entities.Entity;
 import java.awt.Color;
 import java.util.concurrent.CopyOnWriteArrayList;
-import simplerts.entities.FoodProvider;
+import simplerts.entities.interfaces.FoodProvider;
 import simplerts.entities.Unit;
+import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.gfx.SpriteManager;
 
 /**
@@ -29,7 +30,7 @@ public class Player {
     {
         this.handler = handler;
         entities = new CopyOnWriteArrayList<>();
-        gold = 300;
+        gold = 400;
         lumber = 0;
         maxFood = 0;
         currentFood = 0;
@@ -123,6 +124,22 @@ public class Player {
     public boolean hasRoomFor(int food)
     {
         return currentFood + food <= maxFood;
+    }
+    
+    public CopyOnWriteArrayList<Entity> getEntities()
+    {
+        return entities;
+    }
+
+    public boolean hasGoldFor(Entity e) {
+        return (gold - e.getGoldCost() >= 0);
+    }
+
+    public void pay(int cost) {
+        System.out.println("Cost " + cost);
+        System.out.println("Paying?? " + gold);
+        this.gold = this.gold - cost;
+        System.out.println("Payed?? " + gold);
     }
     
     

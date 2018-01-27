@@ -13,7 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
-import simplerts.display.Assets;
+import simplerts.gfx.Assets;
 
 /**
  *

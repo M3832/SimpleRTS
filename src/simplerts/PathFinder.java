@@ -8,7 +8,6 @@ package simplerts;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
-import simplerts.actions.Destination;
 import simplerts.entities.Building;
 import simplerts.entities.Unit;
 

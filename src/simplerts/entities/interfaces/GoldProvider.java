@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.entities;
+package simplerts.entities.interfaces;
 
 /**
  *
  * @author Markus
  */
-public interface FoodProvider {
-    
-    public int getFoodProduced();
-    
+public interface GoldProvider {
+    public boolean enterGatherer(Goldminer g);
+    public void exitGatherer();
 }

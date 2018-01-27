@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.actions;
+package simplerts.entities.actions;
 
+import simplerts.Destination;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;

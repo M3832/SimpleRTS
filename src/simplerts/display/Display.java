@@ -5,10 +5,8 @@
  */
 package simplerts.display;
 
-import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -20,72 +18,32 @@ import javax.swing.WindowConstants;
 public class Display {
     public JFrame window;
     
-    public Canvas canvas;
-    public Canvas guicanvas;
-    
     public GamePanel gamePanel;
-    public GUIPanel guiPanel;
-    
     
     public Display(int width, int height, int guiheight)
     {
+        Dimension size = new Dimension(width, height + guiheight);
+        
         window = new JFrame();
-//        window.setSize(new Dimension(width, height));
         Container pane = window.getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
-//        canvas = new Canvas();
-//        canvas.setSize(new Dimension(width, height));
-//        canvas.setFocusable(false);
 
-          gamePanel = new GamePanel();
-          gamePanel.setSize(new Dimension(width, height + guiheight));
-          gamePanel.setMinimumSize(new Dimension(width, height + guiheight));
-          gamePanel.setMaximumSize(new Dimension(width, height + guiheight));
-          gamePanel.setPreferredSize(new Dimension(width, height + guiheight));
+        gamePanel = new GamePanel();
+        gamePanel.setSize(size);
+        gamePanel.setMinimumSize(size);
+        gamePanel.setMaximumSize(size);
+        gamePanel.setPreferredSize(size);
         
-//        guicanvas = new Canvas();
-//        guicanvas.setSize(new Dimension(width, 225));
-//        guicanvas.setFocusable(false);
-          
-//          guiPanel = new GUIPanel();
-//          guiPanel.setSize(new Dimension(width, 225));
-//          guiPanel.setMinimumSize(new Dimension(width, 225));
-//          guiPanel.setMaximumSize(new Dimension(width, 225));
-//          guiPanel.setPreferredSize(new Dimension(width, 225));
-        
-//        pane.add(canvas);
-//        pane.setBorder(new EmptyBorder(0, 0, 0, 0));
         pane.add(gamePanel);
-//        pane.add(guiPanel);
         window.setVisible(true);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
+        window.setResizable(false);
+        window.setSize(size);
         window.pack();
-//        canvas.createBufferStrategy(2);
-//        guicanvas.createBufferStrategy(2);
-    }
-    
-    public Graphics GetGraphics(){
-        return canvas.getGraphics();
-    }
-    
-    public Canvas getCanvas()
-    {
-        return canvas;
-    }
-    
-    public Canvas getGUICanvas()
-    {
-        return guicanvas;
     }
     
     public GamePanel getGamePanel()
     {
         return gamePanel;
-    }
-    
-    public GUIPanel getGUIPanel()
-    {
-        return guiPanel;
     }
 }

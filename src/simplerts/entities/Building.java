@@ -12,10 +12,9 @@ import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.Utils;
-import simplerts.display.Assets;
-import simplerts.display.ErrorMessage;
-import simplerts.display.Message;
-import static simplerts.entities.Tower.GOLDCOST;
+import simplerts.gfx.Assets;
+import simplerts.messaging.ErrorMessage;
+import simplerts.messaging.Message;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
 import simplerts.ui.UIAction;
@@ -38,7 +37,25 @@ public abstract class Building extends Entity {
     
     public Building(int x, int y, int cellSize, Player player, boolean built)
     {
-        super(x * Game.CELLSIZE, y * Game.CELLSIZE, cellSize, player);
+        super(x, y, cellSize, player);
+        initVariables(built);
+    }
+    
+//    public Building(int x, int y, int gridWidth, int gridHeight){
+//        this.x = x;
+//        this.y = y;
+//        this.width = gridWidth * Game.CELLSIZE;
+//        this.height = gridHeight * Game.CELLSIZE;
+//        this.gridWidth = gridWidth;
+//        this.gridHeight = gridHeight;
+//        this.gridX = x/Game.CELLSIZE;
+//        this.gridY = y/Game.CELLSIZE;
+//        buildTime = 500;
+//        currentTime = 1;
+//    }
+    
+    private void initVariables(boolean built)
+    {
         buildTime = 500;
         currentTime = 1;
         armor = 2;
@@ -46,19 +63,6 @@ public abstract class Building extends Entity {
         if(built) setBuilt();
         trainTime = 0;
         currentTrainTime = 0;
-    }
-    
-    public Building(int x, int y, int gridWidth, int gridHeight){
-        this.x = x;
-        this.y = y;
-        this.width = gridWidth * Game.CELLSIZE;
-        this.height = gridHeight * Game.CELLSIZE;
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.gridX = x/Game.CELLSIZE;
-        this.gridY = y/Game.CELLSIZE;
-        buildTime = 500;
-        currentTime = 1;
     }
     
     public void setImage(BufferedImage image)
@@ -84,8 +88,7 @@ public abstract class Building extends Entity {
             currentTime += 1 * Game.GAMESPEED;
         } else if (builder != null && currentTime == buildTime)
         {
-            builder.isVisible = true;
-            grid.setEntityPosition(builder, grid.getAvailableNeighborCell(this));
+            builder.exit(grid.getAvailableNeighborCell(this));
             builder = null;
             setupActions();
         }
@@ -99,21 +102,24 @@ public abstract class Building extends Entity {
             player.getHandler().map.addEntity(unitTraining);
             unitTraining = null;
             uiObjects.stream().forEach((object) -> {if(!((UIAction)object).isVisible()){((UIAction)object).setVisible(true);}});
-
         }
     }
     
-    @Override
-    public void render(Graphics g, float offsetX, float offsetY)
+    protected void setupActions()
     {
-//        super.render(g, offsetX, offsetY);
         
+    }
+    
+    @Override
+    public void render(Graphics g)
+    {
+        super.render(g);
         g.drawImage(sprite.getSubimage(width * (int)((1f * currentTime/buildTime) * (sprite.getWidth()/width - 1)), 0, width, height), (int)(x - offsetX), (int)(y - offsetY), width, height, null);
     }
     
     public Building build(Builder b)
     {
-        b.setInvisible();
+        b.enter();
         builder = b;
         return this;
     }
@@ -122,10 +128,16 @@ public abstract class Building extends Entity {
     {
         if(player.hasRoomFor(1))
         {
-            currentTrainTime = 0;
-            trainTime = u.getTrainTime();
-            unitTraining = u;
-            uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+            if(player.hasGoldFor(u))
+            {
+                currentTrainTime = 0;
+                trainTime = u.getTrainTime();
+                unitTraining = u;
+                player.pay(u.getCost());
+                uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+            } else {
+                player.getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold."));
+            }
         } else {
             player.getHandler().game.mm.addMessage(new ErrorMessage("Not enough food. Create more farms."));
         }

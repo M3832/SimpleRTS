@@ -28,6 +28,10 @@ public class Handler {
         this.map = map;
         this.camera = camera;
         this.display = display;
+        
+        this.map.setHandler(this);
+        this.display.getGamePanel().setHandler(this);
+        this.camera.setHandler(this);
     }
     
     public Camera getCamera()

@@ -5,20 +5,22 @@
  */
 package simplerts.entities;
 
+import simplerts.entities.interfaces.FoodProvider;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Player;
-import simplerts.display.Assets;
-import static simplerts.entities.Tower.GOLDCOST;
+import simplerts.gfx.Assets;
+import simplerts.entities.interfaces.GoldReceiver;
+import simplerts.entities.interfaces.Goldminer;
 import simplerts.ui.UIAction;
 
 /**
  *
  * @author Markus
  */
-public class TownHall extends Building implements FoodProvider {
+public class TownHall extends Building implements FoodProvider, GoldReceiver {
     public static int GOLDCOST = 400;
     
     public TownHall(int x, int y, int gridSize, Player player) {
@@ -29,19 +31,18 @@ public class TownHall extends Building implements FoodProvider {
         uiObjects = new ArrayList<>();
         uiActions = new ArrayList<>();
         buildTime = 1 * Game.TICKS_PER_SECOND;
+        goldCost = GOLDCOST;
     }
     
     public TownHall(int x, int y, int gridSize, Player player, boolean built)
     {
         this(x, y, gridSize, player);
         if(built) setBuilt();
-        setupActions();
     }
     
     @Override
-    public void setupActions()
+    protected void setupActions()
     {
-        super.setupActions();
         uiActions.add(Builder.getUIAction(player, this));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
     }
@@ -69,6 +70,11 @@ public class TownHall extends Building implements FoodProvider {
         a.setTitle("Town Hall");
         a.setGoldCost(GOLDCOST + "");
         return a;
+    }
+
+    @Override
+    public void receiveGold(Goldminer g) {
+        player.addGold(g.takeGold());
     }
     
 }
