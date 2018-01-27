@@ -17,7 +17,7 @@ public class Follow extends Action {
 
     private Entity target;
     private long nextRepathing;
-    private int waittime = 2000;
+    private int waittime = 500;
     private MoveTo movePath;
     
     public Follow(Unit owner, Entity target) {
@@ -27,7 +27,7 @@ public class Follow extends Action {
 
     @Override
     public void performAction() {
-        if(nextRepathing < System.currentTimeMillis() && (Math.abs(owner.getGridX() - target.getGridX()) > 0 && Math.abs(owner.getGridY() - target.getGridY()) > 0))
+        if(nextRepathing < System.currentTimeMillis() && (Math.abs(owner.getGridX() - target.getGridX()) > 1 || Math.abs(owner.getGridY() - target.getGridY()) > 1))
         {
             System.out.println("repathing");
             movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), getClosestCell(), true));
@@ -54,13 +54,11 @@ public class Follow extends Action {
         {
             for(int y = 0; y < destinations[0].length; y++)
             {
-                System.out.println("X: " + x + " Y: " + y + " Blocked: " + owner.getMap().checkCollision(target.getGridX() - 1 + x, target.getGridY() - 1 + y));
                 if(destinations[x][y] < score && !owner.getMap().checkCollision(target.getGridX() - 1 + x, target.getGridY() - 1 + y))
                 {
                     score = destinations[x][y];
                     indexX = x;
                     indexY = y;
-                    System.out.println("asdojasfobn");
                 } else {
                 }
             }

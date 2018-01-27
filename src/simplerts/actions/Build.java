@@ -29,7 +29,7 @@ public class Build extends Action {
         Building newBuilding = building.build((Builder)owner);
         owner.getMap().addEntity(newBuilding);
         owner.removeAction(this);
-        owner.getPlayer().handler.game.controller.selectEntity(newBuilding);
+        owner.getPlayer().getHandler().game.controller.selectEntity(newBuilding);
     }
     
 }

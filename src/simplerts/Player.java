@@ -7,8 +7,10 @@ package simplerts;
 
 import simplerts.entities.Entity;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
+import simplerts.entities.FoodProvider;
+import simplerts.entities.Unit;
+import simplerts.gfx.SpriteManager;
 
 /**
  *
@@ -16,36 +18,111 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Player {
     
-    private int gold;
+    private int gold, lumber, maxFood, currentFood;
     private Color teamColor;
-    private CopyOnWriteArrayList<Entity> selectedEntities;
+    private CopyOnWriteArrayList<Entity> entities;
+    private SpriteManager spritemanager;
 
-    public Handler handler;
+    private Handler handler;
     
     public Player(Handler handler)
     {
-
-        selectedEntities = new CopyOnWriteArrayList<>();
         this.handler = handler;
+        entities = new CopyOnWriteArrayList<>();
         gold = 300;
-        teamColor = new Color(0, 0, 0);
+        lumber = 0;
+        maxFood = 0;
+        currentFood = 0;
+        teamColor = new Color(255, 0, 0);
+        this.spritemanager = new SpriteManager(teamColor);
     }
     
-    public void input()
+    public SpriteManager getSpriteManager()
     {
-
-        
-        
-    }
-    
-    public void render(Graphics g)
-    {
-
+        return spritemanager;
     }
     
     public Color getColor()
     {
         return teamColor;
+    }
+
+    /**
+     * @return the lumber
+     */
+    public int getLumber() {
+        return lumber;
+    }
+
+    /**
+     * @param lumber the lumber to set
+     */
+    public void setLumber(int lumber) {
+        this.lumber = lumber;
+    }
+
+    /**
+     * @return the maxFood
+     */
+    public int getMaxFood() {
+        return maxFood;
+    }
+
+    /**
+     * @param maxFood the maxFood to set
+     */
+    public void setMaxFood(int maxFood) {
+        this.maxFood = maxFood;
+    }
+
+    /**
+     * @return the handler
+     */
+    public Handler getHandler() {
+        return handler;
+    }
+
+    /**
+     * @param handler the handler to set
+     */
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
+    
+    public void setGold(int gold)
+    {
+        this.gold = gold;
+    }
+    
+    public void addGold(int gold)
+    {
+        this.gold += gold;
+    }
+    
+    public int getGold()
+    {
+        return gold;
+    }
+    
+    public void addEntity(Entity e)
+    {
+        entities.add(e);
+        if(e instanceof FoodProvider)
+        {
+            maxFood += ((FoodProvider)e).getFoodProduced();
+        } else if (e instanceof Unit)
+        {
+            currentFood++;
+        }
+    }
+
+    public int getCurrentFood() {
+        return currentFood;
+    }
+    
+    public boolean hasRoomFor(int food)
+    {
+        return currentFood + food <= maxFood;
     }
     
     

@@ -6,14 +6,18 @@
 package simplerts.entities;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import simplerts.Player;
 import simplerts.display.Assets;
+import simplerts.ui.UIAction;
 
 /**
  *
  * @author Markus
  */
 public class Tower extends Building{
+    
+    public static int GOLDCOST = 50;
     
     public Tower(int x, int y, int gridSize, Player player)
     {
@@ -40,6 +44,22 @@ public class Tower extends Building{
     public void setupActions()
     {
         super.setupActions();
+    }
+    
+    public static BufferedImage getUIIcon(Color color)
+    {
+        BufferedImage sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/tower.png"),
+                                                     Assets.loadToCompatibleImage("/towerteamcolor.png"), color);
+        return Assets.makeIcon(color, sprite);
+    }
+    
+    public static UIAction getUIAction(Player player)
+    {
+        UIAction a = new UIAction(Assets.resizeImage(Tower.getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Tower(0, 0, 2, player));});
+        a.setTitle("Tower");
+        a.setGoldCost(GOLDCOST + "");
+        a.setLumberCost("25");
+        return a;
     }
     
     

@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.actions.Destination;
-import simplerts.entities.Entity;
+import simplerts.entities.Building;
+import simplerts.entities.Unit;
 
 /**
  *
@@ -19,6 +20,7 @@ public class PathFinder {
     private final ArrayList<Node> open;
     private final ArrayList<Node> closed;
     private final Map map;
+    private boolean accountForUnits;
     private Node[][] nodeMap;
     
     public PathFinder(Map map)
@@ -34,6 +36,7 @@ public class PathFinder {
         open.clear();
         closed.clear();
         Node current;
+        this.accountForUnits = accountForUnits;
         CopyOnWriteArrayList<Destination> finalPath = new CopyOnWriteArrayList<>();
         
         //Create a nodemap and initialize it
@@ -47,21 +50,13 @@ public class PathFinder {
             }
         }
         
-        if(accountForUnits)
-        {
-            for(Entity e : map.getEntities())
-            {
-                nodeMap[e.getGridX()][e.getGridY()].occupiedByUnit = true;
-            }
-        }
-        
         //Get start and end node
         Node startNode = nodeMap[(int)start.getX()][(int)start.getY()];
         Node goalNode = nodeMap[(int)goal.getX()][(int)goal.getY()];
         
         if(!map.getCells()[goalNode.gridX][goalNode.gridY].available)
         {
-            goalNode = findCloseNode(goalNode);
+            goalNode = findCloseNode(goalNode, startNode);
         }
         
         open.add(startNode);
@@ -118,25 +113,39 @@ public class PathFinder {
         return finalPath;
     }
     
-    private Node findCloseNode(Node goalNode)
+    private Node findCloseNode(Node goalNode, Node startNode)
     {
-            for(int x = goalNode.gridX - 1; x <= goalNode.gridX + 1; x++)
+        Integer[][] destinations = new Integer[3][3];
+        
+        for(int x = goalNode.gridX - 1; x <= goalNode.gridX + 1; x++)
+        {
+            for(int y = goalNode.gridY - 1; y <= goalNode.gridY + 1; y++)
             {
-                for(int y = goalNode.gridY - 1; y <= goalNode.gridY + 1; y++)
+                destinations[x - goalNode.gridX + 1][y - goalNode.gridY + 1] = Math.abs(startNode.gridX - x) + (Math.abs(startNode.gridY - y));
+            }
+        }
+        int indexX = 0, indexY = 0, score = 100;
+        for(int x = 0; x < destinations.length; x++)
+        {
+            for(int y = 0; y < destinations[0].length; y++)
+            {
+                if(destinations[x][y] < score && !map.checkCollision(goalNode.gridX - 1 + x, goalNode.gridY - 1 + y))
                 {
-                    if(x > 0 && x < nodeMap.length && y > 0 && y < nodeMap[0].length)
-                    {
-                        if(map.getCells()[x][y].getEntity() == null && map.getCells()[x][y].available)
-                            return nodeMap[x][y];
-                    }
+                    score = destinations[x][y];
+                    indexX = x;
+                    indexY = y;
+                } else {
                 }
             }
-            return goalNode;
+        }
+        return nodeMap[goalNode.gridX - 1 + indexX][goalNode.gridY - 1 + indexY];
     }
     
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
     {
-        if(closed.stream().anyMatch(node -> node == neighbor) || map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null || !map.getCells()[neighbor.gridX][neighbor.gridY].available)
+        if(closed.stream().anyMatch(node -> node == neighbor) ||
+                (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null && (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Building || (accountForUnits && map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Unit))) || 
+                !map.getCells()[neighbor.gridX][neighbor.gridY].available)
             return;
         
         int calcCost = neighbor.heuristic + current.totalCost + moveCost;

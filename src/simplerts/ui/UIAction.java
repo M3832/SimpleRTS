@@ -5,8 +5,10 @@
  */
 package simplerts.ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import simplerts.Utils;
 
 /**
  *
@@ -17,6 +19,8 @@ public class UIAction extends UIObject {
     private ClickListener clicker;
     private BufferedImage icon;
     private boolean visible;
+    private boolean action;
+    private String title, goldCost, lumberCost;
     
     public UIAction(BufferedImage icon, ClickListener clicker)
     {
@@ -24,6 +28,7 @@ public class UIAction extends UIObject {
         this.icon = icon;
         this.clicker = clicker;
         visible = true;
+        action = true;
     }
     
     public UIAction(float x, float y, BufferedImage icon, ClickListener clicker)
@@ -32,6 +37,7 @@ public class UIAction extends UIObject {
         this.icon = icon;
         this.clicker = clicker;
         visible = true;
+        action = false;
     }
     
     @Override
@@ -42,7 +48,24 @@ public class UIAction extends UIObject {
     @Override
     public void render(Graphics g) {
         if(visible)
+        {
             g.drawImage(icon, (int)x, (int)y, null);
+            if(hovering && action)
+            {
+                g.setColor(new Color(25, 25, 25, 245));
+                g.fillRect(768 - 100, 24, 100, 100);
+                g.setColor(Color.black);
+                g.drawRect(768 - 100, 24, 100, 100);
+                g.setColor(Color.WHITE);
+                g.setFont(GUI.SMALL);
+                if(title != null)
+                    Utils.drawWithShadow(g, title, 718 - g.getFontMetrics(GUI.SMALL).stringWidth(title)/2, 24 + g.getFontMetrics(GUI.SMALL).getHeight());
+                if(goldCost != null)
+                    Utils.drawWithShadow(g, "Gold: " + goldCost, 680, 40 + g.getFontMetrics(GUI.SMALL).getHeight());
+                if(lumberCost != null)
+                    Utils.drawWithShadow(g, "Wood: " + lumberCost, 680, 56 + g.getFontMetrics(GUI.SMALL).getHeight());
+            }
+        }
     }
 
     @Override
@@ -63,5 +86,49 @@ public class UIAction extends UIObject {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the goldCost
+     */
+    public String getGoldCost() {
+        return goldCost;
+    }
+
+    /**
+     * @param goldCost the goldCost to set
+     */
+    public void setGoldCost(String goldCost) {
+        this.goldCost = goldCost;
+    }
+
+    /**
+     * @return the lumberCost
+     */
+    public String getLumberCost() {
+        return lumberCost;
+    }
+
+    /**
+     * @param lumberCost the lumberCost to set
+     */
+    public void setLumberCost(String lumberCost) {
+        this.lumberCost = lumberCost;
+    }
+    
+    
     
 }

@@ -8,6 +8,7 @@ package simplerts;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import simplerts.entities.Builder;
 import simplerts.entities.Building;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
+import simplerts.ui.GUI;
 
 /**
  *
@@ -100,6 +102,8 @@ public class Controller {
         if(entityplacer.entity != null)
             entityplacer.render(g);
         
+        renderResources(g);
+        
     }
     
     public void setEntityPlacerEntity(Entity e)
@@ -137,6 +141,8 @@ public class Controller {
     {
         selected.clear();
         selected.add(e);
+        handler.game.gui.setSelectedEntities(selected);
+
     }
     
     private void input()
@@ -155,7 +161,7 @@ public class Controller {
                     Builder b = ((Builder)selected.get(0));
                     Building building = (Building)entityplacer.entity.duplicate();
                     building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
-                    b.addAction(new MoveTo(b, player.handler.map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2), true)));
+                    b.addAction(new MoveTo(b, player.getHandler().map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2), true)));
                     b.addAction(new Build(b, building));
                 }
                 entityplacer.entity = null;
@@ -206,24 +212,34 @@ public class Controller {
                     int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
                     if(handler.map.getCells()[gridX][gridY].getEntity() != null)
                     {
-                        System.out.println("Adding a follow action");
                         u.addAction(new Follow(u, handler.map.getCells()[gridX][gridY].getEntity()));
                     } else {
-                        if(selected.size() > 1)
-                        {
-                            int offsetX = (int)(index%(Math.sqrt(selected.size())));
-                            int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                            int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
-                            int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
-                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY), false))));
-                        } else {
-                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(new Destination(u.getGridX(), u.getGridY()), new Destination(((int)(ml.posX + handler.camera.getOffsetX())/Game.CELLSIZE), ((int)(ml.posY + handler.getCamera().getOffsetY()) / Game.CELLSIZE)), true))));                       
-                        }                        
+                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
+                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
+                        int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
+                        int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
+                        u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY), selected.size() == 1))));                    
                     }
                     index++;
                 }
             }
         }
+    }
+
+    private void renderResources(Graphics g) {
+        int resourceWidth = 300, resourceHeight = 50;
+        String gold = "Gold: " + player.getGold(), wood = "Wood: " + player.getLumber(), food = "Food: " + player.getCurrentFood() + "/" + player.getMaxFood();
+        g.setColor(new Color(100, 100, 100, 100));
+        g.fillRect(Game.WIDTH - resourceWidth, 0, resourceWidth -1, resourceHeight);
+        g.setColor(Color.BLACK);
+        g.drawRect(Game.WIDTH - resourceWidth, 0, resourceWidth - 1, resourceHeight);
+        g.setFont(GUI.BREAD);
+        g.setColor(Color.YELLOW);
+        Utils.drawWithShadow(g, gold, Game.WIDTH - resourceWidth + 10, 30);
+        g.setColor(Color.GREEN);
+        Utils.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
+        g.setColor(new Color(255, 50, 50));
+        Utils.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
     }
     
 }

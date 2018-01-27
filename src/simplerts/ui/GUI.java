@@ -31,6 +31,7 @@ public class GUI {
     private ArrayList<Entity> entities;
     public static Font HEADER = new Font("Verdana", Font.PLAIN, 34);
     public static Font BREAD = new Font("Verdana", Font.PLAIN, 16);
+    public static Font SMALL = new Font("Verdana", Font.PLAIN, 10);
     private CopyOnWriteArrayList<UIObject> objects;
     
     public GUI(Map map, Handler handler)

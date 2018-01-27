@@ -33,13 +33,11 @@ public class Builder extends Unit{
         this();
         this.player = player;
         color = player.getColor();
-        ac.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/walk.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
-        ac.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/stand.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
+        ac = player.getSpriteManager().getPeasantAC();
         initGraphics();
         setupActions();
         setPosition(x * Game.CELLSIZE, y * Game.CELLSIZE);
+        trainTime = 1 * Game.TICKS_PER_SECOND;
     }
     
     public Builder(Destination d, Player player)
@@ -51,8 +49,9 @@ public class Builder extends Unit{
     public void setupActions()
     {
         super.setupActions();
-        uiActions.add(new UIAction(Assets.loadAndResizeImage("/townhall.png", 55, 55), () -> {player.handler.game.controller.setEntityPlacerEntity(new TownHall(0, 0, 4, player));}));
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.handler.camera.centerOnEntity(this);}));
+        uiActions.add(TownHall.getUIAction(player));
+        uiActions.add(Tower.getUIAction(player));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
     }
 
     @Override

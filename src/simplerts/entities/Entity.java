@@ -23,6 +23,7 @@ import simplerts.ui.UIObject;
 public abstract class Entity {
     
     protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
+    protected int goldCost, lumberCost;
     protected int health, maxHealth;
     protected BufferedImage sprite, icon;
     protected ArrayList<UIObject> uiObjects;
@@ -40,6 +41,8 @@ public abstract class Entity {
         height = 0;
         gridX = 0;
         gridY = 0;
+        goldCost = 0;
+        lumberCost = 0;
         color = new Color(50, 200, 50);
         gridWidth = 1;
         gridHeight = 1;

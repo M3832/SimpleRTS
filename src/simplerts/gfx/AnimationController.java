@@ -7,6 +7,7 @@ package simplerts.gfx;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  *
@@ -20,6 +21,15 @@ public class AnimationController {
     public AnimationController()
     {
         animations = new HashMap<>();
+    }
+    
+    public AnimationController(AnimationController a)
+    {
+        this();
+        for(Entry<String, Animation> entry : a.animations.entrySet())
+        {
+            animations.put(entry.getKey(), entry.getValue());
+        }
     }
     
     public BufferedImage getCurrentFrame()

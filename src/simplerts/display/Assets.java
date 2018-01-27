@@ -38,7 +38,6 @@ public class Assets {
 
     public static void setup() {
         terrains = new ArrayList<>();
-        GRASS = loadAndResizeImage("/grass.bmp", Game.CELLSIZE, Game.CELLSIZE);
         loadTiles(64);
         dirt = loadTerrain("/dirt3.bmp", "dirt", true, new Color(129, 61, 0));
         grass = new TerrainPlacement(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19, 38, 39}, new Integer[] {19, 20, 4, 12, 14}, tiles, "grass", true, Color.GREEN);

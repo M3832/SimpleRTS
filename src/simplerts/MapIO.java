@@ -20,9 +20,9 @@ import simplerts.display.Assets;
  * @author Markus
  */
 public class MapIO {
-        public static Map loadMap(String url)
+    public static Map loadMap(String url)
     {
-        return loadMap(new File(url));
+        return loadMap(new File(File.class.getResource(url).getFile()));
     }
     
     public static Map loadMap(File file)

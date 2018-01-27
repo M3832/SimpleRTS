@@ -7,12 +7,15 @@ package simplerts;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import simplerts.entities.Unit;
 import simplerts.display.Assets;
 import simplerts.display.Camera;
 import simplerts.display.Display;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFileChooser;
+import simplerts.display.Message;
+import simplerts.display.MessageManager;
 import simplerts.entities.Builder;
 import simplerts.entities.Tower;
 import simplerts.entities.TownHall;
@@ -38,6 +41,7 @@ public class Game implements Runnable {
     
     public static long millisSinceLastRender = 0;
     public static int RENDERS_PER_SECOND = 120;
+    public static int TICKS_PER_SECOND = 50;
     private long nextSecond = 0;
 
     public Map map;
@@ -48,6 +52,8 @@ public class Game implements Runnable {
     public Display display;
     
     public GUI gui;
+    
+    public MessageManager mm;
 
     public CopyOnWriteArrayList<Player> players;
     
@@ -64,17 +70,19 @@ public class Game implements Runnable {
         display = new Display(WIDTH, HEIGHT);
         
         JFileChooser openFile = new JFileChooser();
-        openFile.showOpenDialog(display.window);
-        map = MapIO.loadMap(openFile.getSelectedFile());
+//        openFile.showOpenDialog(display.window);
+//        map = MapIO.loadMap(openFile.getSelectedFile());
+        map = MapIO.loadMap("/asd");
         
         handler = new Handler(this, map, camera, display);
+        
+        mm = new MessageManager(handler);
         
         map.setHandler(handler);
         display.getGamePanel().setHandler(handler);
         display.getGUIPanel().setHandler(handler);
         
         gui = new GUI(map, handler);
-        setupGUI(gui);
         
         camera.setHandler(handler);
 
@@ -83,20 +91,20 @@ public class Game implements Runnable {
         ((MouseInput)display.getGUIPanel().getMouseListeners()[0]).setGUI(gui);
         players.add(player);
         map.addEntity(new Builder(10, 6, player));
-        map.addEntity(new Builder(11, 6, player));
-        map.addEntity(new Builder(12, 6, player));
-        map.addEntity(new Builder(10, 7, player));
-        map.addEntity(new Builder(11, 7, player));
-        map.addEntity(new Builder(12, 7, player));
-        map.addEntity(new Builder(10, 8, player));
-        map.addEntity(new Builder(11, 8, player));
+//        map.addEntity(new Builder(11, 6, player));
+//        map.addEntity(new Builder(12, 6, player));
+//        map.addEntity(new Builder(10, 7, player));
+//        map.addEntity(new Builder(11, 7, player));
+//        map.addEntity(new Builder(12, 7, player));
+//        map.addEntity(new Builder(10, 8, player));
+//        map.addEntity(new Builder(11, 8, player));
         
-        map.addEntity(new Tower(6, 2, 2, player, true));
-        map.addEntity(new Tower(8, 4, 2, player, true));
-        map.addEntity(new TownHall(4, 6, 4, player, true));
+//        map.addEntity(new Tower(6, 2, 2, player, true));
+//        map.addEntity(new Tower(8, 4, 2, player, true));
+//        map.addEntity(new TownHall(4, 6, 4, player, true));
 
 
-        int TICKS_PER_SECOND = 50 * (int)GAMESPEED;
+
         int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
         int MAX_FRAMESKIP = 10;
         
@@ -134,6 +142,9 @@ public class Game implements Runnable {
                 }
             }
         }).start();
+        
+        mm.addMessage(new Message("Welcome to this nameless RTS-game!"));
+        
         while (game_is_running) {
             loops = 0;
             while (System.currentTimeMillis() > next_game_tick && loops < MAX_FRAMESKIP) {
@@ -143,8 +154,7 @@ public class Game implements Runnable {
             }
         }
 
-    }
-    
+    } 
     
     public void render()
     {
@@ -160,31 +170,6 @@ public class Game implements Runnable {
     {
         if(controller != null)
             controller.update();
-        players.stream().forEach(player -> player.input());
         handler.map.update();
-    }
-    
-//    public void render(Canvas c)
-//    {
-//        BufferStrategy bs = c.getBufferStrategy();
-//        Graphics g = bs.getDrawGraphics();
-//        g.setColor(Color.BLACK);
-//        g.fillRect(0, 0, WIDTH, HEIGHT);
-//        camera.render(g);
-//        
-//        if(System.currentTimeMillis() > nextSecond)
-//        {
-//            System.out.println(renderUpdates);
-//            renderUpdates = 0;
-//            nextSecond = System.currentTimeMillis() + 1000;
-//        }
-//        renderUpdates++;
-//        players.stream().forEach(player -> player.render(g));
-//        bs.show();
-//        g.dispose();
-//    }
-
-    private void setupGUI(GUI gui) {
-
     }
 }

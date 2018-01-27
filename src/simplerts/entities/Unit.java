@@ -171,7 +171,7 @@ public abstract class Unit extends Entity {
         g.drawImage(ac.getCurrentFrame(), (int)(x - offsetX), (int)(y - offsetY), null);
         if(!actions.isEmpty() && actions.get(0) instanceof MoveTo)
         {
-//            ((MoveTo)actions.get(0)).render(g);
+            ((MoveTo)actions.get(0)).render(g);
         }
     }
     

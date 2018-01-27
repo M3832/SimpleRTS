@@ -18,7 +18,7 @@ public class Utils {
     {
         Color c = g.getColor();
         g.setColor(Color.black);
-        g.drawString(s, posX +2, posY +2);
+        g.drawString(s, posX +1, posY +1);
         g.setColor(c);
         g.drawString(s, posX, posY);
     }

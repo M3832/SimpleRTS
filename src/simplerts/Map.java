@@ -62,6 +62,7 @@ public class Map {
             }
         }
         entities.add(e);
+        e.getPlayer().addEntity(e);
         if (e instanceof Unit)
         {
             ((Unit)e).setMap(this);
@@ -258,39 +259,21 @@ public class Map {
         Destination d = new Destination(0, 0);
         for(int x = e.getGridX() - 1; x <= e.getGridX() + e.getGridWidth(); x++)
         {
-            if(x > 0 && x < cells.length && e.getGridY()-1 > 0 && e.getGridY()-1 < cells[0].length)
+            for(int y = e.getGridY() - 1; y <= e.getGridY() + e.getGridHeight(); y++)
             {
-                if(!isCellBlocked(x, e.getGridY()-1))
+                if((x > e.getGridX() + e.getWidth() || x < e.getGridX()) || (y > e.getGridY() + e.getGridHeight() || y < e.getGridY()))
                 {
-                    return new Destination(x, e.getGridY()-1);
+                    if(x > 0 && x < cells.length && y > 0 && y < cells[0].length)
+                    {
+                        if(!isCellBlocked(x, y))
+                        {
+                            return new Destination(x, y);
+                        }
+                    }
                 }
-            }
-            if(x > 0 && x < cells.length && e.getGridY()+1 > 0 && e.getGridY()+1 < cells[0].length)
-            {
-                if(!isCellBlocked(x, e.getGridY()+e.getGridHeight()))
-                {
-                    return new Destination(x, e.getGridY()+e.getGridHeight());
-                }
-            }
+            }            
         }
 
-        for(int y = e.getGridY(); y <= e.getGridY() + e.getGridHeight(); y++)
-        {
-            if(e.getGridX()-1 > 0 && e.getGridX()-1 < cells.length && y > 0 && y < cells[0].length)
-            {
-                if(!isCellBlocked(e.getGridX()-1, y))
-                {
-                    return new Destination(e.getGridX()-1, y);
-                }
-            }
-            if(e.getGridX()+1 > 0 && e.getGridX()+1 < cells.length && y > 0 && y < cells[0].length)
-            {
-                if(!isCellBlocked(e.getGridX()+e.getGridWidth(), y))
-                {
-                    return new Destination(e.getGridX()+e.getGridWidth(), y);
-                }
-            }
-        }
         
         return d;
     }

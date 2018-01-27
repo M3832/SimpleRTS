@@ -26,7 +26,6 @@ public class Cell {
     public Cell()
     {
         available = true;
-        backgroundimage = Assets.GRASS;
     }
     
     public Cell(TerrainPlacement terrain)

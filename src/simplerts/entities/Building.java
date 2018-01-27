@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.Utils;
+import simplerts.display.ErrorMessage;
+import simplerts.display.Message;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
 import simplerts.ui.UIAction;
@@ -81,7 +83,7 @@ public abstract class Building extends Entity {
         } else if (builder != null && currentTime == buildTime)
         {
             builder.isVisible = true;
-            builder.setPosition(player.handler.map.getAvailableNeighborCell(this));
+            builder.setPosition(player.getHandler().map.getAvailableNeighborCell(this));
             builder = null;
             setupActions();
         }
@@ -91,8 +93,8 @@ public abstract class Building extends Entity {
             currentTrainTime += 1 * Game.GAMESPEED;
         } else if (unitTraining != null && currentTrainTime == trainTime)
         {
-            unitTraining.setPosition(player.handler.map.getAvailableNeighborCell(this));
-            player.handler.map.addEntity(unitTraining);
+            unitTraining.setPosition(player.getHandler().map.getAvailableNeighborCell(this));
+            player.getHandler().map.addEntity(unitTraining);
             unitTraining = null;
             uiObjects.stream().forEach((object) -> {if(!((UIAction)object).isVisible()){((UIAction)object).setVisible(true);}});
 
@@ -116,10 +118,15 @@ public abstract class Building extends Entity {
     
     public void train(Unit u)
     {
-        currentTrainTime = 0;
-        trainTime = u.getTrainTime();
-        unitTraining = u;
-        uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+        if(player.hasRoomFor(1))
+        {
+            currentTrainTime = 0;
+            trainTime = u.getTrainTime();
+            unitTraining = u;
+            uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+        } else {
+            player.getHandler().game.mm.addMessage(new ErrorMessage("Not enough food. Create more farms."));
+        }
     }
     
     public BufferedImage getSprite()

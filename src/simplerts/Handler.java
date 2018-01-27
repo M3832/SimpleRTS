@@ -39,4 +39,9 @@ public class Handler {
     {
         return display;
     }
+    
+    public void sendErrorMessage(String message)
+    {
+        
+    }
 }

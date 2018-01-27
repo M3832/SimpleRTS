@@ -20,11 +20,12 @@ public class MoveTo extends Action {
     protected CopyOnWriteArrayList<Destination> destinations;
     protected int repaths = 0;
     protected long nextRePathing = 0;
+    protected int repathingCooldown = 3000;
 
     public MoveTo(Unit owner, CopyOnWriteArrayList<Destination> destinations) {
         super(owner);
         this.destinations = destinations;
-        nextRePathing = System.currentTimeMillis() + 1000;
+        nextRePathing = System.currentTimeMillis() + repathingCooldown;
     }
 
     @Override
@@ -38,6 +39,7 @@ public class MoveTo extends Action {
         if(destinations.size() > 0)
         {
             owner.move(destinations.get(0));
+        }
         
         if(owner.getDeltaX() == 0 && owner.getDeltaY() == 0)
         {
@@ -45,8 +47,9 @@ public class MoveTo extends Action {
             owner.setCollided(false);
         }
         
-//        if(owner.getTempX() == owner.getX() && owner.getTempY() == owner.getY())
-//            findNewPath();
+        if(owner.getTempX() == owner.getX() && owner.getTempY() == owner.getY())
+        {
+            findNewPath();
         }
         
     }
@@ -65,14 +68,14 @@ public class MoveTo extends Action {
 //            destinations = map.getPathFinder().findPath(new Destination(gridX, gridY), destinations.get(destinations.size() - 1), (++repaths > 3));
             destinations.get(0).setX(destinations.get(0).getX() + (1 * (owner.getDeltaY() > 0 ? 1 : -1)) * (owner.getDeltaY() == 0 ? 0 : 1));
             destinations.get(0).setY(destinations.get(0).getY() + (1 * (owner.getDeltaX() > 0 ? 1 : -1)) * (owner.getDeltaX() == 0 ? 0 : 1));
-            nextRePathing = System.currentTimeMillis() + 1000;
+            nextRePathing = System.currentTimeMillis() + repathingCooldown;
             repaths++;
         } else if (System.currentTimeMillis() > nextRePathing && destinations.size() == 1)
         {
             int x = destinations.get(0).getX() + 1 * (owner.getDeltaY() > 0 ? 1 : -1) * (owner.getDeltaY() == 0 ? 0 : 1);
             int y = destinations.get(0).getY() + 1 * (owner.getDeltaX() > 0 ? 1 : -1) * (owner.getDeltaX() == 0 ? 0 : 1);
             destinations.add(0, new Destination(x, y));
-            nextRePathing = System.currentTimeMillis() + 1000;
+            nextRePathing = System.currentTimeMillis() + repathingCooldown;
             repaths++;
         }
     }

@@ -5,12 +5,9 @@
  */
 package simplerts.display;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import simplerts.Handler;
-import static simplerts.Game.HEIGHT;
-import static simplerts.Game.WIDTH;
 
 /**
  *
@@ -47,7 +44,7 @@ public class GamePanel extends JPanel {
             renderUpdates++;
             handler.game.controller.render(g);
             handler.game.controller.scrolling();
-            handler.game.players.stream().forEach(player -> player.render(g));
+            handler.game.mm.render(g);
             g.dispose();            
         }
     }
