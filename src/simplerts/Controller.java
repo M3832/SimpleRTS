@@ -8,18 +8,17 @@ package simplerts;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import simplerts.entities.actions.Build;
-import simplerts.entities.actions.Follow;
 import simplerts.entities.actions.MoveTo;
 import simplerts.entities.Builder;
 import simplerts.entities.Building;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
+import simplerts.messaging.ErrorMessage;
 import simplerts.ui.GUI;
 
 /**
@@ -94,9 +93,10 @@ public class Controller {
                 Entity e = selected.get(i);
                 g.setColor(Color.GREEN);
                 g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
-//                g.setColor(Color.WHITE);
-//                g.setFont(GUI.HEADER);
-//                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
+                g.setColor(Color.WHITE);
+                g.setFont(GUI.HEADER);
+                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
+                e.renderSelected(g);
             }
         }
         if(entityplacer.entity != null)
@@ -163,13 +163,15 @@ public class Controller {
             {
                 if(entityplacer.entity != null)
                 {
-                    if(selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
+                    if(!selected.isEmpty() && selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
                     {
                         Builder b = ((Builder)selected.get(0));
                         Building building = (Building)entityplacer.entity.duplicate();
                         building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
-                        b.addAction(new MoveTo(b, player.getHandler().map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2), true)));
+                        b.addAction(new MoveTo(b, player.getHandler().map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2))));
                         b.addAction(new Build(b, building));
+                    } else {
+                        handler.game.mm.addMessage(new ErrorMessage("Building can't be placed here."));
                     }
                     entityplacer.entity = null;
                     return;
@@ -202,7 +204,14 @@ public class Controller {
 
             if(ml.isRightMouseClicked())
             {
-                if(entityplacer.entity != null)
+                rightMouseClick();
+            }
+        }
+    }
+    
+    private void rightMouseClick()
+    {
+        if(entityplacer.entity != null)
                 {
                     entityplacer.entity = null;
                     return;
@@ -225,13 +234,11 @@ public class Controller {
                             int offsetY = (int)(index/(Math.sqrt(selected.size())));
                             int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
                             int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
-                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY), selected.size() == 1))));                    
+                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
                         }
                         index++;
                     }
                 }
-            }
-        }
     }
 
     private void renderResources(Graphics g) {

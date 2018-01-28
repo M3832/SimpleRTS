@@ -58,6 +58,16 @@ public class Destination {
     {
         return "Destination: " + x + ", " + y;
     }
+
+    void addVector(Vector2D vector) {
+        x += (int)(vector.getX()/Game.CELLSIZE);
+        y += (int)(vector.getY()/Game.CELLSIZE);
+    }
+
+    public void add(int x, int y) {
+        this.x += x;
+        this.y += y;
+    }
     
     
     

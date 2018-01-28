@@ -14,7 +14,10 @@ import simplerts.Destination;
 import simplerts.entities.actions.Gather;
 import simplerts.gfx.Assets;
 import static simplerts.entities.TownHall.GOLDCOST;
+import simplerts.entities.actions.MoveTo;
+import simplerts.entities.actions.TurnInGold;
 import simplerts.entities.interfaces.GoldProvider;
+import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.entities.interfaces.Goldminer;
 import simplerts.ui.UIAction;
 
@@ -26,6 +29,7 @@ public class Builder extends Unit implements Goldminer{
     
     private int gold;
     private GoldProvider latestGoldMine;
+    private int goldCapacity = 25;
     private static int GOLDCOST = 50;
     
     public Builder()
@@ -60,7 +64,9 @@ public class Builder extends Unit implements Goldminer{
     public void setupActions()
     {
         uiActions.add(TownHall.getUIAction(player));
-        uiActions.add(Tower.getUIAction(player));
+        uiActions.add(Farm.getUIAction(player));
+        uiActions.add(Tower.getUIAction(player));        
+        uiActions.add(Barracks.getUIAction(player));        
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
     }
 
@@ -117,6 +123,14 @@ public class Builder extends Unit implements Goldminer{
         if(e instanceof GoldProvider)
         {
             addAction(new Gather(this, (GoldProvider)e));
+        } else if(e instanceof GoldReceiver)
+        {
+            if(gold > 0)
+            {
+                addAction(new TurnInGold(this));
+            } else {
+                addAction(new MoveTo(this, grid.getPathFinder().findPath(getDestination(), grid.getClosestCell(this, (Entity)e))));
+            }
         } else {
             super.rightClickAction(e);
         }
@@ -141,6 +155,12 @@ public class Builder extends Unit implements Goldminer{
     @Override
     public GoldProvider getLatestMine() {
         return latestGoldMine;
+    }
+    
+    @Override
+    public int getGoldCapacity()
+    {
+        return goldCapacity;
     }
     
     

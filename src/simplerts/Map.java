@@ -255,12 +255,10 @@ public class Map {
             {
                 if((x > e.getGridX() + e.getWidth() || x < e.getGridX()) || (y > e.getGridY() + e.getGridHeight() || y < e.getGridY()))
                 {
-                    if(x > 0 && x < cells.length && y > 0 && y < cells[0].length)
+                    if(isInBounds(x, y) && !isCellBlocked(x, y))
                     {
-                        if(!isCellBlocked(x, y))
-                        {
+                        if(!checkUnitCollision(new Rectangle(x * Game.CELLSIZE, y * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE), e))
                             return new Destination(x, y);
-                        }
                     }
                 }
             }            
@@ -355,5 +353,18 @@ public class Map {
             }
         }
         return new Destination(target.getGridX() - 1 + indexX, target.getGridY() - 1 + indexY);
+    }
+
+    public Entity getEntityFromCell(int gridX, int gridY) {
+        if(isInBounds(gridX, gridY))
+        {
+            return cells[gridX][gridY].getEntity();
+        }
+        return null;
+    }
+    
+    public boolean isInBounds(int gridX, int gridY)
+    {
+        return gridX > 0 && gridX < cells.length && gridY > 0 && gridY < cells[0].length;
     }
 }

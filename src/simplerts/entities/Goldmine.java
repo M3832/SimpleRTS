@@ -44,8 +44,8 @@ public class Goldmine extends Building implements GoldProvider{
         {
             miner = g;
             miner.enter();
-            miner.setGold(10);
-            gold -= 10;
+            miner.setGold(miner.getGoldCapacity());
+            gold -= miner.getGoldCapacity();
             g.setLatestMine(this);
             new Timer(1000, () -> {
                 exitGatherer();
@@ -61,7 +61,7 @@ public class Goldmine extends Building implements GoldProvider{
     {
         if(miner != null)
         {
-            miner.exit(grid.getAvailableNeighborCell(this));
+            miner.exit(((Unit)miner).getDestination());
             ((Unit)miner).addAction(new TurnInGold(((Unit)miner)));
             miner = null;
         }

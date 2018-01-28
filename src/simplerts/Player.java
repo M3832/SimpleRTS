@@ -132,14 +132,11 @@ public class Player {
     }
 
     public boolean hasGoldFor(Entity e) {
-        return (gold - e.getGoldCost() >= 0);
+        return gold - e.getGoldCost() >= 0;
     }
 
     public void pay(int cost) {
-        System.out.println("Cost " + cost);
-        System.out.println("Paying?? " + gold);
-        this.gold = this.gold - cost;
-        System.out.println("Payed?? " + gold);
+        this.gold -= cost;
     }
     
     

@@ -77,6 +77,11 @@ public abstract class Entity {
         offsetY = (int)player.getHandler().getCamera().getOffsetY();
     }
     
+    public void renderSelected(Graphics g)
+    {
+        
+    }
+    
     public void setPosition(int x, int y)
     {
         this.x = x;

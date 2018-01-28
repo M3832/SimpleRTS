@@ -16,7 +16,9 @@ import simplerts.Utils;
 import simplerts.entities.actions.Action;
 import simplerts.Destination;
 import simplerts.entities.actions.Follow;
+import simplerts.entities.actions.Gather;
 import simplerts.entities.actions.MoveTo;
+import simplerts.entities.actions.TurnInGold;
 import simplerts.gfx.Assets;
 import simplerts.gfx.Animation;
 import simplerts.gfx.AnimationController;
@@ -45,6 +47,8 @@ public abstract class Unit extends Entity {
     protected int trainTime;
     
     private boolean collided = false;
+    
+    private Destination targetDestination;
     
     protected AnimationController ac;
     
@@ -149,6 +153,12 @@ public abstract class Unit extends Entity {
             grid.updateEntityCell(tempGridX, tempGridY, null);
             grid.updateEntityCell(gridX, gridY, this);
         }
+        
+        if(grid.checkUnitCollision(new Rectangle((int)x, (int)y, width, height), this))
+        {
+            grid.setEntityPosition(this, getDestination());
+        }
+        
     }
     
     public void clearActions()
@@ -161,10 +171,16 @@ public abstract class Unit extends Entity {
     {
         super.render(g);
         g.drawImage(ac.getCurrentFrame(), (int)(x - offsetX), (int)(y - offsetY), null);
-        if(!actions.isEmpty() && actions.get(0) instanceof MoveTo)
+    }
+    
+    @Override
+    public void renderSelected(Graphics g)
+    {
+        super.renderSelected(g);
+        if(!actions.isEmpty())
         {
-            ((MoveTo)actions.get(0)).render(g);
-        }
+            actions.get(0).render(g);
+        }        
     }
     
     @Override
@@ -175,12 +191,15 @@ public abstract class Unit extends Entity {
         if(actions.size() > 0)
         {
             actions.get(0).performAction();
-        } else {
-            deltaX = 0;
-            deltaY = 0;
         }
         
-        if(Math.abs(deltaX) > 0 || Math.abs(deltaY) > 0 || (actions.size() > 0 && actions.get(0) instanceof MoveTo))
+        if(Math.abs(deltaX) > 0 || 
+                Math.abs(deltaY) > 0 || 
+                (actions.size() > 0 && actions.get(0) instanceof MoveTo) ||
+                (actions.size() > 0 && actions.get(0) instanceof Follow) ||
+                (actions.size() > 0 && actions.get(0) instanceof Gather) ||
+                (actions.size() > 0 && actions.get(0) instanceof TurnInGold)
+                )
         {
             ac.playAnimation("walk");
         }
@@ -287,10 +306,28 @@ public abstract class Unit extends Entity {
     
     public void rightClickAction(Entity e)
     {
-        addAction(new Follow(this, e));
+        if(e.getPlayer() == player)
+        {
+            if(e instanceof Unit)
+            {
+                addAction(new Follow(this, e));
+            } else {
+                addAction(new MoveTo(this, grid.getPathFinder().findPath(getDestination(), grid.getClosestCell(this, e))));
+            }
+        }
     }
 
     public int getCost() {
         return goldCost;
+    }
+    
+    public void setTargetDestination (Destination d)
+    {
+        targetDestination = d;
+    }
+    
+    public Destination getTargetDestination()
+    {
+        return targetDestination;
     }
 }

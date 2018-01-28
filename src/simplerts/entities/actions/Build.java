@@ -5,8 +5,10 @@
  */
 package simplerts.entities.actions;
 
+import java.awt.Graphics;
 import simplerts.entities.Builder;
 import simplerts.entities.Building;
+import simplerts.messaging.ErrorMessage;
 
 /**
  *
@@ -31,7 +33,15 @@ public class Build extends Action {
             owner.getMap().addEntity(newBuilding);
             owner.removeAction(this);
             owner.getPlayer().getHandler().game.controller.selectEntity(newBuilding);
+        } else {
+            owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold!"));
+            owner.getActions().remove(this);
         }
+    }
+    
+    public void render(Graphics g)
+    {
+        
     }
     
 }

@@ -19,7 +19,6 @@ public class PathFinder {
     private final ArrayList<Node> open;
     private final ArrayList<Node> closed;
     private final Map map;
-    private boolean accountForUnits;
     private Node[][] nodeMap;
     
     public PathFinder(Map map)
@@ -29,13 +28,12 @@ public class PathFinder {
         closed = new ArrayList<>();
     }
     
-    public CopyOnWriteArrayList<Destination> findPath(Destination start, Destination goal, boolean accountForUnits)
+    public CopyOnWriteArrayList<Destination> findPath(Destination start, Destination goal)
     {
         //New pathfinding, clear previous paths
         open.clear();
         closed.clear();
         Node current;
-        this.accountForUnits = accountForUnits;
         CopyOnWriteArrayList<Destination> finalPath = new CopyOnWriteArrayList<>();
         
         //Create a nodemap and initialize it
@@ -143,7 +141,7 @@ public class PathFinder {
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
     {
         if(closed.stream().anyMatch(node -> node == neighbor) ||
-                (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null && (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Building || (accountForUnits && map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Unit))) || 
+                (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null && (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Building)) || 
                 !map.getCells()[neighbor.gridX][neighbor.gridY].available)
             return;
         

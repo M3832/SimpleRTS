@@ -14,6 +14,7 @@ import simplerts.Destination;
 public interface Goldminer {
     
     public void setGold(int amount);
+    public int getGoldCapacity();
     public int takeGold();
     public void enter();
     public void exit(Destination d);

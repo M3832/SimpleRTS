@@ -77,8 +77,9 @@ public class Game implements Runnable {
         ((MouseInput)display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
         
         map.addEntity(new Builder(10, 6, player));
+        map.addEntity(new Builder(11, 6, player));
         
-        map.addEntity(new Goldmine(15, 6, map.getNeutral()));
+        map.addEntity(new Goldmine(4, 5, map.getNeutral()));
 
 
         long next_game_tick = System.currentTimeMillis();
