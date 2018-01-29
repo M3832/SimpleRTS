@@ -5,16 +5,17 @@
  */
 package simplerts.editor;
 
+import simplerts.map.Terrain;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFileChooser;
 import javax.swing.tree.DefaultMutableTreeNode;
-import simplerts.Cell;
+import simplerts.map.Cell;
 import simplerts.Game;
-import simplerts.Map;
-import simplerts.MapIO;
+import simplerts.map.Map;
+import simplerts.map.MapIO;
 import simplerts.gfx.Assets;
 
 /**
@@ -36,7 +37,7 @@ public class MapEditor extends javax.swing.JFrame {
     
     public static boolean showGrid = true;
     public static JFileChooser fc = new JFileChooser();
-    public static TerrainPlacement currentTerrain;
+    public static Terrain currentTerrain;
 
     private void initCustomComponents()
     {
@@ -324,7 +325,7 @@ public class MapEditor extends javax.swing.JFrame {
     public static void maskMap(Map map, int startX, int startY)
     {
         Cell[][] cells = map.getCells();
-        TerrainPlacement terrain;
+        Terrain terrain;
         for(int y = startY-1; y < startY+3; y++)
         {
             for(int x = startX-1; x < startX+3; x++)
@@ -392,7 +393,7 @@ public class MapEditor extends javax.swing.JFrame {
                             if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
                             {
                                 Cell cell = e.map.getCells()[i][j];
-                                cell.setTerrain(((TerrainPlacement)selected.getUserObject()));
+                                cell.setTerrain(((Terrain)selected.getUserObject()));
                             }
                         }
                     }

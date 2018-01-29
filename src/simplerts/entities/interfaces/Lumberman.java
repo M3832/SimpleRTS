@@ -11,14 +11,17 @@ import simplerts.map.Destination;
  *
  * @author Markus
  */
-public interface Goldminer {
+public interface Lumberman {
     
-    public void setGold(int amount);
-    public int getGoldCapacity();
-    public int takeGold();
+    public void receiveLumber(int lumber);
+    public int getLumber();
+    public int takeLumber();
+    public int getLumberCapacity();
+    public int getChopSpeed();
     public void enter();
     public void exit(Destination d);
-    public void setLatestMine(GoldProvider g);
-    public GoldProvider getLatestMine();
+    public void setLatestForestDestination(Destination d);
+    public Destination getLatestForestDestination();
+    public void chop();
     
 }

@@ -56,4 +56,8 @@ public class MiniMap {
     {
         return pixelRatio;
     }
+
+    public void setImage(BufferedImage minimapImage) {
+        minimap = minimapImage;
+    }
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.map;
 
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import simplerts.Game;
+import simplerts.Handler;
+import simplerts.Player;
 import simplerts.ui.MiniMap;
 
 /**
@@ -26,7 +29,6 @@ import simplerts.ui.MiniMap;
  * @author Markus
  */
 public class Map {
-    
     
     private final CopyOnWriteArrayList<Entity> entities;
     private final Cell[][] cells;
@@ -42,7 +44,7 @@ public class Map {
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                cells[i][j] = new Cell(Assets.grass);
+                cells[i][j] = new Cell(i, j);
             }
         }
         pathFinder = new PathFinder(this);
@@ -65,24 +67,6 @@ public class Map {
     {
         return cells;
     }
-    
-//    protected void updateOccupiedCells()
-//    {   
-////        for(Entity e : entities)
-////        {
-////            for(int i = e.getCellX(); i < e.getCellWidth() + e.getCellX(); i++)
-////            {
-////                for(int j = e.getCellY(); j < e.getCellHeight() + e.getCellY(); j++)
-////                {
-////                    cells[i][j].available = false;
-////                }
-////            }
-////        }
-//        for(Entity e : entities)
-//        {
-//            e.updateCells();
-//        }
-//    }
     
     public void render(Graphics g, float offsetX, float offsetY)
     {
@@ -160,7 +144,6 @@ public class Map {
     {
         if(cellX >= 0 && cellX < cells.length && cellY >= 0 && cellY < cells[0].length)
         {
-//            System.out.println(cellX + " " + cellY);
             return isCellBlocked(cellX, cellY);
         }
         return false;
@@ -214,6 +197,13 @@ public class Map {
     
     public MiniMap getMiniMap(int width, int height)
     {
+        float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
+
+        return new MiniMap(getMinimapImage(width, height), squaresize, entities);
+    }
+    
+    public BufferedImage getMinimapImage(int width, int height)
+    {
         BufferedImage minimap = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = minimap.createGraphics();
         float tempSquaresize = Math.max((float)1000/cells.length, (float)1000/cells[0].length);
@@ -226,7 +216,7 @@ public class Map {
                 g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)tempSquaresize, (int)tempSquaresize), i * (int)tempSquaresize, j * (int)tempSquaresize, null);
             }
         }
-        return new MiniMap(GraphicsUtil.resize(minimap, width, height), squaresize, entities);
+        return GraphicsUtil.resize(minimap, width, height);
     }
 
     public boolean checkTerrainCollision(Rectangle rectangle) {
@@ -248,20 +238,25 @@ public class Map {
     
     public Destination getAvailableNeighborCell(Entity e)
     {
-        Destination d = new Destination(0, 0);
-        for(int x = e.getGridX() - 1; x <= e.getGridX() + e.getGridWidth(); x++)
+        Destination d = new Destination(-1, -1);
+        if(e != null)
         {
-            for(int y = e.getGridY() - 1; y <= e.getGridY() + e.getGridHeight(); y++)
+            for(int x = e.getGridX() - 1; x <= e.getGridX() + e.getGridWidth(); x++)
             {
-                if((x > e.getGridX() + e.getWidth() || x < e.getGridX()) || (y > e.getGridY() + e.getGridHeight() || y < e.getGridY()))
+                for(int y = e.getGridY() - 1; y <= e.getGridY() + e.getGridHeight(); y++)
                 {
                     if(isInBounds(x, y) && !isCellBlocked(x, y))
                     {
                         if(!checkUnitCollision(new Rectangle(x * Game.CELLSIZE, y * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE), e))
                             return new Destination(x, y);
                     }
-                }
+                }            
             }            
+        }
+        
+        if(d.isEmpty())
+        {
+            d = getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity());
         }
 
         
@@ -304,7 +299,7 @@ public class Map {
         return handler;
     }
 
-    void setSelectBox(Rectangle selectBox) {
+    public void setSelectBox(Rectangle selectBox) {
         this.selectBox = selectBox;
     }
 
@@ -354,6 +349,20 @@ public class Map {
         }
         return new Destination(target.getGridX() - 1 + indexX, target.getGridY() - 1 + indexY);
     }
+    
+    public Cell findLumberCloseTo(Destination d)
+    {
+        for(int x = d.getX() - 1; x < d.getX() + 2; x++){
+            for(int y = d.getY() - 1; y < d.getY() + 2; y++)
+            {
+                if(isInBounds(x, y) && cells[x][y].isForest() && !cells[x][y].getForest().isBarren())
+                {
+                    return cells[x][y];
+                }
+            }
+        }
+        return cells[d.getX()][d.getY()];
+    }
 
     public Entity getEntityFromCell(int gridX, int gridY) {
         if(isInBounds(gridX, gridY))
@@ -365,6 +374,6 @@ public class Map {
     
     public boolean isInBounds(int gridX, int gridY)
     {
-        return gridX > 0 && gridX < cells.length && gridY > 0 && gridY < cells[0].length;
+        return gridX >= 0 && gridX < cells.length && gridY >= 0 && gridY < cells[0].length;
     }
 }

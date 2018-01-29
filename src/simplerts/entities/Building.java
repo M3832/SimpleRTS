@@ -11,7 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
-import simplerts.Utils;
+import simplerts.utils.Utils;
 import simplerts.gfx.Assets;
 import simplerts.messaging.ErrorMessage;
 import simplerts.messaging.Message;
@@ -34,25 +34,13 @@ public abstract class Building extends Entity {
     protected String name;
     protected Builder builder;
     protected Unit unitTraining;
+    protected boolean training, building;
     
     public Building(int x, int y, int cellSize, Player player, boolean built)
     {
         super(x, y, cellSize, player);
         initVariables(built);
     }
-    
-//    public Building(int x, int y, int gridWidth, int gridHeight){
-//        this.x = x;
-//        this.y = y;
-//        this.width = gridWidth * Game.CELLSIZE;
-//        this.height = gridHeight * Game.CELLSIZE;
-//        this.gridWidth = gridWidth;
-//        this.gridHeight = gridHeight;
-//        this.gridX = x/Game.CELLSIZE;
-//        this.gridY = y/Game.CELLSIZE;
-//        buildTime = 500;
-//        currentTime = 1;
-//    }
     
     private void initVariables(boolean built)
     {
@@ -63,6 +51,8 @@ public abstract class Building extends Entity {
         if(built) setBuilt();
         trainTime = 0;
         currentTrainTime = 0;
+        training = false;
+        building = !built;
     }
     
     public void setImage(BufferedImage image)
@@ -83,6 +73,20 @@ public abstract class Building extends Entity {
     @Override
     public void update()
     {
+        if(building)
+            building();
+        
+        if(training)
+            training();
+    }
+    
+    protected void setupActions()
+    {
+        
+    }
+    
+    private void building()
+    {
         if(builder != null && currentTime < buildTime)
         {
             currentTime += 1 * Game.GAMESPEED;
@@ -91,8 +95,16 @@ public abstract class Building extends Entity {
             builder.exit(grid.getAvailableNeighborCell(this));
             builder = null;
             setupActions();
+            if(player.getController() != null)
+            {
+                player.getController().selectEntity(this);
+            }
+            building = false;
         }
-        
+    }
+    
+    private void training()
+    {
         if(unitTraining != null && currentTrainTime < trainTime)
         {
             currentTrainTime += 1 * Game.GAMESPEED;
@@ -102,12 +114,8 @@ public abstract class Building extends Entity {
             player.getHandler().map.addEntity(unitTraining);
             unitTraining = null;
             uiObjects.stream().forEach((object) -> {if(!((UIAction)object).isVisible()){((UIAction)object).setVisible(true);}});
+            training = false;
         }
-    }
-    
-    protected void setupActions()
-    {
-        
     }
     
     @Override
@@ -126,15 +134,16 @@ public abstract class Building extends Entity {
     
     public void train(Unit u)
     {
-        if(player.hasRoomFor(1))
+        if(player.hasRoomFor(u))
         {
             if(player.hasGoldFor(u))
             {
+                uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+                training = true;
+                player.pay(u.getCost());
+                unitTraining = u;
                 currentTrainTime = 0;
                 trainTime = u.getTrainTime();
-                unitTraining = u;
-                player.pay(u.getCost());
-                uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
             } else {
                 player.getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold."));
             }

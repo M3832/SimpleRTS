@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import simplerts.map.Map;
 import simplerts.display.Camera;
 import simplerts.display.Display;
 

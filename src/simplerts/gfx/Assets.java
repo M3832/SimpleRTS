@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import simplerts.Game;
-import simplerts.editor.TerrainPlacement;
+import simplerts.map.Terrain;
 
 /**
  *
@@ -27,12 +27,13 @@ import simplerts.editor.TerrainPlacement;
 public class Assets {
 
     public static BufferedImage GRASS;
+    public static BufferedImage barrenTree;
     private static BufferedImage[] tiles;
-    public static TerrainPlacement dirt;    
-    public static TerrainPlacement grass;
-    public static TerrainPlacement darkGrass;
-    public static TerrainPlacement trees;
-    public static ArrayList<TerrainPlacement> terrains;
+    public static Terrain dirt;    
+    public static Terrain grass;
+    public static Terrain darkGrass;
+    public static Terrain trees;
+    public static ArrayList<Terrain> terrains;
     public static BufferedImage GUI;
     public static BufferedImage iconBG;
 
@@ -40,12 +41,13 @@ public class Assets {
         terrains = new ArrayList<>();
         loadTiles(64);
         dirt = loadTerrain("/dirt3.bmp", "dirt", true, new Color(129, 61, 0));
-        grass = new TerrainPlacement(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19, 38, 39}, new Integer[] {19, 20, 4, 12, 14}, tiles, "grass", true, Color.GREEN);
+        grass = new Terrain(new Integer[] {5, 18, 16, 21, 0, 22, 5, 13, 2, 23, 0, 22, 7, 15, 6, 19, 38, 39}, new Integer[] {19, 20, 4, 12, 14}, tiles, "grass", true, Color.GREEN);
         terrains.add(grass);
         darkGrass = loadTerrain("/darkgrass2.bmp", "darkGrass", true, new Color(0, 200, 0));
         trees = loadTerrain("/forest.bmp", "trees", false, new Color(0, 125, 0));
         GUI = loadToCompatibleImage("/gui.bmp");
         iconBG = loadToCompatibleImage("/iconbg.bmp");
+        barrenTree = loadAndResizeImage("/barrenWood.bmp", Game.CELLSIZE, Game.CELLSIZE);
     }
     
     private static void loadTiles(int tileSize)
@@ -60,7 +62,7 @@ public class Assets {
         }
     }
     
-    private static TerrainPlacement loadTerrain(String url, String name, boolean walkable, Color color)
+    private static Terrain loadTerrain(String url, String name, boolean walkable, Color color)
     {
         BufferedImage tileMap = loadToCompatibleImage(url);
         BufferedImage[] tempTiles = new BufferedImage[(tileMap.getWidth()/64) * (tileMap.getHeight() / 64)];
@@ -69,7 +71,7 @@ public class Assets {
         {
             tempTiles[i] = tileMap.getSubimage((i%width) * 64, (i/width) * 64, 64, 64);
         }
-        TerrainPlacement tp = new TerrainPlacement(new Integer[]{15, 15, 15, 12, 15,15, 0, 6, 15, 14, 15, 13, 2, 8, 1, 7, 3, 9, 4, 5, 11, 10}, new Integer[]{0}, tempTiles, name, walkable, color );
+        Terrain tp = new Terrain(new Integer[]{15, 15, 15, 12, 15,15, 0, 6, 15, 14, 15, 13, 2, 8, 1, 7, 3, 9, 4, 5, 11, 10}, new Integer[]{0}, tempTiles, name, walkable, color );
         terrains.add(tp);
         return tp;
     }

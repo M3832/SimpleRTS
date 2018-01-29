@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
-import simplerts.Utils;
+import simplerts.utils.Utils;
 
 /**
  *

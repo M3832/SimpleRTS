@@ -7,7 +7,7 @@ package simplerts.entities.actions;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import simplerts.Utils;
+import simplerts.utils.Utils;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 import simplerts.entities.interfaces.GoldProvider;
@@ -35,15 +35,13 @@ public class Gather extends Action {
             return;
         }
         
-        
-        if(movePath != null)
+        if(movePath != null && !movePath.stuck)
         {
             movePath.performAction();
         } else {
             movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)mine)));
+            System.out.println("Repathing");
         }
-        
-        
         
         if(Utils.isAdjacent(owner, (Entity)mine))
         {
@@ -61,6 +59,12 @@ public class Gather extends Action {
         g.drawRect(((Entity)mine).getX() - (int)owner.getPlayer().getHandler().camera.getOffsetX(),
                    ((Entity)mine).getY() - (int)owner.getPlayer().getHandler().camera.getOffsetY(),
                    ((Entity)mine).getWidth(), ((Entity)mine).getHeight());
+    }
+    
+    @Override
+    public boolean isMoving()
+    {
+        return movePath.isMoving();
     }
     
 }

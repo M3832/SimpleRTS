@@ -7,12 +7,13 @@ package simplerts.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import simplerts.Game;
-import simplerts.Map;
+import simplerts.map.Map;
 import simplerts.Player;
-import simplerts.Destination;
+import simplerts.map.Destination;
 import simplerts.ui.UIAction;
 import simplerts.ui.UIObject;
 
@@ -92,7 +93,20 @@ public abstract class Entity {
     
      public void setPosition(Destination d)
      {
-         setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE);
+         int newX = d.getX() * Game.CELLSIZE;
+         int newY = d.getY() * Game.CELLSIZE;
+         if(!grid.checkUnitCollision(new Rectangle(newX, newY, width, height), this))
+         {
+            setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE); 
+         } else {
+            Entity temp = grid.getEntityFromCell(newX/Game.CELLSIZE, newY/Game.CELLSIZE);
+            if(temp != null)
+            {
+                setPosition(grid.getAvailableNeighborCell(temp));
+            } else {
+                setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE);
+            }
+         }
          updateCells();
      }
     

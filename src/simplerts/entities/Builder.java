@@ -10,27 +10,25 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
-import simplerts.Destination;
-import simplerts.entities.actions.Gather;
+import simplerts.map.Destination;
+import simplerts.entities.actions.*;
+import simplerts.entities.interfaces.*;
 import simplerts.gfx.Assets;
-import static simplerts.entities.TownHall.GOLDCOST;
-import simplerts.entities.actions.MoveTo;
-import simplerts.entities.actions.TurnInGold;
-import simplerts.entities.interfaces.GoldProvider;
-import simplerts.entities.interfaces.GoldReceiver;
-import simplerts.entities.interfaces.Goldminer;
 import simplerts.ui.UIAction;
+import simplerts.utils.Timer;
 
 /**
  *
  * @author Markus
  */
-public class Builder extends Unit implements Goldminer{
+public class Builder extends Unit implements Goldminer, Lumberman{
     
-    private int gold;
+    private int gold, lumber, lumberCapacity;
     private GoldProvider latestGoldMine;
-    private int goldCapacity = 25;
-    private static int GOLDCOST = 50;
+    private Destination latestForestDestination;
+    private final int goldCapacity = 25;
+    private static int GOLDCOST = 0;
+    private boolean chopping;
     
     public Builder()
     {
@@ -56,6 +54,9 @@ public class Builder extends Unit implements Goldminer{
         trainTime = 1 * Game.TICKS_PER_SECOND;
         ac = player.getSpriteManager().getPeasantAC();
         gold = 0;
+        lumber = 0;
+        lumberCapacity = 10;
+        chopping = false;
         goldCost = GOLDCOST;
         initGraphics();
         setupActions();
@@ -123,14 +124,12 @@ public class Builder extends Unit implements Goldminer{
         if(e instanceof GoldProvider)
         {
             addAction(new Gather(this, (GoldProvider)e));
-        } else if(e instanceof GoldReceiver)
+        } else if(e instanceof GoldReceiver && gold > 0)
         {
-            if(gold > 0)
-            {
-                addAction(new TurnInGold(this));
-            } else {
-                addAction(new MoveTo(this, grid.getPathFinder().findPath(getDestination(), grid.getClosestCell(this, (Entity)e))));
-            }
+            addAction(new TurnInGold(this));
+        } else if(e instanceof LumberReceiver && lumber > 0)
+        {
+            addAction(new TurnInLumber(this));
         } else {
             super.rightClickAction(e);
         }
@@ -144,6 +143,18 @@ public class Builder extends Unit implements Goldminer{
         {
             g.setColor(Color.WHITE);
             g.drawString("Gold", x - offsetX, y - offsetY);
+        }
+        
+        if(lumber > 0)
+        {
+            g.setColor(Color.WHITE);
+            g.drawString("Lumber", x - offsetX, y - offsetY);
+        }
+        
+        if(chopping)
+        {
+            g.setColor(Color.WHITE);
+            g.drawString("CHOP", x - offsetX, y + height + 20 - offsetY);
         }
     }
 
@@ -161,6 +172,48 @@ public class Builder extends Unit implements Goldminer{
     public int getGoldCapacity()
     {
         return goldCapacity;
+    }
+
+    @Override
+    public void receiveLumber(int lumber) {
+        this.lumber += lumber;
+    }
+
+    @Override
+    public int takeLumber() {
+        int temp = lumber;
+        lumber = 0;
+        return temp;
+    }
+    
+    public int getLumber() {
+        return lumber;
+    }
+
+    @Override
+    public int getChopSpeed() {
+        return 1000;
+    }
+
+    @Override
+    public void chop() {
+        chopping = true;
+        new Timer(300, () -> {chopping = false;}).start();
+    }
+
+    @Override
+    public int getLumberCapacity() {
+        return lumberCapacity;
+    }
+
+    @Override
+    public void setLatestForestDestination(Destination d) {
+        latestForestDestination = d;
+    }
+
+    @Override
+    public Destination getLatestForestDestination() {
+        return latestForestDestination;
     }
     
     

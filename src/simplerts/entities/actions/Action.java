@@ -15,13 +15,19 @@ import simplerts.entities.Unit;
 public abstract class Action {
     
     protected Unit owner;
+    protected boolean moving;
     
     public Action(Unit owner)
     {
         this.owner = owner;
+        moving = false;
     }
     
     public abstract void performAction();
     public abstract void render(Graphics g);
+    public boolean isMoving()
+    {
+        return moving;
+    }
     
 }

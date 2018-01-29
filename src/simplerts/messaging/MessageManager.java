@@ -7,8 +7,6 @@ package simplerts.messaging;
 
 import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import simplerts.Game;
 import simplerts.Handler;
 

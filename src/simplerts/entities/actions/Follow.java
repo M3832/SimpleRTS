@@ -6,8 +6,6 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
-import java.util.concurrent.CopyOnWriteArrayList;
-import simplerts.SteeringBehaviors;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 
@@ -19,7 +17,7 @@ public class Follow extends Action {
 
     private Entity target;
     private long nextRepathing;
-    private int waittime = 500;
+    private int waittime = 1000;
     private MoveTo movePath;
     
     public Follow(Unit owner, Entity target) {
@@ -31,9 +29,8 @@ public class Follow extends Action {
     public void performAction() {
         if(nextRepathing < System.currentTimeMillis() && (Math.abs(owner.getGridX() - target.getGridX()) > 1 || Math.abs(owner.getGridY() - target.getGridY()) > 1))
         {
-            System.out.println("repathing");
 //            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, target), true));
-            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), SteeringBehaviors.followLeader((Unit)target)));
+            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, target)));
             nextRepathing = System.currentTimeMillis() + waittime;
         }
         
@@ -45,5 +42,14 @@ public class Follow extends Action {
     {
         if(movePath != null)
             movePath.render(g);
+    }
+    
+    @Override
+    public boolean isMoving()
+    {
+        if(movePath != null)
+            return movePath.isMoving();
+        
+        return false;
     }
 }

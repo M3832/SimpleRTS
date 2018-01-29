@@ -6,31 +6,32 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
-import simplerts.utils.Timer;
-import simplerts.utils.Utils;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
-import simplerts.entities.interfaces.GoldProvider;
 import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.entities.interfaces.Goldminer;
+import simplerts.entities.interfaces.LumberReceiver;
+import simplerts.entities.interfaces.Lumberman;
 import simplerts.messaging.ErrorMessage;
+import simplerts.utils.Timer;
+import simplerts.utils.Utils;
 
 /**
  *
  * @author Markus
  */
-public class TurnInGold extends Action {
+public class TurnInLumber extends Action {
 
     private MoveTo movePath;
-    private GoldReceiver gr;
+    private LumberReceiver lr;
     
-    public TurnInGold(Unit owner) {
+    public TurnInLumber(Unit owner) {
         super(owner);
     }
 
     @Override
     public void performAction() {
-        if(!(owner instanceof Goldminer))
+        if(!(owner instanceof Lumberman))
         {
             owner.getActions().remove(this);
             return;
@@ -43,31 +44,31 @@ public class TurnInGold extends Action {
         } else {
             for(Entity e : owner.getPlayer().getEntities())
             {
-                if(e instanceof GoldReceiver)
+                if(e instanceof LumberReceiver)
                 {
-                    gr = (GoldReceiver)e;
+                    lr = (LumberReceiver)e;
                     break;
                 }
             }
-            if(gr != null)
+            if(lr != null)
             {
-                movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)gr)));
+                movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)lr)));
             } else {
-                owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("There's nowhere to turn in gold."));
+                owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("There's nowhere to turn in lumber."));
                 owner.getActions().remove(this);
                 return;
             }
         }
         
-        if(gr != null && Utils.isAdjacent(owner, (Entity)gr))
+        if(lr != null && Utils.isAdjacent(owner, (Entity)lr))
         {
-            gr.receiveGold(((Goldminer)owner));
-            ((Goldminer)owner).enter();
+            lr.receiveLumber(((Lumberman)owner).takeLumber());
+            ((Lumberman)owner).enter();
             new Timer(1000, () -> {
-                ((Goldminer)owner).exit(owner.getMap().getClosestCell((Entity)((Goldminer)owner).getLatestMine(), (Entity)gr));
-                if(((Goldminer)owner).getLatestMine() != null)
+                ((Lumberman)owner).exit(owner.getDestination());
+                if(((Lumberman)owner).getLatestForestDestination() != null)
                 {
-                    owner.addAction(new Gather(owner, ((Goldminer)owner).getLatestMine()));
+                    owner.addAction(new Chop(owner, owner.getMap().findLumberCloseTo(((Lumberman)owner).getLatestForestDestination())));
                 }
             }).start();
             owner.clearActions();
@@ -83,7 +84,11 @@ public class TurnInGold extends Action {
     @Override
     public boolean isMoving()
     {
-        return movePath.isMoving();
+        if(movePath != null)
+        {
+            return movePath.isMoving();
+        }
+        return false;
     }
     
 }

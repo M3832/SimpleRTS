@@ -14,13 +14,14 @@ import simplerts.Player;
 import simplerts.gfx.Assets;
 import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.entities.interfaces.Goldminer;
+import simplerts.entities.interfaces.LumberReceiver;
 import simplerts.ui.UIAction;
 
 /**
  *
  * @author Markus
  */
-public class TownHall extends Building implements FoodProvider, GoldReceiver {
+public class TownHall extends Building implements FoodProvider, GoldReceiver, LumberReceiver {
     public static int GOLDCOST = 400;
     
     public TownHall(int x, int y, int gridSize, Player player) {
@@ -54,7 +55,7 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver {
 
     @Override
     public int getFoodProduced() {
-        return 5;
+        return 25;
     }
     
     public static BufferedImage getUIIcon(Color color)
@@ -75,6 +76,11 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver {
     @Override
     public void receiveGold(Goldminer g) {
         player.addGold(g.takeGold());
+    }
+
+    @Override
+    public void receiveLumber(int lumber) {
+        player.addLumber(lumber);
     }
     
 }

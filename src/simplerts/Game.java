@@ -5,6 +5,8 @@
  */
 package simplerts;
 
+import simplerts.map.Map;
+import simplerts.map.MapIO;
 import simplerts.gfx.Assets;
 import simplerts.display.Camera;
 import simplerts.display.Display;
@@ -28,21 +30,21 @@ import simplerts.ui.GUI;
  */
 public class Game implements Runnable {
 
-    public static int WIDTH = 980;
-    public static int HEIGHT = 512;
-    public static int GUIHEIGHT = 225;
-    public static int CELLSIZE = 50;
-    public static float GAMESPEED = 1f;
+    public static final int WIDTH = 980;
+    public static final int HEIGHT = 512;
+    public static final int GUIHEIGHT = 225;
+    public static final int CELLSIZE = 50;
+    public static final float GAMESPEED = 1f;
     
-    public static int TICKS_PER_SECOND = 50;
-    public static int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-    public static int MAX_FRAMESKIP = 10;
-    public static long TIME_SINCE_LAST_UPDATE = 0;
+    public static final int TICKS_PER_SECOND = 50;
+    public static final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    public static final int MAX_FRAMESKIP = 10;
+    public static final long TIME_SINCE_LAST_UPDATE = 0;
         
-    public static int RENDERS_PER_SECOND = 120;
-    public static int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
-    public static int MAX_RENDERSKIP = 10;
-    public static long TIME_SINCE_LAST_RENDER = 0;
+    public static final int RENDERS_PER_SECOND = 120;
+    public static final int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
+    public static final int MAX_RENDERSKIP = 10;
+    public static long time_since_last_render = 0;
     
     private long nextSecond = 0;
 
@@ -96,7 +98,7 @@ public class Game implements Runnable {
                 renderloops = 0;
                 while(System.currentTimeMillis() > next_game_render && renderloops < MAX_RENDERSKIP)
                 {
-                    TIME_SINCE_LAST_RENDER = System.currentTimeMillis() - lastRender;
+                    time_since_last_render = System.currentTimeMillis() - lastRender;
                     render();
                     next_game_render += SKIP_RENDERS;
                     renderloops++;

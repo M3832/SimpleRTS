@@ -6,10 +6,11 @@
 package simplerts.entities.actions;
 
 import java.awt.Color;
-import simplerts.Destination;
+import simplerts.map.Destination;
 import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
+import simplerts.utils.Timer;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 
@@ -20,27 +21,47 @@ import simplerts.entities.Unit;
 public class MoveTo extends Action {
     
     public static final int CHECK_AHEAD_DISTANCE = 1;
-    public static final int COLLISION_CHECK_BUFFER = 2;
+    public static final int COLLISION_CHECK_BUFFER = 3;
+    public static final long STUCK_TIME = 1000;
     
     protected CopyOnWriteArrayList<Destination> destinations;
-    protected int collisions = 0;
+    protected int collisions;
+    protected boolean stuckWarning, stuck;
+    protected Timer stuckTimer;
 
     public MoveTo(Unit owner, CopyOnWriteArrayList<Destination> destinations) {
         super(owner);
         this.destinations = destinations;
+        collisions = 0;
+        stuckWarning = false;
+        stuck = false;
+        moving = true;
     }
 
     @Override
     public void performAction() {
+        int x, y;
         if(destinations.isEmpty())
         {
             if(owner.getActions().contains(this))
                 owner.getActions().remove(this);
+            
+            moving = false;
             return;
         }
         if(destinations.size() > 0)
         {
+            x = owner.getX();
+            y = owner.getY();
             owner.move(destinations.get(0));
+            if(owner.getX() == x && owner.getY() == y)
+            {
+                stuckWarning = true;
+            } else {
+                stuckWarning = false;
+                stuck = false;
+                moving = true;
+            }
         }
         
         if(owner.getDeltaX() == 0 && owner.getDeltaY() == 0)
@@ -51,13 +72,23 @@ public class MoveTo extends Action {
         if(isCollisionAhead())
         {
             collisions++;
-            System.out.println(collisions);
         } else {
             collisions = 0;
         }
         
         if(collisions == COLLISION_CHECK_BUFFER)
             avoid();
+        
+        if(stuckWarning && !destinations.isEmpty() && stuckTimer != null && !stuckTimer.isAlive())
+        {
+            stuckTimer = new Timer((int)STUCK_TIME, () -> {if(stuckWarning && !destinations.isEmpty())
+            {
+                System.out.println("I am stuck!!");
+                stuck = true; moving = false;}
+            } 
+            );
+            stuckTimer.start();
+        }
     }
     
     @Override
@@ -108,6 +139,8 @@ public class MoveTo extends Action {
                 } else if (!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * -direction))
                 {
                     destinations.get(i).add(0, 1 * -direction);
+                } else {
+                    destinations.set(i, owner.getMap().getAvailableNeighborCell(owner));
                 }
             }
             
@@ -129,6 +162,8 @@ public class MoveTo extends Action {
                 } else if (!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * -direction, destinations.get(i).getY()))
                 {
                     destinations.get(i).add(1 * -direction, 0);
+                } else {
+                    destinations.set(i, owner.getMap().getAvailableNeighborCell(owner));
                 }
             }
             if(destinations.size() == 1)

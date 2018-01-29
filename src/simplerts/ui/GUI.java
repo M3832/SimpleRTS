@@ -15,7 +15,7 @@ import simplerts.entities.Entity;
 import simplerts.gfx.Assets;
 import simplerts.Game;
 import simplerts.Handler;
-import simplerts.Map;
+import simplerts.map.Map;
 
 /**
  *
@@ -137,6 +137,11 @@ public class GUI {
     public void removeObject(UIObject o)
     {
         objects.remove(o);
+    }
+    
+    public void updateMinimap()
+    {
+        minimap.setImage(map.getMinimapImage(175, 175));
     }
     
 }

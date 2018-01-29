@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.map;
 
 import simplerts.gfx.Assets;
 import java.awt.Image;
 import java.util.Arrays;
-import simplerts.editor.TerrainPlacement;
 import simplerts.entities.Entity;
+import simplerts.entities.Forest;
 
 /**
  *
@@ -20,15 +20,19 @@ public class Cell {
     public Image backgroundimage;
     public boolean available;
     private int tileId;
-    private TerrainPlacement terrain;
+    private Terrain terrain;
     private Entity entity;
+    private Forest forest;
+    private int x, y;
     
-    public Cell()
+    public Cell(int x, int y)
     {
         available = true;
+        this.x = x;
+        this.y = y;
     }
     
-    public Cell(TerrainPlacement terrain)
+    public Cell(Terrain terrain)
     {
         available = true;
         setTerrain(terrain);
@@ -77,17 +81,21 @@ public class Cell {
         }
     }
     
-    public TerrainPlacement getTerrain()
+    public Terrain getTerrain()
     {
         return terrain;
     }
     
-    public void setTerrain(TerrainPlacement terrain)
+    public void setTerrain(Terrain terrain)
     {
         this.terrain = terrain;
         this.tileId = terrain.getBaseTileId();
         this.available = terrain.isWalkable();
         backgroundimage = terrain.tiles[terrain.getBaseTileId()];
+        if(terrain.name.equals("trees"))
+        {
+            forest = new Forest(this);
+        }
     }
     
     public void setEntity(Entity e)
@@ -98,5 +106,35 @@ public class Cell {
     public Entity getEntity()
     {
         return entity;
+    }
+    
+    public boolean isForest()
+    {
+        return forest != null;
+    }
+    
+    public void depleteForest()
+    {
+        backgroundimage = Assets.barrenTree;
+        available = true;
+    }
+
+    /**
+     * @return the x
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * @return the y
+     */
+    public int getY() {
+        return y;
+    }
+    
+    public Forest getForest()
+    {
+        return forest;
     }
 }

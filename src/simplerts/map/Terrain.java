@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.editor;
+package simplerts.map;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -12,16 +12,16 @@ import java.awt.image.BufferedImage;
  *
  * @author Markus
  */
-public class TerrainPlacement {
+public class Terrain {
     
     public Integer[] terrainSquare;
     public Integer[] alternatives;
     public BufferedImage[] tiles;
-    private Color minimapColor;
+    protected Color minimapColor;
     public String name;
-    private final boolean walkable;
+    protected boolean walkable;
     
-    public TerrainPlacement(Integer[] terrainSquare, Integer[] alternatives, BufferedImage[] tiles, String name, boolean walkable, Color color)
+    public Terrain(Integer[] terrainSquare, Integer[] alternatives, BufferedImage[] tiles, String name, boolean walkable, Color color)
     {
         this.terrainSquare = terrainSquare;
         this.alternatives = alternatives;

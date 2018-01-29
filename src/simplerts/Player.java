@@ -23,6 +23,7 @@ public class Player {
     private Color teamColor;
     private CopyOnWriteArrayList<Entity> entities;
     private SpriteManager spritemanager;
+    private Controller controller;
 
     private Handler handler;
     
@@ -121,9 +122,9 @@ public class Player {
         return currentFood;
     }
     
-    public boolean hasRoomFor(int food)
+    public boolean hasRoomFor(Unit u)
     {
-        return currentFood + food <= maxFood;
+        return currentFood + u.getFoodRequirement() <= maxFood;
     }
     
     public CopyOnWriteArrayList<Entity> getEntities()
@@ -138,6 +139,25 @@ public class Player {
     public void pay(int cost) {
         this.gold -= cost;
     }
+
+    /**
+     * @return the controller
+     */
+    public Controller getController() {
+        return controller;
+    }
+
+    /**
+     * @param controller the controller to set
+     */
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public void addLumber(int lumber) {
+        this.lumber += lumber;
+    }
+    
     
     
 }

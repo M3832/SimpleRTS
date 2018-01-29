@@ -10,15 +10,13 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
-import simplerts.Map;
+import simplerts.map.Map;
 import simplerts.Player;
-import simplerts.Utils;
+import simplerts.utils.Utils;
 import simplerts.entities.actions.Action;
-import simplerts.Destination;
+import simplerts.map.Destination;
 import simplerts.entities.actions.Follow;
-import simplerts.entities.actions.Gather;
 import simplerts.entities.actions.MoveTo;
-import simplerts.entities.actions.TurnInGold;
 import simplerts.gfx.Assets;
 import simplerts.gfx.Animation;
 import simplerts.gfx.AnimationController;
@@ -43,6 +41,7 @@ public abstract class Unit extends Entity {
     
     protected String name;
     protected int attackDamage;
+    private int foodRequirement;
     
     protected int trainTime;
     
@@ -75,6 +74,7 @@ public abstract class Unit extends Entity {
         actions = new CopyOnWriteArrayList<>();
         moveSpeed = 2;
         trainTime = 100;
+        setFoodRequirement(1);
         name = "Peasant";
     }
     
@@ -193,13 +193,7 @@ public abstract class Unit extends Entity {
             actions.get(0).performAction();
         }
         
-        if(Math.abs(deltaX) > 0 || 
-                Math.abs(deltaY) > 0 || 
-                (actions.size() > 0 && actions.get(0) instanceof MoveTo) ||
-                (actions.size() > 0 && actions.get(0) instanceof Follow) ||
-                (actions.size() > 0 && actions.get(0) instanceof Gather) ||
-                (actions.size() > 0 && actions.get(0) instanceof TurnInGold)
-                )
+        if(actions.size() > 0 && actions.get(0).isMoving())
         {
             ac.playAnimation("walk");
         }
@@ -329,5 +323,19 @@ public abstract class Unit extends Entity {
     public Destination getTargetDestination()
     {
         return targetDestination;
+    }
+
+    /**
+     * @return the foodRequirement
+     */
+    public int getFoodRequirement() {
+        return foodRequirement;
+    }
+
+    /**
+     * @param foodRequirement the foodRequirement to set
+     */
+    public void setFoodRequirement(int foodRequirement) {
+        this.foodRequirement = foodRequirement;
     }
 }

@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.utils;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
+import simplerts.map.Destination;
 
 /**
  *
@@ -38,6 +39,17 @@ public class Utils {
                     return true;
                 }
             }
+        }
+        return false;
+    }
+    
+    public static boolean isAdjacent(Destination d1, Destination d2)
+    {
+        int deltaX = Math.abs(d1.getX() - d2.getX());
+        int deltaY = Math.abs(d1.getY() - d2.getY());
+        if(deltaX < 2 && deltaY < 2)
+        {
+            return true;
         }
         return false;
     }

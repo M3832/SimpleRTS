@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.entities.interfaces;
 
 /**
  *
  * @author Markus
  */
-public interface Makeable {
-    public double getMakeTime();
+public interface LumberReceiver {
+    
+    public void receiveLumber(int lumber);
+    
 }

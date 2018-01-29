@@ -5,6 +5,9 @@
  */
 package simplerts;
 
+import simplerts.utils.Utils;
+import simplerts.map.PathFinder;
+import simplerts.map.Destination;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
 import java.awt.Color;
@@ -16,6 +19,8 @@ import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
 import simplerts.entities.Builder;
 import simplerts.entities.Building;
+import simplerts.entities.actions.Chop;
+import simplerts.entities.interfaces.Lumberman;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
 import simplerts.messaging.ErrorMessage;
@@ -48,6 +53,7 @@ public class Controller {
     {
         this.handler = handler;
         this.player = player;
+        player.setController(this);
         
         ml = new MouseInput();
         guiml = new MouseInput();
@@ -114,7 +120,7 @@ public class Controller {
     public void scrolling()
     {
         int scrollSpeed = 1000;
-        float frameScroll = scrollSpeed * ((float)Game.TIME_SINCE_LAST_RENDER/1000);
+        float frameScroll = scrollSpeed * ((float)Game.time_since_last_render/1000);
         
         if(ml.posX > Game.WIDTH - boundary && ml.isHovering)
         {
@@ -212,33 +218,41 @@ public class Controller {
     private void rightMouseClick()
     {
         if(entityplacer.entity != null)
+        {
+            entityplacer.entity = null;
+            return;
+        }
+        
+        int index = 0;
+        selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
+        for(Entity e : selected)
+        {
+            if(e instanceof Unit)
+            {
+                Unit u = (Unit) e;
+                u.clearActions();
+                int gridX = (int)(ml.posX + handler.camera.getOffsetX()) / Game.CELLSIZE;
+                int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
+                if(handler.map.getCells()[gridX][gridY].getEntity() != null)
                 {
-                    entityplacer.entity = null;
-                    return;
-                }
-                int index = 0;
-                selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
-                for(Entity e : selected)
+                    u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
+                } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
                 {
-                    if(e instanceof Unit)
+                    System.out.println("this cell is a forest and is not barren! Yay!");
+                    if(u instanceof Lumberman)
                     {
-                        Unit u = (Unit) e;
-                        u.clearActions();
-                        int gridX = (int)(ml.posX + handler.camera.getOffsetX()) / Game.CELLSIZE;
-                        int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
-                        if(handler.map.getCells()[gridX][gridY].getEntity() != null)
-                        {
-                            u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
-                        } else {
-                            int offsetX = (int)(index%(Math.sqrt(selected.size())));
-                            int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                            int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
-                            int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
-                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
-                        }
-                        index++;
+                        u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
                     }
+                } else {
+                    int offsetX = (int)(index%(Math.sqrt(selected.size())));
+                    int offsetY = (int)(index/(Math.sqrt(selected.size())));
+                    int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
+                    int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
+                    u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
                 }
+                index++;
+            }
+        }
     }
 
     private void renderResources(Graphics g) {

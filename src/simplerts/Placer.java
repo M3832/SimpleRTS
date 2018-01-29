@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import simplerts.map.Destination;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
 import java.awt.AlphaComposite;
