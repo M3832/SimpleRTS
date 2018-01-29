@@ -238,7 +238,6 @@ public class Controller {
                     u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
                 } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
                 {
-                    System.out.println("this cell is a forest and is not barren! Yay!");
                     if(u instanceof Lumberman)
                     {
                         u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));

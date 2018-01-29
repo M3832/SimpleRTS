@@ -15,7 +15,7 @@ import simplerts.map.Wood;
 public class Forest extends Entity implements Wood {
     private int lumber;
     private boolean barren;
-    private Cell cell;
+    private final Cell cell;
     
     public Forest(Cell cell)
     {
@@ -31,7 +31,6 @@ public class Forest extends Entity implements Wood {
 
     @Override
     public int chop() {
-        System.out.println("Forest has " + lumber);
         if(!barren)
         {
             if(--lumber == 0)

@@ -31,24 +31,13 @@ public class Chop extends Action {
 
     @Override
     public void performAction() {
-        if(!(owner instanceof Goldminer))
+        if(!(owner instanceof Lumberman) || cell.getForest() == null)
         {
             owner.getActions().remove(this);
             return;
         }
         
-        if(cell.getForest().isBarren())
-        {
-            Cell tempCell = owner.getMap().findLumberCloseTo(new Destination(cell.getX(), cell.getY()));
-            if(cell == tempCell)
-            {
-                owner.removeAction(this);
-            } else {
-                cell = tempCell;
-            }
-        }
-        
-        if(movePath != null && !movePath.stuck)
+        if(movePath != null)
         {
             movePath.performAction();
         } else {
@@ -61,22 +50,30 @@ public class Chop extends Action {
             {
                 Lumberman l = (Lumberman)owner;
                 Forest f = cell.getForest();
+                owner.setDirection(cell.getX() - owner.getGridX(), cell.getY() - owner.getGridY());
                 
                 if(!f.isBarren())
                 {
                     l.chop();
                     l.receiveLumber(f.chop());                    
                 } else {
-//                    movePath = new MoveTo(owner, owner.getMap().)
+                    owner.addAction(new Chop(owner, owner.getMap().findLumberCloseTo(owner.getDestination(), 1)));
+                    owner.removeAction(this);
                 }
                 nextChop = System.currentTimeMillis() + l.getChopSpeed();
-                if(l.getLumber() == l.getLumberCapacity())
+                if(l.getLumber() >= l.getLumberCapacity())
                 {
                     owner.addAction(new TurnInLumber(owner));
-                    ((Lumberman)owner).setLatestForestDestination(new Destination(cell.getX(), cell.getY()));
+                    ((Lumberman)owner).setLatestForestDestination(new Destination(owner.getGridX(), owner.getGridY()));
                     owner.removeAction(this);
                 }
             }
+        }
+        if(movePath.stuck)
+        {
+            System.out.println("Stuck :(");
+            cell = owner.getMap().findLumberCloseTo(owner.getDestination(), 1);
+            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), new Destination(cell.getX(), cell.getY())));
         }
     }
 
@@ -84,6 +81,16 @@ public class Chop extends Action {
     public void render(Graphics g) {
         if(movePath != null)
             movePath.render(g);
+    }
+    
+    @Override
+    public boolean isMoving()
+    {
+        if(movePath != null)
+        {
+            return movePath.isMoving();
+        }
+        return false;
     }
     
 }

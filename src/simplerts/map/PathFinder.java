@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.Building;
-import simplerts.entities.Unit;
 
 /**
  *
@@ -51,7 +50,7 @@ public class PathFinder {
         Node startNode = nodeMap[(int)start.getX()][(int)start.getY()];
         Node goalNode = nodeMap[(int)goal.getX()][(int)goal.getY()];
         
-        if(!map.getCells()[goalNode.gridX][goalNode.gridY].available)
+        if(map.checkCollision(goalNode.gridX, goalNode.gridY))
         {
             goalNode = findCloseNode(goalNode, startNode);
         }
@@ -74,19 +73,6 @@ public class PathFinder {
                 }
                 return finalPath;
             }
-            
-            //Check diagonals
-//            for(int x = current.gridX - 1; x <= current.gridX + 1; x++)
-//            {
-//                for(int y = current.gridY - 1; y <= current.gridY + 1; y++)
-//                {
-//                    if(x > 0 && x < nodeMap.length && y > 0 && y < nodeMap[0].length)
-//                    {
-//                        int movecost = x != current.gridX && y != current.gridY ? Node.CORNERCOST : Node.MOVECOST;
-//                        checkNeighbor(nodeMap[x][y], current, movecost);
-//                    }
-//                }
-//            }
             
             for(int x = current.gridX - 1; x <= current.gridX + 1; x++)
             {
@@ -126,7 +112,7 @@ public class PathFinder {
         {
             for(int y = 0; y < destinations[0].length; y++)
             {
-                if(destinations[x][y] < score && !map.checkCollision(goalNode.gridX - 1 + x, goalNode.gridY - 1 + y))
+                if(destinations[x][y] < score && map.isInBounds(goalNode.gridX - 1 + x, goalNode.gridY - 1 + y) && !map.checkCollision(goalNode.gridX - 1 + x, goalNode.gridY - 1 + y))
                 {
                     score = destinations[x][y];
                     indexX = x;
@@ -135,7 +121,7 @@ public class PathFinder {
                 }
             }
         }
-        return nodeMap[goalNode.gridX - 1 + indexX][goalNode.gridY - 1 + indexY];
+        return nodeMap[Math.max(0, goalNode.gridX - 1 + indexX)][Math.max(0, goalNode.gridY - 1 + indexY)];
     }
     
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
@@ -159,7 +145,6 @@ public class PathFinder {
 
 class Node implements Comparable<Node>{
     public static final int MOVECOST = 10;
-    public static final int CORNERCOST = 14;
     
     public int heuristic;
     public int totalCost;

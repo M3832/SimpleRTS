@@ -29,7 +29,6 @@ import simplerts.ui.UIObject;
  * @author Markus
  */
 public abstract class Unit extends Entity {
-    public static int POSITION_BOUNDS = 0;
     private float deltaX;
     private float deltaY;
     
@@ -93,25 +92,21 @@ public abstract class Unit extends Entity {
         int tempGridX = gridX;
         int tempGridY = gridY;
         
-        if(getDeltaX() > 0 + POSITION_BOUNDS/2)
+        if(getDeltaX() > 0)
         {
             moveX = x + moveSpeed;
-            ac.setDirection(Animation.EAST);
-        } else if (getDeltaX() < 0 - POSITION_BOUNDS/2)
+        } else if (getDeltaX() < 0)
         {
             moveX = x - moveSpeed;
-            ac.setDirection(Animation.WEST);
         }
 
-        if(getDeltaY() > 0 + POSITION_BOUNDS/2)
+        if(getDeltaY() > 0)
         {
             moveY = y + moveSpeed;
-            ac.setDirection(Animation.SOUTH);
         }
-        if(getDeltaY() < 0 - POSITION_BOUNDS/2)
+        if(getDeltaY() < 0)
         {
             moveY = y - moveSpeed;
-            ac.setDirection(Animation.NORTH);
         }
 
         if(Math.abs(getDeltaX()) < moveSpeed)
@@ -135,15 +130,8 @@ public abstract class Unit extends Entity {
         if(getDeltaX() != 0 || getDeltaY() != 0)
         {
             updateCells();
+            setDirection((int)getDeltaX(), (int)getDeltaY());
 
-            if(getDeltaX() > 0 + POSITION_BOUNDS/2 && getDeltaY() > 0 + POSITION_BOUNDS/2)
-                ac.setDirection(Animation.SOUTHEAST);
-            if(getDeltaX() < 0 - POSITION_BOUNDS/2 && getDeltaY() > 0 + POSITION_BOUNDS/2)
-                ac.setDirection(Animation.SOUTHWEST);
-            if(getDeltaX() < 0 - POSITION_BOUNDS/2 && getDeltaY() < 0 - POSITION_BOUNDS/2)
-                ac.setDirection(Animation.NORTHWEST);
-            if(getDeltaX() > 0 + POSITION_BOUNDS/2 && getDeltaY() < 0 - POSITION_BOUNDS/2)
-                ac.setDirection(Animation.NORTHEAST);
         }
         
         gridX = x/Game.CELLSIZE;
@@ -158,7 +146,26 @@ public abstract class Unit extends Entity {
         {
             grid.setEntityPosition(this, getDestination());
         }
-        
+    }
+    
+    public void setDirection(int x, int y)
+    {
+        if(x > 0)
+            ac.setDirection(Animation.EAST);
+        if(x < 0)
+            ac.setDirection(Animation.WEST);
+        if(y > 0)
+            ac.setDirection(Animation.SOUTH);
+        if(y < 0)
+            ac.setDirection(Animation.NORTH);
+        if(x > 0 && y > 0)
+            ac.setDirection(Animation.SOUTHEAST);
+        if(x < 0 && y > 0)
+            ac.setDirection(Animation.SOUTHWEST);
+        if(x < 0 && y < 0)
+            ac.setDirection(Animation.NORTHWEST);
+        if(x > 0 && y < 0)
+            ac.setDirection(Animation.NORTHEAST);
     }
     
     public void clearActions()

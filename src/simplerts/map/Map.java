@@ -142,7 +142,7 @@ public class Map {
     
     public boolean checkCollision(int cellX, int cellY)
     {
-        if(cellX >= 0 && cellX < cells.length && cellY >= 0 && cellY < cells[0].length)
+        if(isInBounds(cellX, cellY))
         {
             return isCellBlocked(cellX, cellY);
         }
@@ -350,10 +350,14 @@ public class Map {
         return new Destination(target.getGridX() - 1 + indexX, target.getGridY() - 1 + indexY);
     }
     
-    public Cell findLumberCloseTo(Destination d)
+    public Cell findLumberCloseTo(Destination d, int squaresAround)
     {
-        for(int x = d.getX() - 1; x < d.getX() + 2; x++){
-            for(int y = d.getY() - 1; y < d.getY() + 2; y++)
+        int maxSquaresAround = 3;
+        
+        Rectangle area = getArea(d, squaresAround);
+        
+        for(int x = (int)area.getX() - squaresAround; x < (int)area.getX() + (int)area.getWidth(); x++){
+            for(int y = (int)area.getY() - squaresAround; y < (int)area.getY() + (int)area.getHeight(); y++)
             {
                 if(isInBounds(x, y) && cells[x][y].isForest() && !cells[x][y].getForest().isBarren())
                 {
@@ -361,7 +365,13 @@ public class Map {
                 }
             }
         }
-        return cells[d.getX()][d.getY()];
+        
+        if(squaresAround > maxSquaresAround)
+        {
+            return cells[d.getX()][d.getY()];
+        } else {
+            return findLumberCloseTo(d, ++squaresAround);
+        }
     }
 
     public Entity getEntityFromCell(int gridX, int gridY) {
@@ -370,6 +380,15 @@ public class Map {
             return cells[gridX][gridY].getEntity();
         }
         return null;
+    }
+    
+    public Rectangle getArea(Destination d, int squaresAround)
+    {
+        int x = d.getX();
+        int y = d.getY();
+        int width = 1 + 2 * squaresAround;
+        int height = 1 + 2 * squaresAround;
+        return new Rectangle(x, y, width, height);
     }
     
     public boolean isInBounds(int gridX, int gridY)

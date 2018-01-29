@@ -26,16 +26,21 @@ public class MoveTo extends Action {
     
     protected CopyOnWriteArrayList<Destination> destinations;
     protected int collisions;
-    protected boolean stuckWarning, stuck;
+    protected boolean stuckWarning, stuck, lastOccupied;
     protected Timer stuckTimer;
+    private Destination lastDestination;
 
     public MoveTo(Unit owner, CopyOnWriteArrayList<Destination> destinations) {
         super(owner);
         this.destinations = destinations;
+        if(!destinations.isEmpty())
+            lastDestination = destinations.get(Math.max(destinations.size()-1, 0));
         collisions = 0;
         stuckWarning = false;
         stuck = false;
         moving = true;
+        lastOccupied = false;
+        stuckTimer = new Timer(200, () -> {System.out.println("");});
     }
 
     @Override
@@ -133,22 +138,18 @@ public class MoveTo extends Action {
                 direction = destinations.get(1).getY() > owner.getGridY() ? 1 : -1;
             for(int i = 0; i < Math.min(CHECK_AHEAD_DISTANCE + 1, destinations.size() - 1); i++)
             {
-                if(!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * direction))
+                if(!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * direction) &&
+                        !owner.getMap().checkCollision(destinations.get(i).getX() - 1 * direction, destinations.get(i).getY() + 1 * direction))
                 {
                     destinations.get(i).add(0, 1 * direction);
-                } else if (!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * -direction))
+                } else if (!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * -direction) &&
+                        !owner.getMap().checkCollision(destinations.get(i).getX() - 1 * direction, destinations.get(i).getY() + 1 * -direction))
                 {
                     destinations.get(i).add(0, 1 * -direction);
                 } else {
                     destinations.set(i, owner.getMap().getAvailableNeighborCell(owner));
                 }
-            }
-            
-            if(destinations.size() == 1)
-            {
-                destinations.add(0, new Destination(owner.getGridX(), owner.getGridY() + 1 * direction));
-            }
-            
+            }           
         } else if (deltaY != 0)
         {
             int direction = deltaY > 0 ? 1 : -1;
@@ -156,21 +157,28 @@ public class MoveTo extends Action {
                 direction = destinations.get(1).getX() > owner.getGridX() ? 1 : -1;
             for(int i = 0; i < Math.min(CHECK_AHEAD_DISTANCE + 1, destinations.size() - 1); i++)
             {
-                if(!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * direction, destinations.get(i).getY()))
+                if(!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * direction, destinations.get(i).getY()) &&
+                        !owner.getMap().checkCollision(destinations.get(i).getY() + 1 * direction, destinations.get(i).getY() - 1 * direction))
                 {
                     destinations.get(i).add(1 * direction, 0);
-                } else if (!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * -direction, destinations.get(i).getY()))
+                } else if (!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * -direction, destinations.get(i).getY()) &&
+                        !owner.getMap().checkCollision(destinations.get(i).getY() + 1 * -direction, destinations.get(i).getY() - 1 * direction))
                 {
                     destinations.get(i).add(1 * -direction, 0);
                 } else {
                     destinations.set(i, owner.getMap().getAvailableNeighborCell(owner));
                 }
             }
-            if(destinations.size() == 1)
-            {
-                destinations.add(0, new Destination(owner.getGridX() + 1 * direction, owner.getGridY()));
-            }
         }
+    }
+
+    public boolean arrived() {
+        return destinations.isEmpty();
+    }
+    
+    public boolean isTargetOccupied()
+    {
+        return lastOccupied;
     }
     
 }

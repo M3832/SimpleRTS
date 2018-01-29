@@ -12,6 +12,7 @@ import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.entities.interfaces.Goldminer;
 import simplerts.entities.interfaces.LumberReceiver;
 import simplerts.entities.interfaces.Lumberman;
+import simplerts.map.Destination;
 import simplerts.messaging.ErrorMessage;
 import simplerts.utils.Timer;
 import simplerts.utils.Utils;
@@ -68,13 +69,20 @@ public class TurnInLumber extends Action {
                 ((Lumberman)owner).exit(owner.getDestination());
                 if(((Lumberman)owner).getLatestForestDestination() != null)
                 {
-                    owner.addAction(new Chop(owner, owner.getMap().findLumberCloseTo(((Lumberman)owner).getLatestForestDestination())));
+                    owner.addAction(new Chop(owner, owner.getMap().findLumberCloseTo(((Lumberman)owner).getLatestForestDestination(), 1)));
                 }
             }).start();
             owner.clearActions();
         }
+        
+        if(movePath.stuck)
+        {
+            
+            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)lr)));
+        }
     }
 
+    @Override
     public void render(Graphics g)
     {
         if(movePath != null)
