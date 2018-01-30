@@ -87,11 +87,10 @@ public class MoveTo extends Action {
         if(stuckWarning && !destinations.isEmpty() && stuckTimer != null && !stuckTimer.isAlive())
         {
             stuckTimer = new Timer((int)STUCK_TIME, () -> {if(stuckWarning && !destinations.isEmpty())
-            {
-                System.out.println("I am stuck!!");
-                stuck = true; moving = false;}
-            } 
-            );
+                {
+                    stuck = true; moving = false;
+                }
+            });
             stuckTimer.start();
         }
     }

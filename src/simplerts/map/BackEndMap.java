@@ -28,7 +28,7 @@ import simplerts.ui.MiniMap;
  *
  * @author Markus
  */
-public class Map {
+public class BackEndMap {
     
     private final CopyOnWriteArrayList<Entity> entities;
     private final Cell[][] cells;
@@ -37,7 +37,7 @@ public class Map {
     private Rectangle selectBox;
     private Player neutral;
     
-    public Map(int colSize, int rowSize)
+    public BackEndMap(int colSize, int rowSize)
     {
         entities = new CopyOnWriteArrayList();
         cells = new Cell[colSize][rowSize];
@@ -66,73 +66,6 @@ public class Map {
     public Cell[][] getCells()
     {
         return cells;
-    }
-    
-    public void render(Graphics g, float offsetX, float offsetY)
-    {
-        int startX = Math.max((int)offsetX / Game.CELLSIZE, 0);
-        int endX = Math.min(2 + startX + handler.game.WIDTH / Game.CELLSIZE, cells.length);
-        
-        int startY = Math.max((int)offsetY / Game.CELLSIZE, 0);
-        int endY = Math.min(1 + startY + handler.game.WIDTH / Game.CELLSIZE, cells[0].length);
-
-        
-        for(int i = startX; i < endX; i++)
-        {
-            for(int j = startY; j < endY; j++)
-            {
-                g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE) - offsetX), (int)((j * Game.CELLSIZE) - offsetY), Game.CELLSIZE, Game.CELLSIZE, null);
-            }
-        }
-//        renderGrid(g, (int)offsetX, (int)offsetY);
-        
-        entities.stream()
-                .sorted((e1, e2) -> { return Integer.compare(e1.getGridY(), e2.getGridY());})
-                .forEach(e -> {
-                    if (inView(e, offsetX, offsetY) && e.isVisible()) {
-                        e.render(g);
-                    }
-                });
-    }
-    
-    public void renderMapEditor(Graphics g)
-    {
-        int startX = 0;
-        int endX = cells.length;
-        
-        int startY = 0;
-        int endY = cells[0].length;
-        
-        for(int i = startX; i < endX; i++)
-        {
-            for(int j = startY; j < endY; j++)
-            {
-                g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE)), (int)((j * Game.CELLSIZE)), Game.CELLSIZE, Game.CELLSIZE, null);
-            }
-        }
-    }
-    
-    public void renderGrid(Graphics g, int offsetX, int offsetY)
-    {
-        g.setColor(Color.YELLOW);
-        for(int i = 0; i < cells.length; i++)
-        {
-            for(int j = 0; j < cells[0].length; j++)
-            {
-                g.drawRect(i * Game.CELLSIZE - offsetX, j * Game.CELLSIZE - offsetY, Game.CELLSIZE, Game.CELLSIZE);
-            }
-        }
-    }
-    
-    private boolean inView(Entity e, float offsetX, float offsetY)
-    {
-        int startX = Math.max((int)offsetX / Game.CELLSIZE, 0);
-        int endX = Math.min(2 + startX + handler.game.WIDTH / Game.CELLSIZE, cells.length);
-        
-        int startY = Math.max((int)offsetY / Game.CELLSIZE, 0);
-        int endY = Math.min(1 + startY + handler.game.WIDTH / Game.CELLSIZE, cells[0].length);
-        
-        return e.getGridX() > startX - 5 && e.getGridX() < endX && e.getGridY() > startY - 5 && e.getGridY() < endY;
     }
     
     public void update()
@@ -193,30 +126,6 @@ public class Map {
     private boolean rectangleIntersectsEntity(Rectangle r, Entity e)
     {
         return r.intersects(new Rectangle(e.getX() + 1, e.getY() + 1, e.getWidth() - 2, e.getHeight() - 2));
-    }
-    
-    public MiniMap getMiniMap(int width, int height)
-    {
-        float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
-
-        return new MiniMap(getMinimapImage(width, height), squaresize, entities);
-    }
-    
-    public BufferedImage getMinimapImage(int width, int height)
-    {
-        BufferedImage minimap = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = minimap.createGraphics();
-        float tempSquaresize = Math.max((float)1000/cells.length, (float)1000/cells[0].length);
-        float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
-        
-        for(int i = 0; i < cells.length; i++)
-        {
-            for(int j = 0; j < cells[0].length; j++)
-            {
-                g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)tempSquaresize, (int)tempSquaresize), i * (int)tempSquaresize, j * (int)tempSquaresize, null);
-            }
-        }
-        return GraphicsUtil.resize(minimap, width, height);
     }
 
     public boolean checkTerrainCollision(Rectangle rectangle) {

@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
-import simplerts.map.Map;
+import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.utils.Utils;
 import simplerts.entities.actions.Action;
@@ -288,7 +288,7 @@ public abstract class Unit extends Entity {
         return tempY;
     }
     
-    public Map getMap()
+    public BackEndMap getMap()
     {
         return grid;
     }

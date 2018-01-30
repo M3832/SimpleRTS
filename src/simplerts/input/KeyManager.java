@@ -7,6 +7,7 @@ package simplerts.input;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import simplerts.PlayerMessager;
 
 /**
  *
@@ -18,6 +19,8 @@ public class KeyManager implements KeyListener {
     public static final int ATTACK_KEY = KeyEvent.VK_ENTER;
     public static final int SPELL_KEY = KeyEvent.VK_SPACE;
     public static final int SCORE_KEY = KeyEvent.VK_TAB;
+    
+    private PlayerMessager pm;
     
     public KeyManager(){
         keys = new boolean[256];
@@ -48,14 +51,22 @@ public class KeyManager implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        keys[e.getKeyCode()] = true;
+        if(e.getKeyCode() < keys.length)
+            keys[e.getKeyCode()] = true;
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        keys[e.getKeyCode()] = false;
-        keysLast[e.getKeyCode()] = false;
-        
+        if(e.getKeyCode() < keys.length){
+            keys[e.getKeyCode()] = false;
+            keysLast[e.getKeyCode()] = false;
+        }
+        pm.keyPressed(e);
+    }
+    
+    public void setPlayerMessager(PlayerMessager pm)
+    {
+        this.pm = pm;
     }
     
 }

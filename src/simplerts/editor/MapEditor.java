@@ -14,9 +14,10 @@ import javax.swing.JFileChooser;
 import javax.swing.tree.DefaultMutableTreeNode;
 import simplerts.map.Cell;
 import simplerts.Game;
-import simplerts.map.Map;
+import simplerts.map.BackEndMap;
 import simplerts.map.MapIO;
 import simplerts.gfx.Assets;
+import simplerts.map.FrontEndMap;
 
 /**
  *
@@ -24,7 +25,8 @@ import simplerts.gfx.Assets;
  */
 public class MapEditor extends javax.swing.JFrame {
 
-    Map map;
+    BackEndMap map;
+    FrontEndMap renderMap;
     Canvas canvas;
     /**
      * Creates new form MapEditor
@@ -41,7 +43,8 @@ public class MapEditor extends javax.swing.JFrame {
 
     private void initCustomComponents()
     {
-        map = new Map(50, 50);
+        map = new BackEndMap(50, 50);
+        renderMap = new FrontEndMap(map);
         canvas = new Canvas();
         canvas.setSize(new Dimension(map.getSize()));
         currentTerrain = Assets.darkGrass;
@@ -310,9 +313,9 @@ public class MapEditor extends javax.swing.JFrame {
                         }
                         bs = canvas1.getBufferStrategy();
                         g = bs.getDrawGraphics();
-                        e.map.renderMapEditor(g);
+                        e.renderMap.renderMapEditor(g);
                         if(e.jCheckBoxMenuItem1.getState())
-                            e.map.renderGrid(g, 0, 0);
+                            e.renderMap.renderGrid(g, 0, 0);
                         bs.show();
                         g.dispose();
                     }
@@ -322,7 +325,7 @@ public class MapEditor extends javax.swing.JFrame {
         });
     }
     
-    public static void maskMap(Map map, int startX, int startY)
+    public static void maskMap(BackEndMap map, int startX, int startY)
     {
         Cell[][] cells = map.getCells();
         Terrain terrain;

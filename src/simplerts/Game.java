@@ -5,7 +5,7 @@
  */
 package simplerts;
 
-import simplerts.map.Map;
+import simplerts.map.BackEndMap;
 import simplerts.map.MapIO;
 import simplerts.gfx.Assets;
 import simplerts.display.Camera;
@@ -17,6 +17,7 @@ import simplerts.messaging.MessageManager;
 import simplerts.entities.Builder;
 import simplerts.entities.Goldmine;
 import simplerts.input.MouseInput;
+import simplerts.map.FrontEndMap;
 import simplerts.ui.GUI;
 //import javax.swing.JFileChooser;
 //import static org.lwjgl.glfw.GLFW.*;
@@ -48,11 +49,9 @@ public class Game implements Runnable {
     
     private long nextSecond = 0;
 
-    public Map map;
-    public Camera camera;
+    public BackEndMap map;
     public Handler handler;
     public Display display;
-    public GUI gui;
     public MessageManager mm;
     public CopyOnWriteArrayList<Player> players;
     public Controller controller;
@@ -62,21 +61,16 @@ public class Game implements Runnable {
         Assets.setup();
         JFileChooser openFile = new JFileChooser();
         players = new CopyOnWriteArrayList<>();
-        camera = new Camera();
         display = new Display(WIDTH, HEIGHT, GUIHEIGHT);
 //        openFile.showOpenDialog(display.window);
 //        map = MapIO.loadMap(openFile.getSelectedFile());
         map = MapIO.loadMap("/asd");
-        handler = new Handler(this, map, camera, display);
+        handler = new Handler(this, map, display);
         mm = new MessageManager(handler);
-        gui = new GUI(map, handler);
-
         
         Player player = new Player(handler);
         controller = new Controller(handler, player);
         players.add(player);
-
-        ((MouseInput)display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
         
         map.addEntity(new Builder(10, 6, player));
         map.addEntity(new Builder(11, 6, player));

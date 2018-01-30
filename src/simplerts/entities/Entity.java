@@ -11,7 +11,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import simplerts.Game;
-import simplerts.map.Map;
+import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.map.Destination;
 import simplerts.ui.UIAction;
@@ -33,7 +33,7 @@ public abstract class Entity {
     protected Player player;
     protected boolean isVisible, isDead;
     public Color color;
-    public Map grid;
+    public BackEndMap grid;
     
     public Entity()
     {

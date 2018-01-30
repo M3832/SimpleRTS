@@ -23,7 +23,9 @@ import simplerts.entities.actions.Chop;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
+import simplerts.map.FrontEndMap;
 import simplerts.messaging.ErrorMessage;
+import simplerts.messaging.Message;
 import simplerts.ui.GUI;
 
 /**
@@ -38,12 +40,16 @@ public class Controller {
     private Placer entityplacer;
     
     private MouseInput ml;
-    private MouseInput guiml;
     private KeyManager km;
     
     private float boundary;
     
+    private GUI gui;
+    private FrontEndMap renderMap;
+    private PlayerMessager messager;
+    
     private ArrayList<Entity> selected;
+    private boolean[][] mapVisibility;
     
     private Rectangle selectBox;
     private double startDragX, startDragY;
@@ -53,21 +59,32 @@ public class Controller {
     {
         this.handler = handler;
         this.player = player;
+        initVariables();
+    }
+    
+    private void initVariables()
+    {
         player.setController(this);
         
-        ml = new MouseInput();
-        guiml = new MouseInput();
-        km = new KeyManager();
         
         selected = new ArrayList<>();
-        
+        messager = new PlayerMessager(this);
         entityplacer = new Placer(handler);
+        renderMap = new FrontEndMap(handler.map);
+        handler.setCamera(renderMap.getCamera());
+        handler.setRenderMap(renderMap);
+        renderMap.getCamera().setHandler(handler);
+        gui = new GUI(renderMap, handler);
         
+        ml = new MouseInput();
+        km = new KeyManager();
+        km.setPlayerMessager(messager);
         handler.getDisplay().getGamePanel().addMouseListener(ml);
         handler.getDisplay().getGamePanel().addMouseMotionListener(ml);
-//        handler.getDisplay().getGUIPanel().addMouseListener(guiml);
-//        handler.getDisplay().getGUIPanel().addMouseMotionListener(guiml);
         handler.getDisplay().window.addKeyListener(km);
+        
+        ((MouseInput)handler.display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
+        mapVisibility = new boolean[renderMap.getCells().length][handler.map.getCells()[0].length];
         
         boundary = 50;
     }
@@ -75,7 +92,7 @@ public class Controller {
     public void update()
     {
         input();
-        handler.game.gui.update();
+        gui.update();
         ml.isMouseClicked();
         entityplacer.setPosition(ml.posX + (int)handler.camera.getOffsetX(), ml.posY + (int)handler.camera.getOffsetY());
     }
@@ -108,6 +125,8 @@ public class Controller {
         if(entityplacer.entity != null)
             entityplacer.render(g);
         
+        gui.render(g);
+        messager.render(g);
         renderResources(g);
         
     }
@@ -147,7 +166,7 @@ public class Controller {
     {
         selected.clear();
         selected.add(e);
-        handler.game.gui.setSelectedEntities(selected);
+        gui.setSelectedEntities(selected);
 
     }
     
@@ -158,7 +177,7 @@ public class Controller {
         {
             if(ml.isMouseDown)
             {
-                handler.game.gui.onClick(ml.posX, ml.posY);
+                gui.onClick(ml.posX, ml.posY);
             }
         }
         
@@ -202,7 +221,7 @@ public class Controller {
                 {
                     selected = (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox);
                     selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
-                    handler.game.gui.setSelectedEntities(selected);
+                    gui.setSelectedEntities(selected);
                 }
 
                 selectBox = null;
@@ -276,8 +295,14 @@ public class Controller {
             if(selected.contains(e))
             {
                 selected.remove(e);
+                gui.setSelectedEntities(selected);
             }
         }
+    }
+    
+    public void sendMessage(String message)
+    {
+        handler.game.mm.addMessage(new Message(message));
     }
     
 }

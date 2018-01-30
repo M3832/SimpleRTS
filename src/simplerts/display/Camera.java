@@ -70,7 +70,7 @@ public class Camera {
     
     public void render(Graphics g)
     {
-        handler.map.render(g, offsetX, offsetY);
+        handler.renderMap.render(g, offsetX, offsetY);
     }
     
     public void setHandler(Handler handler)

@@ -8,7 +8,6 @@ package simplerts.entities.actions;
 import java.awt.Graphics;
 import simplerts.entities.Forest;
 import simplerts.entities.Unit;
-import simplerts.entities.interfaces.Goldminer;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.map.Cell;
 import simplerts.map.Destination;
@@ -71,7 +70,6 @@ public class Chop extends Action {
         }
         if(movePath.stuck)
         {
-            System.out.println("Stuck :(");
             cell = owner.getMap().findLumberCloseTo(owner.getDestination(), 1);
             movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), new Destination(cell.getX(), cell.getY())));
         }

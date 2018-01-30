@@ -40,7 +40,6 @@ public class Gather extends Action {
             movePath.performAction();
         } else {
             movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)mine)));
-            System.out.println("Repathing");
         }
         
         if(Utils.isAdjacent(owner, (Entity)mine))

@@ -53,18 +53,9 @@ public class UIAction extends UIObject {
             g.drawImage(icon, (int)x, (int)y, null);
             if(hovering && action)
             {
-                g.setColor(new Color(25, 25, 25, 245));
-                g.fillRect((int)x - 25, (int)y - 100, 100, 100);
-                g.setColor(Color.black);
-                g.drawRect((int)x - 25, (int)y - 100, 100, 100);
-                g.setColor(Color.WHITE);
-                g.setFont(GUI.SMALL);
-                if(title != null)
-                    Utils.drawWithShadow(g, title, (int)x + 25 - g.getFontMetrics(GUI.SMALL).stringWidth(title)/2, (int)y - 100 + g.getFontMetrics(GUI.SMALL).getHeight());
-                if(goldCost != null)
-                    Utils.drawWithShadow(g, "Gold: " + goldCost, (int)x - 20, (int)y - 100 + 20 + g.getFontMetrics(GUI.SMALL).getHeight());
-                if(lumberCost != null)
-                    Utils.drawWithShadow(g, "Wood: " + lumberCost, (int)x - 20, (int)y - 100 + 35 + g.getFontMetrics(GUI.SMALL).getHeight());
+                renderToolTip(g);
+                g.setColor(new Color(20, 20, 20, 175));
+                g.fillRect((int)x, (int)y, width, height);
             }
         }
     }
@@ -128,6 +119,21 @@ public class UIAction extends UIObject {
      */
     public void setLumberCost(String lumberCost) {
         this.lumberCost = lumberCost;
+    }
+
+    private void renderToolTip(Graphics g) {
+                g.setColor(new Color(25, 25, 25, 245));
+                g.fillRect((int)x - 25, (int)y - 100, 100, 100);
+                g.setColor(Color.black);
+                g.drawRect((int)x - 25, (int)y - 100, 100, 100);
+                g.setColor(Color.WHITE);
+                g.setFont(GUI.SMALL);
+                if(title != null)
+                    Utils.drawWithShadow(g, title, (int)x + 25 - g.getFontMetrics(GUI.SMALL).stringWidth(title)/2, (int)y - 100 + g.getFontMetrics(GUI.SMALL).getHeight());
+                if(goldCost != null)
+                    Utils.drawWithShadow(g, "Gold: " + goldCost, (int)x - 20, (int)y - 100 + 20 + g.getFontMetrics(GUI.SMALL).getHeight());
+                if(lumberCost != null)
+                    Utils.drawWithShadow(g, "Wood: " + lumberCost, (int)x - 20, (int)y - 100 + 35 + g.getFontMetrics(GUI.SMALL).getHeight());
     }
     
     

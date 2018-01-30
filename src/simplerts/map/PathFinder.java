@@ -17,10 +17,10 @@ import simplerts.entities.Building;
 public class PathFinder {
     private final ArrayList<Node> open;
     private final ArrayList<Node> closed;
-    private final Map map;
+    private final BackEndMap map;
     private Node[][] nodeMap;
     
-    public PathFinder(Map map)
+    public PathFinder(BackEndMap map)
     {
         this.map = map;
         open = new ArrayList<>();

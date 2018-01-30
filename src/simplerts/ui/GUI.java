@@ -15,7 +15,7 @@ import simplerts.entities.Entity;
 import simplerts.gfx.Assets;
 import simplerts.Game;
 import simplerts.Handler;
-import simplerts.map.Map;
+import simplerts.map.FrontEndMap;
 
 /**
  *
@@ -23,24 +23,42 @@ import simplerts.map.Map;
  */
 public class GUI {
     
-    Map map;
-    private MiniMap minimap;
-    private int height = 225;
-    private Handler handler;
-    private int mapOffsetX = 35, mapOffsetY = Game.HEIGHT + 31;
-    private ArrayList<Entity> entities;
     public static Font HEADER = new Font("Verdana", Font.PLAIN, 34);
     public static Font BREAD = new Font("Verdana", Font.PLAIN, 16);
     public static Font SMALL = new Font("Verdana", Font.PLAIN, 10);
-    private CopyOnWriteArrayList<UIObject> objects;
     
-    public GUI(Map map, Handler handler)
+    private final FrontEndMap renderMap;
+    private final MiniMap minimap;
+    private final Handler handler;
+    private final int mapOffsetX = 35, mapOffsetY = Game.HEIGHT + 31;
+    private final CopyOnWriteArrayList<UIObject> objects;
+    private ArrayList<Entity> entities;
+    
+    public GUI(FrontEndMap map, Handler handler)
     {
-        this.map = map;
+        renderMap = map;
         this.handler = handler;
-        minimap = map.getMiniMap(175, 175);
+        minimap = renderMap.getMiniMap(175, 175);
         entities = new ArrayList<>();
         objects = new CopyOnWriteArrayList<>();
+        initVariables();
+    }
+    
+    private void initVariables()
+    {
+        //A thread that updates the minimap every 5 seconds
+        new Thread(() -> {
+            int updateTime = 5000;
+            long nextMinimapUpdate = System.currentTimeMillis() + updateTime;
+            while(true)
+            {
+                if(nextMinimapUpdate < System.currentTimeMillis())
+                {
+                    updateMinimap();
+                    nextMinimapUpdate = System.currentTimeMillis() + updateTime;
+                }
+            }
+        }).start();
     }
     
     public void onClick(int posX, int posY)
@@ -141,7 +159,7 @@ public class GUI {
     
     public void updateMinimap()
     {
-        minimap.setImage(map.getMinimapImage(175, 175));
+        minimap.setImage(renderMap.getMinimapImage(175, 175));
     }
     
 }

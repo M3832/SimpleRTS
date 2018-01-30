@@ -72,7 +72,7 @@ public class Placer {
         ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         g.drawImage(image, ((cellX - offsetCellX) * Game.CELLSIZE) - (int)handler.getCamera().getOffsetX() % Game.CELLSIZE, (cellY - offsetCellY) * Game.CELLSIZE - (int)handler.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE * cellWidth, Game.CELLSIZE * cellHeight, null);
 //        g.setColor(color);
-//        g.fillRect(cellX * Map.CELLSIZE, cellY * Map.CELLSIZE, cellSize * Map.CELLSIZE, cellSize * Map.CELLSIZE);
+//        g.fillRect(cellX * BackEndMap.CELLSIZE, cellY * BackEndMap.CELLSIZE, cellSize * BackEndMap.CELLSIZE, cellSize * BackEndMap.CELLSIZE);
     }
     
     public int getWidth()

@@ -5,9 +5,10 @@
  */
 package simplerts;
 
-import simplerts.map.Map;
+import simplerts.map.BackEndMap;
 import simplerts.display.Camera;
 import simplerts.display.Display;
+import simplerts.map.FrontEndMap;
 
 /**
  *
@@ -17,22 +18,21 @@ public class Handler {
     
     public Game game;
     
-    public Map map;
+    public BackEndMap map;
+    public FrontEndMap renderMap;
     
     public Camera camera;
     
     public Display display;
     
-    public Handler(Game game, Map map, Camera camera, Display display)
+    public Handler(Game game, BackEndMap map, Display display)
     {
         this.game = game;
         this.map = map;
-        this.camera = camera;
         this.display = display;
         
         this.map.setHandler(this);
         this.display.getGamePanel().setHandler(this);
-        this.camera.setHandler(this);
     }
     
     public Camera getCamera()
@@ -43,6 +43,16 @@ public class Handler {
     public Display getDisplay()
     {
         return display;
+    }
+    
+    public void setCamera(Camera c)
+    {
+        camera = c;
+    }
+    
+    public void setRenderMap(FrontEndMap renderMap)
+    {
+        this.renderMap = renderMap;
     }
     
     public void sendErrorMessage(String message)

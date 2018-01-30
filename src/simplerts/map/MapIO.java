@@ -20,17 +20,17 @@ import simplerts.gfx.Assets;
  * @author Markus
  */
 public class MapIO {
-    public static Map loadMap(String url)
+    public static BackEndMap loadMap(String url)
     {
         return loadMap(new File(File.class.getResource(url).getFile()));
     }
     
-    public static Map loadMap(File file)
+    public static BackEndMap loadMap(File file)
     {
         Scanner in;
         ArrayList<String> mapData = new ArrayList<>();
         int width = 0, height = 0;
-        Map map = new Map(1, 1);
+        BackEndMap map = new BackEndMap(1, 1);
         try {
             in = new Scanner(file);
             while(in.hasNextLine())
@@ -51,7 +51,7 @@ public class MapIO {
             {
                 width = Integer.parseInt(tokens[0]);
                 height = Integer.parseInt(tokens[1]);
-                map = new Map(width, height);
+                map = new BackEndMap(width, height);
             }
             
             if(tiles)
@@ -76,7 +76,7 @@ public class MapIO {
         return map;
     }
     
-    public static void saveMap(File file, Map map) {
+    public static void saveMap(File file, BackEndMap map) {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(file.getAbsolutePath()), "utf-8"))) {
             int width = map.getCells().length;
