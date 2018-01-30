@@ -29,7 +29,6 @@ public abstract class Building extends Entity {
     protected int buildTime;
     protected int currentTime;
     protected int trainTime, currentTrainTime;
-    protected int armor;
     protected long lastUpdate;
     protected String name;
     protected Builder builder;

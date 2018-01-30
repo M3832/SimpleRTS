@@ -48,7 +48,7 @@ public class GUI {
     {
         //A thread that updates the minimap every 5 seconds
         new Thread(() -> {
-            int updateTime = 5000;
+            int updateTime = 1000;
             long nextMinimapUpdate = System.currentTimeMillis() + updateTime;
             while(true)
             {

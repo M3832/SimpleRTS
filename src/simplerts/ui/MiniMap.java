@@ -5,11 +5,13 @@
  */
 package simplerts.ui;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.Entity;
 import simplerts.Game;
+import simplerts.map.FrontEndMap;
 
 /**
  *
@@ -20,14 +22,14 @@ public class MiniMap {
     private BufferedImage minimap;
     private float squaresize;
     private float pixelRatio;
-    private CopyOnWriteArrayList<Entity> entities;
+    private FrontEndMap renderMap;
     
-    public MiniMap(BufferedImage minimap, float squaresize, CopyOnWriteArrayList<Entity> entities)
+    public MiniMap(BufferedImage minimap, float squaresize, FrontEndMap renderMap)
     {
         this.minimap = minimap;
         this.squaresize = squaresize;
         this.pixelRatio = squaresize/Game.CELLSIZE;
-        this.entities = entities;
+        this.renderMap = renderMap;
     }
     
     public BufferedImage getMiniMap()
@@ -40,9 +42,11 @@ public class MiniMap {
         BufferedImage i = new BufferedImage(minimap.getWidth(), minimap.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = (Graphics2D)i.getGraphics();
         g.drawImage(minimap, 0, 0, null);
-        for(Entity e: entities)
+        for(Entity e: renderMap.getBackEnd().getEntities())
         {
-            g.fillRect((int)(e.getGridX() * squaresize), (int)(e.getGridY() * squaresize), (int)(squaresize * e.getGridWidth()), (int)(squaresize * e.getGridHeight()));
+            g.setColor(e.getPlayer() == renderMap.getControllingPlayer() ? Color.WHITE : e.color );
+            if(renderMap.isNotMasked(e) && !e.isDead() && e.isVisible())
+                g.fillRect((int)(e.getGridX() * squaresize), (int)(e.getGridY() * squaresize), (int)(squaresize * e.getGridWidth()), (int)(squaresize * e.getGridHeight()));
         }
         return i;
     }

@@ -315,6 +315,8 @@ public abstract class Unit extends Entity {
             } else {
                 addAction(new MoveTo(this, grid.getPathFinder().findPath(getDestination(), grid.getClosestCell(this, e))));
             }
+        } else {
+            addAction(new Follow(this, e));
         }
     }
 
@@ -344,5 +346,12 @@ public abstract class Unit extends Entity {
      */
     public void setFoodRequirement(int foodRequirement) {
         this.foodRequirement = foodRequirement;
+    }
+    
+    @Override
+    protected void die()
+    {
+        super.die();
+        isVisible = false;
     }
 }

@@ -7,7 +7,7 @@ package simplerts.input;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import simplerts.PlayerMessager;
+import simplerts.messaging.PlayerMessager;
 
 /**
  *

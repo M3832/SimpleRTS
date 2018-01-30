@@ -14,6 +14,7 @@ import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.map.Destination;
+import simplerts.messaging.Message;
 import simplerts.ui.UIAction;
 import simplerts.ui.UIObject;
 
@@ -25,8 +26,9 @@ public abstract class Entity {
     
     protected int x, y, width, height, gridX, gridY, gridWidth, gridHeight;
     protected int goldCost, lumberCost;
-    protected int health, maxHealth;
+    protected int health, maxHealth, armor;
     protected int offsetX, offsetY;
+    protected int viewRange;
     protected BufferedImage sprite, icon;
     protected ArrayList<UIObject> uiObjects;
     protected ArrayList<UIAction> uiActions;
@@ -49,6 +51,7 @@ public abstract class Entity {
         gridWidth = 1;
         gridHeight = 1;
         maxHealth = 50;
+        viewRange = 2;
         isVisible = true;
         isDead = false;
         health = maxHealth;
@@ -225,6 +228,33 @@ public abstract class Entity {
     public int getGoldCost()
     {
         return goldCost;
+    }
+
+    public int getViewRange() {
+        return viewRange;
+    }
+    
+    public int getArmor()
+    {
+        return armor;
+    }
+
+    public void hit(int damage) {
+        health -= damage;
+        if(health <= 0)
+        {
+            player.getHandler().game.mm.addMessage(new Message("Died"));
+            die();
+        }
+    }
+    
+    protected void die()
+    {
+        isDead = true;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
     
 }

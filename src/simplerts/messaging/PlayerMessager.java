@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts;
+package simplerts.messaging;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import simplerts.Controller;
+import simplerts.Game;
 import simplerts.ui.GUI;
 
 /**
@@ -18,10 +20,10 @@ import simplerts.ui.GUI;
  */
 public class PlayerMessager {
     
-    public Controller controller;
-    public String currentString = "";
-    public List<Integer> excludeList;
-    public boolean writing;
+    private final Controller controller;
+    private final List<Integer> excludeList;
+    private String currentString = "";
+    private boolean writing;
     
     public PlayerMessager(Controller controller)
     {

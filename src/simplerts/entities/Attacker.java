@@ -9,11 +9,9 @@ package simplerts.entities;
  *
  * @author Markus
  */
-public class MeleeFighter extends Unit {
-
-    @Override
-    public Entity duplicate() {
-        return new MeleeFighter();
-    }
+public interface Attacker {
+    
+    public void attack(Entity e);
+    public int getRange();
     
 }

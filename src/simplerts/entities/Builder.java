@@ -81,7 +81,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     {
         isVisible = false;
         grid.getCells()[gridX][gridY].setEntity(null);
-        grid.getHandler().game.controller.removeFromSelection(this);
+        grid.getHandler().game.controller.deselect(this);
     }
     
     @Override

@@ -98,10 +98,10 @@ public class MoveTo extends Action {
     @Override
     public void render(Graphics g)
     {
-        destinations.forEach((d) -> {
-            g.setColor(new Color(255, 255, 255, 50));
-            g.fillRect((int)(d.getX() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetX()), (int)(d.getY() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
-        });
+//        destinations.forEach((d) -> {
+//            g.setColor(new Color(255, 255, 255, 50));
+//            g.fillRect((int)(d.getX() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetX()), (int)(d.getY() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
+//        });
     }
 
     private boolean isCollisionAhead() {

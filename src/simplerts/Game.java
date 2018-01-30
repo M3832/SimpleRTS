@@ -8,22 +8,16 @@ package simplerts;
 import simplerts.map.BackEndMap;
 import simplerts.map.MapIO;
 import simplerts.gfx.Assets;
-import simplerts.display.Camera;
 import simplerts.display.Display;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.awt.Color;
 import javax.swing.JFileChooser;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
 import simplerts.entities.Builder;
+import simplerts.entities.Footman;
 import simplerts.entities.Goldmine;
-import simplerts.input.MouseInput;
-import simplerts.map.FrontEndMap;
-import simplerts.ui.GUI;
 //import javax.swing.JFileChooser;
-//import static org.lwjgl.glfw.GLFW.*;
-//import org.lwjgl.glfw.*;
-//import org.lwjgl.opengl.GL;
-//import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -68,16 +62,16 @@ public class Game implements Runnable {
         handler = new Handler(this, map, display);
         mm = new MessageManager(handler);
         
-        Player player = new Player(handler);
+        Player player = new Player(handler, Color.RED);
         controller = new Controller(handler, player);
         players.add(player);
+        Player enemy = new Player(handler, Color.BLUE);
         
         map.addEntity(new Builder(10, 6, player));
-        map.addEntity(new Builder(11, 6, player));
-        
         map.addEntity(new Goldmine(4, 5, map.getNeutral()));
 
-
+        map.addEntity(new Footman(24, 25, player));
+        map.addEntity(new Builder(25, 25, enemy));
         long next_game_tick = System.currentTimeMillis();
         int loops;
 

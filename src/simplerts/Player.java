@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.interfaces.FoodProvider;
 import simplerts.entities.Unit;
-import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.gfx.SpriteManager;
 
 /**
@@ -27,7 +26,7 @@ public class Player {
 
     private Handler handler;
     
-    public Player(Handler handler)
+    public Player(Handler handler, Color color)
     {
         this.handler = handler;
         entities = new CopyOnWriteArrayList<>();
@@ -35,7 +34,7 @@ public class Player {
         lumber = 0;
         maxFood = 0;
         currentFood = 0;
-        teamColor = new Color(255, 0, 0);
+        teamColor = color;
         this.spritemanager = new SpriteManager(teamColor);
     }
     
@@ -156,6 +155,13 @@ public class Player {
 
     public void addLumber(int lumber) {
         this.lumber += lumber;
+    }
+
+    public void deselectEntity(Entity e) {
+        if(controller != null)
+        {
+            controller.deselect(e);
+        }
     }
     
     

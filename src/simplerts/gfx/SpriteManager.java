@@ -14,6 +14,7 @@ import java.awt.Color;
 public class SpriteManager {
     
     private AnimationController peasant;
+    private AnimationController footman;
     
     public SpriteManager(Color color)
     {
@@ -22,11 +23,22 @@ public class SpriteManager {
                                              Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
         peasant.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/stand.png"),
                                                      Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
+        
+        footman = new AnimationController();
+        footman.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/walk.png"),
+                                             Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
+        footman.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/stand.png"),
+                                             Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
     }
     
     public AnimationController getPeasantAC()
     {
         return new AnimationController(peasant);
+    }
+    
+    public AnimationController getFootmanAC()
+    {
+        return new AnimationController(footman);
     }
     
 }

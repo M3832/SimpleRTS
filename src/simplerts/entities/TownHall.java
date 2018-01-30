@@ -33,6 +33,7 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver, Lu
         uiActions = new ArrayList<>();
         buildTime = 1 * Game.TICKS_PER_SECOND;
         goldCost = GOLDCOST;
+        viewRange = 5;
     }
     
     public TownHall(int x, int y, int gridSize, Player player, boolean built)

@@ -5,6 +5,7 @@
  */
 package simplerts;
 
+import simplerts.messaging.PlayerMessager;
 import simplerts.utils.Utils;
 import simplerts.map.PathFinder;
 import simplerts.map.Destination;
@@ -49,7 +50,6 @@ public class Controller {
     private PlayerMessager messager;
     
     private ArrayList<Entity> selected;
-    private boolean[][] mapVisibility;
     
     private Rectangle selectBox;
     private double startDragX, startDragY;
@@ -65,7 +65,6 @@ public class Controller {
     private void initVariables()
     {
         player.setController(this);
-        
         
         selected = new ArrayList<>();
         messager = new PlayerMessager(this);
@@ -83,8 +82,9 @@ public class Controller {
         handler.getDisplay().getGamePanel().addMouseMotionListener(ml);
         handler.getDisplay().window.addKeyListener(km);
         
+        renderMap.setController(this);
+        
         ((MouseInput)handler.display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
-        mapVisibility = new boolean[renderMap.getCells().length][handler.map.getCells()[0].length];
         
         boundary = 50;
     }
@@ -92,6 +92,7 @@ public class Controller {
     public void update()
     {
         input();
+        renderMap.update();
         gui.update();
         ml.isMouseClicked();
         entityplacer.setPosition(ml.posX + (int)handler.camera.getOffsetX(), ml.posY + (int)handler.camera.getOffsetY());
@@ -116,9 +117,9 @@ public class Controller {
                 Entity e = selected.get(i);
                 g.setColor(Color.GREEN);
                 g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
-                g.setColor(Color.WHITE);
-                g.setFont(GUI.HEADER);
-                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
+//                g.setColor(Color.WHITE);
+//                g.setFont(GUI.HEADER);
+//                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
                 e.renderSelected(g);
             }
         }
@@ -289,7 +290,7 @@ public class Controller {
         Utils.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
     }
 
-    public void removeFromSelection(Entity e) {
+    public void deselect(Entity e) {
         if(selected != null)
         {
             if(selected.contains(e))
@@ -303,6 +304,10 @@ public class Controller {
     public void sendMessage(String message)
     {
         handler.game.mm.addMessage(new Message(message));
+    }
+
+    public Player getPlayer() {
+        return player;
     }
     
 }

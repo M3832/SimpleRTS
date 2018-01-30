@@ -53,7 +53,7 @@ public class BackEndMap {
     public void setHandler(Handler handler)
     {
         this.handler = handler;
-        setNeutral(new Player(handler));
+        setNeutral(new Player(handler, Color.LIGHT_GRAY));
     }
     
     public void addEntity(Entity e)

@@ -8,6 +8,8 @@ package simplerts.entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import simplerts.Game;
 import simplerts.Player;
 import simplerts.gfx.Assets;
 import simplerts.ui.GUI;
@@ -24,19 +26,29 @@ public class Barracks extends Building {
     public Barracks(int x, int y, Player player) {
         super(x, y, 3, player, false);
         sprite = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
+        icon = Assets.makeIcon(color, Assets.resizeImage(sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height), 100, 100));
         Graphics g = sprite.getGraphics();
         g.setColor(color);
         g.setFont(GUI.BREAD);
         g.drawString("BARRACKS", sprite.getWidth()/2 - g.getFontMetrics().stringWidth("BARRACKS")/2, sprite.getHeight()/2 + g.getFontMetrics().getHeight()/4);
         g.setColor(Color.BLACK);
         g.drawRect(1, 1, width-2, height-2);
-        
+        uiObjects = new ArrayList<>();
+        uiActions = new ArrayList<>();
         initVariables();
     }
     
     private void initVariables()
     {
-        goldCost = 200;
+        goldCost = 0;
+        buildTime = 1;
+    }
+    
+    @Override
+    protected void setupActions()
+    {
+        uiActions.add(Footman.getUIAction(player, this));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
     }
     
     public static UIAction getUIAction(Player player)
