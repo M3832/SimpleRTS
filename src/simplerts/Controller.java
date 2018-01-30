@@ -16,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Comparator;
+import simplerts.audio.SoundManager;
 import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
 import simplerts.entities.Builder;
@@ -221,6 +222,8 @@ public class Controller {
                 if(selectBox != null && selectBox.getSize().getHeight() > 5 && selectBox.getSize().getWidth() > 5)
                 {
                     selected = (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox);
+                    if(!selected.isEmpty())
+                        selected.get(0).playSound(SoundManager.WAKE_CLIP);
                     selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
                     gui.setSelectedEntities(selected);
                 }
@@ -245,6 +248,8 @@ public class Controller {
         
         int index = 0;
         selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
+        if(!selected.isEmpty())
+            selected.get(0).playSound(SoundManager.CONFIRM_CLIP);
         for(Entity e : selected)
         {
             if(e instanceof Unit)

@@ -70,7 +70,6 @@ public class Game implements Runnable {
         map.addEntity(new Builder(10, 6, player));
         map.addEntity(new Goldmine(4, 5, map.getNeutral()));
 
-        map.addEntity(new Footman(24, 25, player));
         map.addEntity(new Builder(25, 25, enemy));
         long next_game_tick = System.currentTimeMillis();
         int loops;

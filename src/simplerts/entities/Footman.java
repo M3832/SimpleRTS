@@ -24,7 +24,7 @@ public class Footman extends Unit implements Attacker {
     
     private static int GOLDCOST = 100;
     private int range;
-    private boolean attacked, renderAttack;
+    private boolean hasAttacked, renderAttack;
     private int attackSpeed, attackRenderSpeed;
 
     public Footman(int x, int y, Player player)
@@ -41,7 +41,7 @@ public class Footman extends Unit implements Attacker {
     private void initVariables()
     {
         range = 1;
-        attacked = false;
+        hasAttacked = false;
         attackSpeed = 800;
         attackRenderSpeed = 300;
         attackDamage = 5;
@@ -63,13 +63,13 @@ public class Footman extends Unit implements Attacker {
 
     @Override
     public void attack(Entity e) {
-        if(!attacked)
+        if(!hasAttacked)
         {
-            attacked = true;
+            hasAttacked = true;
             renderAttack = true;
             setDirection(e.getGridX() - getGridX(), e.getGridY() - getGridY());
             e.hit(Math.max(attackDamage - e.getArmor(), 0));
-            new Timer(attackSpeed, () -> {attacked = false;}).start();
+            new Timer(attackSpeed, () -> {hasAttacked = false;}).start();
             new Timer(attackRenderSpeed, () -> {renderAttack = false;}).start();
         }
     }

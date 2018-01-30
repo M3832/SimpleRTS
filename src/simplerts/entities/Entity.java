@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
+import simplerts.audio.SoundManager;
 import simplerts.map.Destination;
 import simplerts.messaging.Message;
 import simplerts.ui.UIAction;
@@ -36,6 +37,7 @@ public abstract class Entity {
     protected boolean isVisible, isDead;
     public Color color;
     public BackEndMap grid;
+    protected SoundManager soundManager;
     
     public Entity()
     {
@@ -55,6 +57,7 @@ public abstract class Entity {
         isVisible = true;
         isDead = false;
         health = maxHealth;
+        soundManager = new SoundManager();
     }
     
     public Entity(int x, int y, int size, Player player)
@@ -255,6 +258,14 @@ public abstract class Entity {
 
     public boolean isDead() {
         return isDead;
+    }
+    
+    public void playSound(int type)
+    {
+        if(soundManager != null)
+        {
+            soundManager.playSound(type);
+        }
     }
     
 }

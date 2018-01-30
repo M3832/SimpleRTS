@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
+import simplerts.audio.SoundManager;
 import simplerts.utils.Utils;
 import simplerts.entities.actions.Action;
 import simplerts.map.Destination;

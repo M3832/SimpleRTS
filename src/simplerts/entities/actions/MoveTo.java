@@ -5,11 +5,9 @@
  */
 package simplerts.entities.actions;
 
-import java.awt.Color;
 import simplerts.map.Destination;
 import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
-import simplerts.Game;
 import simplerts.utils.Timer;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
