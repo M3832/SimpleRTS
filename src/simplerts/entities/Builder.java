@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
-import simplerts.audio.SoundManager;
+import simplerts.audio.SoundController;
 import simplerts.map.Destination;
 import simplerts.entities.actions.*;
 import simplerts.entities.interfaces.*;
@@ -66,14 +66,14 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     
     private void initSounds()
     {
-        soundManager.addSound("/Units/Peasant/wake1.wav", SoundManager.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/wake2.wav", SoundManager.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/wake3.wav", SoundManager.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/wake4.wav", SoundManager.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm1.wav", SoundManager.CONFIRM_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm2.wav", SoundManager.CONFIRM_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm3.wav", SoundManager.CONFIRM_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm4.wav", SoundManager.CONFIRM_CLIP);
+        soundManager.addSound("/Units/Peasant/wake1.wav", SoundController.WAKE_CLIP);
+        soundManager.addSound("/Units/Peasant/wake2.wav", SoundController.WAKE_CLIP);
+        soundManager.addSound("/Units/Peasant/wake3.wav", SoundController.WAKE_CLIP);
+        soundManager.addSound("/Units/Peasant/wake4.wav", SoundController.WAKE_CLIP);
+        soundManager.addSound("/Units/Peasant/confirm1.wav", SoundController.CONFIRM_CLIP);
+        soundManager.addSound("/Units/Peasant/confirm2.wav", SoundController.CONFIRM_CLIP);
+        soundManager.addSound("/Units/Peasant/confirm3.wav", SoundController.CONFIRM_CLIP);
+        soundManager.addSound("/Units/Peasant/confirm4.wav", SoundController.CONFIRM_CLIP);
     }
     
     public void setupActions()

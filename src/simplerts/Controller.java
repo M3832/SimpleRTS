@@ -16,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Comparator;
+import simplerts.audio.SoundController;
 import simplerts.audio.SoundManager;
 import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
@@ -49,6 +50,7 @@ public class Controller {
     private GUI gui;
     private FrontEndMap renderMap;
     private PlayerMessager messager;
+    private SoundManager soundManager;
     
     private ArrayList<Entity> selected;
     
@@ -84,6 +86,7 @@ public class Controller {
         handler.getDisplay().window.addKeyListener(km);
         
         renderMap.setController(this);
+        soundManager = new SoundManager();
         
         ((MouseInput)handler.display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
         
@@ -223,7 +226,7 @@ public class Controller {
                 {
                     selected = (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox);
                     if(!selected.isEmpty())
-                        selected.get(0).playSound(SoundManager.WAKE_CLIP);
+                        selected.get(0).playSound(SoundController.WAKE_CLIP);
                     selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
                     gui.setSelectedEntities(selected);
                 }
@@ -249,7 +252,7 @@ public class Controller {
         int index = 0;
         selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
         if(!selected.isEmpty())
-            selected.get(0).playSound(SoundManager.CONFIRM_CLIP);
+            selected.get(0).playSound(SoundController.CONFIRM_CLIP);
         for(Entity e : selected)
         {
             if(e instanceof Unit)
