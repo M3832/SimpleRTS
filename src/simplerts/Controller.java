@@ -198,6 +198,8 @@ public class Controller {
                         Builder b = ((Builder)selected.get(0));
                         Building building = (Building)entityplacer.entity.duplicate();
                         building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
+                        b.clearActions();
+                        b.playSound(SoundController.CONFIRM_CLIP);
                         b.addAction(new MoveTo(b, player.getHandler().map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2))));
                         b.addAction(new Build(b, building));
                     } else {

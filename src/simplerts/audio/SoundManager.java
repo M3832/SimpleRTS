@@ -21,6 +21,7 @@ public class SoundManager {
     
     private void init()
     {
+        backgroundSound.setLoop();
         backgroundSound.play();
     }
 }

@@ -87,10 +87,7 @@ public class FrontEndMap {
         {
             for(int j = startY; j < endY; j++)
             {
-                if(mapVisibility[i][j])
-                {
                     g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE) - offsetX), (int)((j * Game.CELLSIZE) - offsetY), Game.CELLSIZE, Game.CELLSIZE, null);
-                }
             }
         }
 //        renderGrid(g, (int)offsetX, (int)offsetY);
@@ -109,7 +106,21 @@ public class FrontEndMap {
             {
                 if(!mapVisibility[i][j])
                 {
-                    g.setColor(Color.black);
+                    boolean neighborVisible = false;
+                    for(int x = i-1; x < i + 2; x++)
+                    {
+                        for(int y = j-1; y < j + 2; y++)
+                        {
+                            if(map.isInBounds(x, y))
+                            {
+                                if(mapVisibility[x][y])
+                                {
+                                    neighborVisible = true;
+                                }
+                            }
+                        }
+                    }
+                    g.setColor(neighborVisible ? new Color(0, 0, 0, 100) : Color.black);
                     g.fillRect((int)((i * Game.CELLSIZE) - offsetX), (int)((j * Game.CELLSIZE) - offsetY), Game.CELLSIZE, Game.CELLSIZE);
                 }
             }

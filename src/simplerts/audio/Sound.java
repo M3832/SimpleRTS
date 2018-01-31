@@ -25,5 +25,9 @@ public class Sound {
         soundClip.setMicrosecondPosition(0);
         soundClip.start();
     }
+
+    void setLoop() {
+        soundClip.loop(10);
+    }
     
 }

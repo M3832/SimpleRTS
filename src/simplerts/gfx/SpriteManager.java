@@ -28,7 +28,7 @@ public class SpriteManager {
         footman.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/walk.png"),
                                              Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
         footman.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/stand.png"),
-                                             Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
+                                             Assets.loadToCompatibleImage("/Units/Footman/standtc.png"), color)));
     }
     
     public AnimationController getPeasantAC()
