@@ -8,7 +8,6 @@ package simplerts.entities.actions;
 import simplerts.map.Destination;
 import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
-import simplerts.utils.Timer;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 
@@ -20,12 +19,12 @@ public class MoveTo extends Action {
     
     public static final int CHECK_AHEAD_DISTANCE = 1;
     public static final int COLLISION_CHECK_BUFFER = 3;
-    public static final long STUCK_TIME = 1000;
+    public static final long STUCK_TIME = 50;
     
     protected CopyOnWriteArrayList<Destination> destinations;
     protected int collisions;
     protected boolean stuckWarning, stuck, lastOccupied;
-    protected Timer stuckTimer;
+    protected long stuckTimer;
     private Destination lastDestination;
 
     public MoveTo(Unit owner, CopyOnWriteArrayList<Destination> destinations) {
@@ -38,7 +37,7 @@ public class MoveTo extends Action {
         stuck = false;
         moving = true;
         lastOccupied = false;
-        stuckTimer = new Timer(200, () -> {System.out.println("");});
+        stuckTimer = 0;
     }
 
     @Override
@@ -64,6 +63,7 @@ public class MoveTo extends Action {
                 stuckWarning = false;
                 stuck = false;
                 moving = true;
+                stuckTimer = 0;
             }
         }
         
@@ -82,15 +82,18 @@ public class MoveTo extends Action {
         if(collisions == COLLISION_CHECK_BUFFER)
             avoid();
         
-        if(stuckWarning && !destinations.isEmpty() && stuckTimer != null && !stuckTimer.isAlive())
+        if(stuckWarning && !destinations.isEmpty())
         {
-            stuckTimer = new Timer((int)STUCK_TIME, () -> {if(stuckWarning && !destinations.isEmpty())
-                {
-                    stuck = true; moving = false;
-                }
-            });
-            stuckTimer.start();
+            stuckTimer++;
+            if(stuckTimer >= STUCK_TIME)
+            {
+                stuck = true; moving = false;
+                stuckTimer = 0;
+            }
         }
+        
+        if(stuck)
+            owner.getMap().getPathFinder().findPath(owner.getDestination(), lastDestination);
     }
     
     @Override
@@ -126,6 +129,7 @@ public class MoveTo extends Action {
     }
 
     private void avoid() {
+        System.out.println("avoiding");
         int deltaX = (int)owner.getDeltaX();
         int deltaY = (int)owner.getDeltaY();
         if(deltaX != 0)
