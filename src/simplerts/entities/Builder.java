@@ -16,7 +16,6 @@ import simplerts.entities.actions.*;
 import simplerts.entities.interfaces.*;
 import simplerts.gfx.Assets;
 import simplerts.ui.UIAction;
-import simplerts.utils.Timer;
 
 /**
  *
@@ -133,6 +132,36 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     }
     
     @Override
+    protected void setAnimation()
+    {       
+        if(chopping)
+        {
+            ac.setAnimation("chop");
+            ac.update();
+        } else {
+            if(actions.size() > 0 && actions.get(0).isMoving())
+            {
+                if(lumber > 0)
+                {
+                    ac.setAnimation("walkTree");
+                } else {
+                    ac.setAnimation("walk");
+                }
+            }
+            else 
+            {
+                if(lumber > 0)
+                {
+                    ac.setAnimation("standTree");                    
+                } else {
+                    ac.setAnimation("stand");
+                }
+            }
+            ac.update();
+        }
+    }
+    
+    @Override
     public void rightClickAction(Entity e)
     {
         if(e instanceof GoldProvider)
@@ -150,6 +179,18 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     }
     
     @Override
+    public void update()
+    {
+        super.update();
+        if(!actions.isEmpty())
+        {
+            if(actions.get(0) instanceof Chop)
+                chopping = ((Chop) actions.get(0)).isChopping();
+        }
+
+    }
+    
+    @Override
     public void render(Graphics g)
     {
         super.render(g);
@@ -157,18 +198,6 @@ public class Builder extends Unit implements Goldminer, Lumberman{
         {
             g.setColor(Color.WHITE);
             g.drawString("Gold", x - offsetX, y - offsetY);
-        }
-        
-        if(lumber > 0)
-        {
-            g.setColor(Color.WHITE);
-            g.drawString("Lumber", x - offsetX, y - offsetY);
-        }
-        
-        if(chopping)
-        {
-            g.setColor(Color.WHITE);
-            g.drawString("CHOP", x - offsetX, y + height + 20 - offsetY);
         }
     }
 
@@ -200,6 +229,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
         return temp;
     }
     
+    @Override
     public int getLumber() {
         return lumber;
     }
@@ -211,8 +241,8 @@ public class Builder extends Unit implements Goldminer, Lumberman{
 
     @Override
     public void chop() {
-        chopping = true;
-        new Timer(300, () -> {chopping = false;}).start();
+        ac.setAnimation("chop");
+        ac.playAnimation();
     }
 
     @Override
@@ -230,6 +260,12 @@ public class Builder extends Unit implements Goldminer, Lumberman{
         return latestForestDestination;
     }
     
-    
+    @Override
+    public void addAction(Action a)
+    {
+        super.addAction(a);
+        if(!(a instanceof Chop))
+            chopping = false;
+    }
     
 }

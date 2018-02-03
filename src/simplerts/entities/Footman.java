@@ -14,7 +14,7 @@ import simplerts.entities.actions.Attack;
 import simplerts.gfx.Assets;
 import simplerts.map.Destination;
 import simplerts.ui.UIAction;
-import simplerts.utils.Timer;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -51,6 +51,12 @@ public class Footman extends Unit implements Attacker {
         setupActions();
     }
     
+    @Override
+    protected void initGraphics()
+    {
+        icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/portrait.png"), Assets.loadToCompatibleImage("/Units/Footman/portraittc.png"), color));        
+    }
+    
     public void setupActions()
     {     
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
@@ -69,8 +75,8 @@ public class Footman extends Unit implements Attacker {
             renderAttack = true;
             setDirection(e.getGridX() - getGridX(), e.getGridY() - getGridY());
             e.hit(Math.max(attackDamage - e.getArmor(), 0));
-            new Timer(attackSpeed, () -> {hasAttacked = false;}).start();
-            new Timer(attackRenderSpeed, () -> {renderAttack = false;}).start();
+            tasks.add(new TimerTask(attackSpeed, () -> {hasAttacked = false;}));
+            tasks.add(new TimerTask(attackRenderSpeed, () -> {renderAttack = false;}));
         }
     }
 
@@ -81,7 +87,7 @@ public class Footman extends Unit implements Attacker {
     
     public static BufferedImage getUIIcon(Color color)
     {
-        return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));
+        return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/portrait.png"), Assets.loadToCompatibleImage("/Units/Footman/portraittc.png"), color));
     }
     
     public static UIAction getUIAction(Player player, Building building)

@@ -9,12 +9,12 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
-import simplerts.utils.Timer;
 import simplerts.utils.Utils;
 import simplerts.entities.actions.TurnInGold;
 import simplerts.gfx.Assets;
 import simplerts.entities.interfaces.GoldProvider;
 import simplerts.entities.interfaces.Goldminer;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -47,9 +47,9 @@ public class Goldmine extends Building implements GoldProvider{
             miner.setGold(miner.getGoldCapacity());
             gold -= miner.getGoldCapacity();
             g.setLatestMine(this);
-            new Timer(1000, () -> {
+            addTask(new TimerTask(1000, () -> {
                 exitGatherer();
-            }).start();
+            }));
             return true;
         } else {
             return false;

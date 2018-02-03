@@ -133,7 +133,7 @@ public class BackEndMap {
         {
             for(int j = (int)rectangle.getY()/Game.CELLSIZE; j < (int)rectangle.getY()/Game.CELLSIZE + 2; j++)
             {
-                if(i < cells.length && j < cells[0].length && !cells[i][j].available)
+                if(isInBounds(i, j) && !cells[i][j].available)
                 {
                     if(rectangle.intersects(new Rectangle(i * Game.CELLSIZE, j * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE)) || !isInBounds(i, j))
                     {

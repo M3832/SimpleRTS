@@ -15,7 +15,6 @@ import javax.swing.JFileChooser;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
 import simplerts.entities.Builder;
-import simplerts.entities.Footman;
 import simplerts.entities.Goldmine;
 //import javax.swing.JFileChooser;
 
@@ -62,7 +61,7 @@ public class Game implements Runnable {
         handler = new Handler(this, map, display);
         mm = new MessageManager(handler);
         
-        Player player = new Player(handler, new Color(255, 127, 208));
+        Player player = new Player(handler, Color.WHITE);
         controller = new Controller(handler, player);
         players.add(player);
         Player enemy = new Player(handler, Color.BLUE);
@@ -70,7 +69,7 @@ public class Game implements Runnable {
         map.addEntity(new Builder(10, 6, player));
         map.addEntity(new Goldmine(4, 5, map.getNeutral()));
 
-        map.addEntity(new Builder(25, 25, enemy));
+//        map.addEntity(new Builder(25, 25, enemy));
         long next_game_tick = System.currentTimeMillis();
         int loops;
 

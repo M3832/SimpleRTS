@@ -22,6 +22,7 @@ public class Chop extends Action {
     private Cell cell;
     private MoveTo movePath;
     private long nextChop;
+    private boolean chopping;
     
     public Chop(Unit owner, Cell cell) {
         super(owner);
@@ -39,12 +40,14 @@ public class Chop extends Action {
         if(movePath != null)
         {
             movePath.performAction();
+            chopping = false;
         } else {
             movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), new Destination(cell.getX(), cell.getY())));
         }
         
         if(Utils.isAdjacent(owner.getDestination(), new Destination(cell.getX(), cell.getY())) && !movePath.moving)
         {
+            chopping = true;
             if(nextChop < System.currentTimeMillis())
             {
                 Lumberman l = (Lumberman)owner;
@@ -89,6 +92,11 @@ public class Chop extends Action {
             return movePath.isMoving();
         }
         return false;
+    }
+    
+    public boolean isChopping()
+    {
+        return chopping;
     }
     
 }

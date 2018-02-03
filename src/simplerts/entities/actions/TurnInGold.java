@@ -6,14 +6,13 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
-import simplerts.utils.Timer;
 import simplerts.utils.Utils;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
-import simplerts.entities.interfaces.GoldProvider;
 import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.entities.interfaces.Goldminer;
 import simplerts.messaging.ErrorMessage;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -63,17 +62,18 @@ public class TurnInGold extends Action {
         {
             gr.receiveGold(((Goldminer)owner));
             ((Goldminer)owner).enter();
-            new Timer(1000, () -> {
+            owner.addTask(new TimerTask(1000, () -> {
                 ((Goldminer)owner).exit(owner.getMap().getClosestCell((Entity)((Goldminer)owner).getLatestMine(), (Entity)gr));
                 if(((Goldminer)owner).getLatestMine() != null)
                 {
                     owner.addAction(new Gather(owner, ((Goldminer)owner).getLatestMine()));
                 }
-            }).start();
+            }));
             owner.clearActions();
         }
     }
 
+    @Override
     public void render(Graphics g)
     {
         if(movePath != null)

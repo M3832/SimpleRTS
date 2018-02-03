@@ -28,7 +28,7 @@ public class AnimationController {
         this();
         for(Entry<String, Animation> entry : a.animations.entrySet())
         {
-            animations.put(entry.getKey(), entry.getValue());
+            animations.put(entry.getKey(), new Animation(entry.getValue()));
         }
     }
     
@@ -51,9 +51,14 @@ public class AnimationController {
         });
     }
     
-    public void playAnimation(String name)
+    public void setAnimation(String name)
     {
         currentAnimation = animations.get(name);
+    }
+    
+    public void playAnimation()
+    {
+        currentAnimation.play();
     }
     
     public void setDirection(int direction)

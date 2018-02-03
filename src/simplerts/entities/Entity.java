@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
@@ -18,6 +19,7 @@ import simplerts.map.Destination;
 import simplerts.messaging.Message;
 import simplerts.ui.UIAction;
 import simplerts.ui.UIObject;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -38,6 +40,7 @@ public abstract class Entity {
     public Color color;
     public BackEndMap grid;
     protected SoundController soundManager;
+    protected CopyOnWriteArrayList<TimerTask> tasks;
     
     public Entity()
     {
@@ -58,6 +61,7 @@ public abstract class Entity {
         isDead = false;
         health = maxHealth;
         soundManager = new SoundController();
+        tasks = new CopyOnWriteArrayList<>();
     }
     
     public Entity(int x, int y, int size, Player player)
@@ -118,7 +122,16 @@ public abstract class Entity {
     
     public void update()
     {
-        
+        if(!tasks.isEmpty())
+        {
+            for(int i = Math.max(0, tasks.size() - 1); i >= 0; i--)
+            {
+                if(tasks.get(i).run())
+                {
+                    tasks.remove(tasks.get(i));
+                }
+            }
+        }
     }
     
     public void updateCells()
@@ -268,4 +281,9 @@ public abstract class Entity {
         }
     }
     
+    public void addTask(TimerTask t)
+    {
+        System.out.println("added task");
+        tasks.add(t);
+    }
 }

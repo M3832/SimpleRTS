@@ -8,13 +8,10 @@ package simplerts.entities.actions;
 import java.awt.Graphics;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
-import simplerts.entities.interfaces.GoldReceiver;
-import simplerts.entities.interfaces.Goldminer;
 import simplerts.entities.interfaces.LumberReceiver;
 import simplerts.entities.interfaces.Lumberman;
-import simplerts.map.Destination;
 import simplerts.messaging.ErrorMessage;
-import simplerts.utils.Timer;
+import simplerts.utils.TimerTask;
 import simplerts.utils.Utils;
 
 /**
@@ -65,13 +62,13 @@ public class TurnInLumber extends Action {
         {
             lr.receiveLumber(((Lumberman)owner).takeLumber());
             ((Lumberman)owner).enter();
-            new Timer(1000, () -> {
+            owner.addTask(new TimerTask(1000, () -> {
                 ((Lumberman)owner).exit(owner.getDestination());
                 if(((Lumberman)owner).getLatestForestDestination() != null)
                 {
                     owner.addAction(new Chop(owner, owner.getMap().findLumberCloseTo(((Lumberman)owner).getLatestForestDestination(), 1)));
                 }
-            }).start();
+            }));
             owner.clearActions();
         }
         

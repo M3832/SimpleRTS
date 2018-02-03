@@ -195,19 +195,24 @@ public abstract class Unit extends Entity {
     public void update()
     {
         super.update();
-        
         if(actions.size() > 0)
         {
             actions.get(0).performAction();
         }
         
+        setAnimation();
+
+    }
+    
+    protected void setAnimation()
+    {
         if(actions.size() > 0 && actions.get(0).isMoving())
         {
-            ac.playAnimation("walk");
+            ac.setAnimation("walk");
         }
         else 
         {
-            ac.playAnimation("stand");
+            ac.setAnimation("stand");
         }
         ac.update();
     }

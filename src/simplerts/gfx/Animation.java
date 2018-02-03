@@ -27,11 +27,30 @@ public class Animation {
     private BufferedImage[][] animationSheet;
     private int animationSpeed = 75, animationIndex = 0;
     private long timeNextFrame = 0;
+    private boolean looping, looped;
     
     public Animation(BufferedImage sheet)
     {
         animationSheet = new BufferedImage[sheet.getWidth()/64][sheet.getHeight()/64];
         setupAnimation(sheet);
+        looping = true;
+        looped = false;
+    }
+    
+    public Animation(BufferedImage sheet, boolean looping)
+    {
+        this(sheet);
+        this.looping = looping;
+    }
+    
+    public Animation(Animation a)
+    {
+        this.looping = a.isLooping();
+        animationSheet = new BufferedImage[a.animationSheet.length][a.animationSheet[0].length];
+        for(int i = 0; i < a.animationSheet.length; i++)
+        {
+            System.arraycopy(a.animationSheet[i], 0, animationSheet[i], 0, a.animationSheet[0].length);
+        }
     }
     
     private void setupAnimation(BufferedImage sheet)
@@ -57,12 +76,25 @@ public class Animation {
             if(animationIndex == animationSheet.length - 1)
             {
                 animationIndex = 0;
-            } else {
+                if(!looping)
+                    looped = true;
+            } else if(looping || (!looping && !looped)) {
                 animationIndex++;
             }
             
             timeNextFrame = System.currentTimeMillis() + animationSpeed;
         }
+    }
+    
+    public void play()
+    {
+        animationIndex = 0;
+        looped = false;
+    }
+    
+    public boolean isLooping()
+    {
+        return looping;
     }
     
     

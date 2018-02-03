@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.interfaces.FoodProvider;
 import simplerts.entities.Unit;
 import simplerts.gfx.SpriteManager;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -23,6 +24,7 @@ public class Player {
     private CopyOnWriteArrayList<Entity> entities;
     private SpriteManager spritemanager;
     private Controller controller;
+    private CopyOnWriteArrayList<TimerTask> tasks;
 
     private Handler handler;
     
@@ -35,7 +37,22 @@ public class Player {
         maxFood = 0;
         currentFood = 0;
         teamColor = color;
+        tasks = new CopyOnWriteArrayList<>();
         this.spritemanager = new SpriteManager(teamColor);
+    }
+    
+    public void update()
+    {
+        if(!tasks.isEmpty())
+        {
+            for(int i = Math.max(0, tasks.size() - 1); i >= 0; i--)
+            {
+                if(tasks.get(i).run())
+                {
+                    tasks.remove(tasks.get(i));
+                }
+            }
+        }
     }
     
     public SpriteManager getSpriteManager()
@@ -162,6 +179,11 @@ public class Player {
         {
             controller.deselect(e);
         }
+    }
+    
+    public void addTask(TimerTask t)
+    {
+        tasks.add(t);
     }
     
     

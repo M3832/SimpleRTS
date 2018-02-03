@@ -72,6 +72,7 @@ public abstract class Building extends Entity {
     @Override
     public void update()
     {
+        super.update();
         if(building)
             building();
         
