@@ -135,7 +135,7 @@ public class BackEndMap {
             {
                 if(i < cells.length && j < cells[0].length && !cells[i][j].available)
                 {
-                    if(rectangle.intersects(new Rectangle(i * Game.CELLSIZE, j * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE)))
+                    if(rectangle.intersects(new Rectangle(i * Game.CELLSIZE, j * Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE)) || !isInBounds(i, j))
                     {
                         return true;
                     }
@@ -165,7 +165,12 @@ public class BackEndMap {
         
         if(d.isEmpty())
         {
-            d = getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity());
+            if( isInBounds(e.getGridX() - 1, e.getGridY() - 1) && getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity()) != null)
+            {
+                d = getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity());
+            } else {
+                d = e.getDestination();
+            }
         }
 
         

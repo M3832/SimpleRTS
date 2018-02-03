@@ -62,7 +62,7 @@ public class Game implements Runnable {
         handler = new Handler(this, map, display);
         mm = new MessageManager(handler);
         
-        Player player = new Player(handler, Color.PINK);
+        Player player = new Player(handler, new Color(255, 127, 208));
         controller = new Controller(handler, player);
         players.add(player);
         Player enemy = new Player(handler, Color.BLUE);
