@@ -13,6 +13,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
+import simplerts.editor.EditorObject;
+import simplerts.entities.buildings.TownHall;
+import simplerts.entities.resources.Goldmine;
 import simplerts.gfx.Assets;
 
 /**
@@ -54,6 +57,16 @@ public class MapIO {
                 map = new BackEndMap(width, height);
             }
             
+            if(tokens[0].equals("Goldmine"))
+            {
+                map.addLoadedObject("Goldmine", Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+            }
+            
+            if(tokens[0].equals("StartingLocation"))
+            {
+                map.addLoadedObject("StartingLocation", Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+            }
+            
             if(tiles)
             {
                 for(int j = 0; j < tokens.length; j++)
@@ -68,7 +81,6 @@ public class MapIO {
             
             if(tokens[0].equalsIgnoreCase("tiles"))
             {
-                System.out.println("tokens is true");
                 tiles = true;
             }
         }
@@ -76,12 +88,23 @@ public class MapIO {
         return map;
     }
     
-    public static void saveMap(File file, BackEndMap map) {
+    public static void saveMap(File file, BackEndMap map, ArrayList<EditorObject> editorObjects) {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(file.getAbsolutePath()), "utf-8"))) {
             int width = map.getCells().length;
             int height = map.getCells()[0].length;
             writer.write(width + "," + height + System.getProperty("line.separator"));
+            for(EditorObject e : editorObjects)
+            {
+                if(e.name.equals("Goldmine"))
+                {
+                    writer.write("Goldmine" + "," + e.gridX + "," + e.gridY + System.getProperty("line.separator"));
+                }
+                if(e.name.equals("StartingLocation"))
+                {
+                    writer.write("StartingLocation," + e.gridX + "," + e.gridY + System.getProperty("line.separator"));
+                }
+            }
             writer.write("tiles," + System.getProperty("line.separator"));
             for(int i = 0; i < width; i++)
             {
@@ -89,7 +112,6 @@ public class MapIO {
                 {
                     writer.write(map.getCells()[i][j].getTileId() + ":" + map.getCells()[i][j].getTerrain().getName() + ",");
                 }
-                    System.out.println(width + " " + i);
                 writer.write(System.getProperty("line.separator"));
             }
         } catch (Exception e) {

@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.entities;
+package simplerts.entities.buildings;
 
+import simplerts.entities.units.Builder;
 import simplerts.entities.interfaces.FoodProvider;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.entities.Building;
 import simplerts.gfx.Assets;
 import simplerts.entities.interfaces.GoldReceiver;
 import simplerts.entities.interfaces.Goldminer;

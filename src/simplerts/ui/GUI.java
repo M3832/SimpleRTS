@@ -159,7 +159,7 @@ public class GUI {
     
     public void updateMinimap()
     {
-        minimap.setImage(renderMap.getMinimapImage(175, 175));
+        minimap.setImage(renderMap.getMinimapImage(175, 175, false));
     }
     
 }

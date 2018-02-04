@@ -6,7 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
-import simplerts.entities.Builder;
+import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
 import simplerts.messaging.ErrorMessage;
 

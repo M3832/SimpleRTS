@@ -12,11 +12,12 @@ import simplerts.display.Display;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.awt.Color;
 import javax.swing.JFileChooser;
+import simplerts.editor.MapEditor;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
-import simplerts.entities.Builder;
-import simplerts.entities.Footman;
-import simplerts.entities.Goldmine;
+import simplerts.entities.units.Builder;
+import simplerts.entities.units.Footman;
+import simplerts.entities.resources.Goldmine;
 //import javax.swing.JFileChooser;
 
 /**
@@ -56,9 +57,11 @@ public class Game implements Runnable {
         display = new Display(WIDTH, HEIGHT, GUIHEIGHT);
 //        openFile.showOpenDialog(display.window);
 //        map = MapIO.loadMap(openFile.getSelectedFile());
-        map = MapIO.loadMap("/asd");
+        map = MapIO.loadMap("/test2.mmp");
         handler = new Handler(this, map, display);
+        MapEditor.maskMap(map);
         mm = new MessageManager(handler);
+        map.placeLoadedObjects();
         
         Player player = new Player(handler, Color.WHITE);
         controller = new Controller(handler, player);
@@ -66,11 +69,6 @@ public class Game implements Runnable {
         Player enemy = new Player(handler, Color.BLUE);
         
         map.addEntity(new Builder(10, 6, player));
-        map.addEntity(new Footman(25, 26, player));
-        map.addEntity(new Footman(25, 27, player));
-        map.addEntity(new Goldmine(4, 5, map.getNeutral()));
-
-        map.addEntity(new Builder(25, 25, enemy));
         long next_game_tick = System.currentTimeMillis();
         int loops;
 

@@ -3,14 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.entities;
+package simplerts.entities.buildings;
 
+import simplerts.entities.units.Footman;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.entities.Building;
+import simplerts.entities.Entity;
 import simplerts.gfx.Assets;
 import simplerts.ui.GUI;
 import simplerts.ui.UIAction;

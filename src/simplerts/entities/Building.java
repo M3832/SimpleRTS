@@ -5,6 +5,8 @@
  */
 package simplerts.entities;
 
+import simplerts.entities.buildings.Tower;
+import simplerts.entities.units.Builder;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;

@@ -22,7 +22,7 @@ import simplerts.audio.SoundController;
 import simplerts.audio.SoundManager;
 import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
-import simplerts.entities.Builder;
+import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
 import simplerts.entities.actions.Chop;
 import simplerts.entities.interfaces.Lumberman;
@@ -327,7 +327,7 @@ public class Controller {
         return player;
     }
 
-    private Color getColorFromAllegiance(Entity e) {
+    public Color getColorFromAllegiance(Entity e) {
         Color c;
         
         if(e.getPlayer() == player)

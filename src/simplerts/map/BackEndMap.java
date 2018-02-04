@@ -8,13 +8,9 @@ package simplerts.map;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
 import simplerts.gfx.Assets;
-import composite.GraphicsUtil;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,7 +18,9 @@ import java.util.stream.Collectors;
 import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Player;
-import simplerts.ui.MiniMap;
+import simplerts.editor.LoadedObject;
+import simplerts.entities.buildings.TownHall;
+import simplerts.entities.resources.Goldmine;
 
 /**
  *
@@ -32,8 +30,9 @@ public class BackEndMap {
     
     private final CopyOnWriteArrayList<Entity> entities;
     private final Cell[][] cells;
+    private ArrayList<LoadedObject> loadObjects;
     private Handler handler;
-    private PathFinder pathFinder;
+    private final PathFinder pathFinder;
     private Rectangle selectBox;
     private Player neutral;
     
@@ -45,9 +44,11 @@ public class BackEndMap {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
                 cells[i][j] = new Cell(i, j);
+                cells[i][j].setTerrain(Assets.grass);
             }
         }
         pathFinder = new PathFinder(this);
+        loadObjects = new ArrayList<>();
     }
     
     public void setHandler(Handler handler)
@@ -244,6 +245,22 @@ public class BackEndMap {
         this.neutral = neutral;
     }
     
+    public void placeLoadedObjects()
+    {
+        for(LoadedObject o : loadObjects)
+        {
+            if(o.name.equals("Goldmine"))
+            {
+                addEntity(new Goldmine(o.gridX, o.gridY, getNeutral()));
+            }
+            
+            if(o.name.equals("StartingLocation"))
+            {
+                addEntity(new TownHall(o.gridX, o.gridY, 4, getNeutral(), true));
+            }
+        }
+    }
+    
     public Destination getClosestCell(Entity owner, Entity target)
     {
         Integer[][] destinations = new Integer[target.getGridWidth() + 2][target.getGridHeight() + 2];
@@ -316,5 +333,13 @@ public class BackEndMap {
     public boolean isInBounds(int gridX, int gridY)
     {
         return gridX >= 0 && gridX < cells.length && gridY >= 0 && gridY < cells[0].length;
+    }
+
+    public void addLoadedObject(String name, int gridX, int gridY) {
+        if(name.equals("Goldmine"))
+            loadObjects.add(new LoadedObject("Goldmine", gridX, gridY));
+        
+        if(name.equals("StartingLocation"))
+            loadObjects.add(new LoadedObject("StartingLocation", gridX, gridY));
     }
 }

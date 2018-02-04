@@ -6,10 +6,11 @@
 package simplerts.editor;
 
 import simplerts.map.Terrain;
-import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.tree.DefaultMutableTreeNode;
 import simplerts.map.Cell;
@@ -18,16 +19,52 @@ import simplerts.map.BackEndMap;
 import simplerts.map.MapIO;
 import simplerts.gfx.Assets;
 import simplerts.map.FrontEndMap;
+import simplerts.utils.TaskManager;
+import simplerts.utils.TimerTask;
 
 /**
  *
  * @author Markus
  */
 public class MapEditor extends javax.swing.JFrame {
+    
+    public static final int MINE_START_DISTANCE = 5;
+
+    private static boolean placeable(EditorObject object, MapEditor e) {
+        for(int x = object.gridX; x < object.gridX + object.gridWidth; x++)
+        {
+            for(int y = object.gridY; y < object.gridY + object.gridHeight; y++)
+            {
+                if(!(x >= 0 && x < e.map.getCells().length && y >= 0 && y < e.map.getCells()[0].length))
+                {
+                    return false;
+                } else {
+                    Rectangle r1 = new Rectangle(object.gridX, object.gridY, object.gridWidth, object.gridHeight);
+                    for(EditorObject editorObject : e.editorObjects)
+                    {
+                        if((object.name.equals("Goldmine") && editorObject.name.equals("StartingLocation")) || (object.name.equals("StartingLocation") && editorObject.name.equals("Goldmine")))
+                        {
+                            if(r1.intersects(new Rectangle(editorObject.gridX - MINE_START_DISTANCE, editorObject.gridY - MINE_START_DISTANCE, editorObject.gridWidth + MINE_START_DISTANCE * 2, editorObject.gridHeight + MINE_START_DISTANCE * 2)))
+                            return false;
+                        }
+                        if(r1.intersects(new Rectangle(editorObject.gridX, editorObject.gridY, editorObject.gridWidth, editorObject.gridHeight)))
+                            return false;
+                    }
+                    if(!e.map.getCells()[x][y].isAvailable())
+                        return false;
+                }
+            }
+        }
+        
+        return true;
+    }
 
     BackEndMap map;
     FrontEndMap renderMap;
-    Canvas canvas;
+    EditorPanel editorPanel;
+    TaskManager tm;
+    ArrayList<EditorObject> editorObjects;
+    
     /**
      * Creates new form MapEditor
      */
@@ -43,11 +80,14 @@ public class MapEditor extends javax.swing.JFrame {
 
     private void initCustomComponents()
     {
-        map = new BackEndMap(50, 50);
+        map = new BackEndMap(100, 100);
         renderMap = new FrontEndMap(map);
-        canvas = new Canvas();
-        canvas.setSize(new Dimension(map.getSize()));
+        editorPanel = new EditorPanel(renderMap);
+        editorPanel.setPreferredSize(new Dimension(map.getSize()));
         currentTerrain = Assets.darkGrass;
+        editorObjects = new ArrayList<>();
+        editorPanel.setEditorObjects(editorObjects);
+        tm = new TaskManager();
         initTree();
     }
     
@@ -64,10 +104,10 @@ public class MapEditor extends javax.swing.JFrame {
         treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(Assets.trees);
         treeNode2.add(treeNode3);
         treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Resources");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Gold Mine");
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Objects");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Gold mine");
         treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Forest");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Start location");
         treeNode2.add(treeNode3);
         treeNode1.add(treeNode2);
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -87,19 +127,14 @@ public class MapEditor extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         scrollPane1 = new java.awt.ScrollPane();
+        minimapCanvas = new java.awt.Canvas();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
-        edit = new javax.swing.JMenu();
-        variations = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        terrainDirt = new javax.swing.JRadioButtonMenuItem();
-        terrainGrass = new javax.swing.JRadioButtonMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,8 +152,9 @@ public class MapEditor extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -145,18 +181,6 @@ public class MapEditor extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        edit.setText("Edit");
-
-        variations.setText("Set Variations");
-        variations.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                variationsActionPerformed(evt);
-            }
-        });
-        edit.add(variations);
-
-        jMenuBar1.add(edit);
-
         jMenu2.setText("View");
 
         jCheckBoxMenuItem1.setSelected(true);
@@ -165,37 +189,6 @@ public class MapEditor extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("Terrain");
-
-        buttonGroup1.add(terrainDirt);
-        terrainDirt.setSelected(true);
-        terrainDirt.setText("Dirt");
-        terrainDirt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                terrainDirtActionPerformed(evt);
-            }
-        });
-        jMenu3.add(terrainDirt);
-
-        buttonGroup1.add(terrainGrass);
-        terrainGrass.setText("Grass");
-        terrainGrass.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                terrainGrassActionPerformed(evt);
-            }
-        });
-        jMenu3.add(terrainGrass);
-
-        jMenuItem4.setText("Tree");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem4);
-
-        jMenuBar1.add(jMenu3);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -203,7 +196,11 @@ public class MapEditor extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(minimapCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
                 .addContainerGap())
@@ -214,9 +211,12 @@ public class MapEditor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(195, 195, 195)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(118, 118, 118)
+                        .addComponent(minimapCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(68, 68, 68))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
         );
@@ -228,7 +228,7 @@ public class MapEditor extends javax.swing.JFrame {
         int result = fc.showSaveDialog(this);
         if(result == JFileChooser.APPROVE_OPTION)
         {
-            MapIO.saveMap(fc.getSelectedFile(), map);
+            MapIO.saveMap(fc.getSelectedFile(), map, editorObjects);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -237,31 +237,11 @@ public class MapEditor extends javax.swing.JFrame {
         if(result == JFileChooser.APPROVE_OPTION)
         {
             map = MapIO.loadMap(fc.getSelectedFile());
-            canvas.setSize(map.getSize());
+            renderMap = new FrontEndMap(map);
+            editorPanel.setMap(renderMap);
+            editorPanel.setSize(map.getSize());
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void variationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_variationsActionPerformed
-        for(Cell[] rows : map.getCells())
-        {
-            for(Cell cell : rows)
-            {
-                cell.variate();
-            }
-        }
-    }//GEN-LAST:event_variationsActionPerformed
-
-    private void terrainGrassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terrainGrassActionPerformed
-        currentTerrain = Assets.grass;
-    }//GEN-LAST:event_terrainGrassActionPerformed
-
-    private void terrainDirtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terrainDirtActionPerformed
-        currentTerrain = Assets.dirt;
-    }//GEN-LAST:event_terrainDirtActionPerformed
-
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        currentTerrain = Assets.trees;
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -293,36 +273,57 @@ public class MapEditor extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             MapEditor e = new MapEditor();
-            Canvas canvas1 = e.canvas;
+            EditorPanel canvas1 = e.editorPanel;
             e.scrollPane1.add(canvas1);
+            canvas1.setScrollPane(e.scrollPane1);
+            e.minimapCanvas.createBufferStrategy(1);
             EditorMouseListener ml = new EditorMouseListener();
             EditorMouseMotionListener mml = new EditorMouseMotionListener();
             canvas1.addMouseListener(ml);
             canvas1.addMouseMotionListener(mml);
             e.setVisible(true);
+
             Thread thread = new Thread(new Runnable() {
                 public void run() {
                     canvas1.setSize(e.map.getSize());
-                    canvas1.createBufferStrategy(3);
-                    BufferStrategy bs;
-                    Graphics g;
                     while (true) {
                         if(ml.isMouseDown)
                         {
-                            editorClick(mml, e);
+                            editorClick(mml, e, 1);
                         }
-                        bs = canvas1.getBufferStrategy();
-                        g = bs.getDrawGraphics();
-                        e.renderMap.renderMapEditor(g);
-                        if(e.jCheckBoxMenuItem1.getState())
-                            e.renderMap.renderGrid(g, 0, 0);
-                        bs.show();
-                        g.dispose();
+                        if(ml.isRightMouseDown)
+                        {
+                            editorClick(mml, e, 3);
+                        }
+                        canvas1.repaint();
                     }
                 }
             });
             thread.start();
+            
+            Thread updateMinimap = new Thread(() -> {
+                e.tm.addTask(updateMinimap(e));
+                while(true)
+                {
+                    e.tm.update();
+                }     
+            });
+            updateMinimap.start();
         });
+    }
+    
+    public static TimerTask updateMinimap(MapEditor m)
+    {
+            TimerTask t = new TimerTask(100, () -> {
+                BufferStrategy bs = m.minimapCanvas.getBufferStrategy();
+                Graphics g = bs.getDrawGraphics();
+                g.drawImage(m.renderMap.getMinimapImage(184, 184, true), 0, 0, null);
+                bs.show();
+                g.dispose();
+                m.tm.addTask(updateMinimap(m));
+            });
+            
+            return t;
     }
     
     public static void maskMap(BackEndMap map, int startX, int startY)
@@ -382,47 +383,74 @@ public class MapEditor extends javax.swing.JFrame {
         }
     }
     
-    public static void editorClick(EditorMouseMotionListener mml, MapEditor e)
+    public static void maskMap(BackEndMap map)
     {
-        if((e.jTree1.getSelectionPath()) != null)
+        for(int gx = 0; gx < map.getCells().length; gx++)
         {
-            DefaultMutableTreeNode selected = (DefaultMutableTreeNode)e.jTree1.getSelectionPath().getLastPathComponent();
-            if(selected.isLeaf() && selected.getParent().toString().equals("Terrain"))
+            for(int gy = 0; gy < map.getCells()[0].length; gy++)
             {
-                for(int i = mml.posX / Game.CELLSIZE; i < mml.posX/Game.CELLSIZE + 2; i++)
-                    {
-                        for(int j = mml.posY / Game.CELLSIZE; j < mml.posY/Game.CELLSIZE + 2; j++)
+                maskMap(map, gx, gy);
+            }
+        }
+    }
+    
+    public static void editorClick(EditorMouseMotionListener mml, MapEditor e, int button)
+    {
+        if(button == 1)
+        {
+            if((e.jTree1.getSelectionPath()) != null)
+            {
+                DefaultMutableTreeNode selected = (DefaultMutableTreeNode)e.jTree1.getSelectionPath().getLastPathComponent();
+                if(selected.isLeaf() && selected.getParent().toString().equals("Terrain"))
+                {
+                    for(int i = mml.posX / Game.CELLSIZE; i < mml.posX/Game.CELLSIZE + 2; i++)
                         {
-                            if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
+                            for(int j = mml.posY / Game.CELLSIZE; j < mml.posY/Game.CELLSIZE + 2; j++)
                             {
-                                Cell cell = e.map.getCells()[i][j];
-                                cell.setTerrain(((Terrain)selected.getUserObject()));
+                                if(i >= 0 && i < e.map.getCells().length && j >= 0 && j < e.map.getCells()[0].length)
+                                {
+                                    Cell cell = e.map.getCells()[i][j];
+                                    cell.setTerrain(((Terrain)selected.getUserObject()));
+                                }
                             }
                         }
+                        maskMap(e.map, mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE);            
+                } else if (selected.isLeaf() && selected.getParent().toString().equals("Objects"))
+                {
+                    if(selected.toString().equals("Gold mine"))
+                    {
+                        EditorObject goldmine = new EditorObject(mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE, 3, 3, Assets.loadAndResizeImage("/mine.png", 150, 150), "Goldmine");
+                        if(placeable(goldmine, e))
+                            e.editorObjects.add(goldmine);
+                    } else if (selected.toString().equals("Start location"))
+                    {
+                        EditorObject startLoc = new EditorObject(mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE, 4, 4, Assets.loadAndResizeImage("/startinglocation.png", 200, 200), "StartingLocation");
+                        if(placeable(startLoc, e))
+                        {
+                            e.editorObjects.add(startLoc);
+                        }
                     }
-                    maskMap(e.map, mml.posX/Game.CELLSIZE, mml.posY/Game.CELLSIZE);            
-            }            
+                }
+            }
+        } else if (button == 3)
+        {
+            
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JMenu edit;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTree jTree1;
+    private java.awt.Canvas minimapCanvas;
     private java.awt.ScrollPane scrollPane1;
-    private javax.swing.JRadioButtonMenuItem terrainDirt;
-    private javax.swing.JRadioButtonMenuItem terrainGrass;
-    private javax.swing.JMenuItem variations;
     // End of variables declaration//GEN-END:variables
 }

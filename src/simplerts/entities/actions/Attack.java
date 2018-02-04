@@ -7,7 +7,7 @@ package simplerts.entities.actions;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import simplerts.entities.Attacker;
+import simplerts.entities.interfaces.Attacker;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 

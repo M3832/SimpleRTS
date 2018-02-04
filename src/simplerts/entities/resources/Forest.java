@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplerts.entities;
+package simplerts.entities.resources;
 
+import simplerts.entities.Entity;
 import simplerts.map.Cell;
-import simplerts.map.Wood;
 
 /**
  *

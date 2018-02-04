@@ -9,7 +9,7 @@ import simplerts.gfx.Assets;
 import java.awt.Image;
 import java.util.Arrays;
 import simplerts.entities.Entity;
-import simplerts.entities.Forest;
+import simplerts.entities.resources.Forest;
 
 /**
  *

@@ -6,7 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
-import simplerts.entities.Forest;
+import simplerts.entities.resources.Forest;
 import simplerts.entities.Unit;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.map.Cell;

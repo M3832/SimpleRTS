@@ -142,19 +142,7 @@ public class FrontEndMap {
     
     public void renderMapEditor(Graphics g)
     {
-        int startX = 0;
-        int endX = cells.length;
-        
-        int startY = 0;
-        int endY = cells[0].length;
-        
-        for(int i = startX; i < endX; i++)
-        {
-            for(int j = startY; j < endY; j++)
-            {
-                g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE)), (int)((j * Game.CELLSIZE)), Game.CELLSIZE, Game.CELLSIZE, null);
-            }
-        }
+
     }
     
     public void renderGrid(Graphics g, int offsetX, int offsetY)
@@ -173,10 +161,10 @@ public class FrontEndMap {
     {
         float squaresize = Math.min((float)width/cells.length, (float)height/cells[0].length);
 
-        return new MiniMap(getMinimapImage(width, height), squaresize, this);
+        return new MiniMap(getMinimapImage(width, height, false), squaresize, this);
     }
     
-    public BufferedImage getMinimapImage(int width, int height)
+    public BufferedImage getMinimapImage(int width, int height, boolean editor)
     {
         BufferedImage minimap = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = minimap.createGraphics();
@@ -187,7 +175,7 @@ public class FrontEndMap {
         {
             for(int j = 0; j < cells[0].length; j++)
             {
-                if(mapVisibility[i][j])
+                if(mapVisibility[i][j] || editor)
                 {
                     g.drawImage(GraphicsUtil.resize((BufferedImage)cells[i][j].getImage(), (int)tempSquaresize, (int)tempSquaresize), i * (int)tempSquaresize, j * (int)tempSquaresize, null);
                 } else {

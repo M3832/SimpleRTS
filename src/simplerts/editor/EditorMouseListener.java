@@ -5,7 +5,6 @@
  */
 package simplerts.editor;
 
-import simplerts.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -16,6 +15,7 @@ import java.awt.event.MouseListener;
 public class EditorMouseListener implements MouseListener {
         
     public boolean isMouseDown;
+    public boolean isRightMouseDown;
     public boolean isScrollDown;
 
     public int posX, posY;
@@ -31,6 +31,8 @@ public class EditorMouseListener implements MouseListener {
             isScrollDown = true;
         if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1)
             isMouseDown = true;
+        if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON3)
+            isRightMouseDown = true;
     }
 
     @Override
@@ -39,6 +41,8 @@ public class EditorMouseListener implements MouseListener {
             isScrollDown = false;
         if(isMouseDown && e.getButton() == MouseEvent.BUTTON1)
             isMouseDown = false;
+        if(isRightMouseDown && e.getButton() == MouseEvent.BUTTON3)
+            isRightMouseDown = false;
         posX = e.getX();
         posY = e.getY();
     }

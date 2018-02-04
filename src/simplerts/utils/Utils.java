@@ -43,6 +43,8 @@ public class Utils {
         return false;
     }
     
+    
+    
     public static boolean isAdjacent(Destination d1, Destination d2)
     {
         int deltaX = Math.abs(d1.getX() - d2.getX());
