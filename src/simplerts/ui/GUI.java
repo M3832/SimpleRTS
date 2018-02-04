@@ -78,7 +78,7 @@ public class GUI {
         objects.clear();
         if(entities.size() == 1)
         {
-            if(!entities.get(0).getUIActions().isEmpty())
+            if(!entities.get(0).getUIActions().isEmpty() && handler.game.controller.isPlayerControlled(entities.get(0)))
             {
                 for(UIAction a : entities.get(0).getUIActions())
                 {

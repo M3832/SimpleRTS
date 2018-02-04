@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Controller;
 import simplerts.Game;
@@ -94,6 +95,7 @@ public class FrontEndMap {
         
         entities.stream()
                 .sorted((e1, e2) -> { return Integer.compare(e1.getGridY(), e2.getGridY());})
+                .sorted((e1, e2) -> {return Boolean.compare(e2.isDead(), e1.isDead());})
                 .forEach(e -> {
                     if (inView(e, offsetX, offsetY) && e.isVisible()) {
                         e.render(g);

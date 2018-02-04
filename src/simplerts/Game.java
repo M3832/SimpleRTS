@@ -15,6 +15,7 @@ import javax.swing.JFileChooser;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
 import simplerts.entities.Builder;
+import simplerts.entities.Footman;
 import simplerts.entities.Goldmine;
 //import javax.swing.JFileChooser;
 
@@ -39,8 +40,6 @@ public class Game implements Runnable {
     public static final int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
     public static final int MAX_RENDERSKIP = 10;
     public static long time_since_last_render = 0;
-    
-    private long nextSecond = 0;
 
     public BackEndMap map;
     public Handler handler;
@@ -67,9 +66,11 @@ public class Game implements Runnable {
         Player enemy = new Player(handler, Color.BLUE);
         
         map.addEntity(new Builder(10, 6, player));
+        map.addEntity(new Footman(25, 26, player));
+        map.addEntity(new Footman(25, 27, player));
         map.addEntity(new Goldmine(4, 5, map.getNeutral()));
 
-//        map.addEntity(new Builder(25, 25, enemy));
+        map.addEntity(new Builder(25, 25, enemy));
         long next_game_tick = System.currentTimeMillis();
         int loops;
 
@@ -103,7 +104,6 @@ public class Game implements Runnable {
                 loops++;
             }
         }
-
     } 
     
     public void render()
@@ -116,5 +116,6 @@ public class Game implements Runnable {
         if(controller != null)
             controller.update();
         handler.map.update();
+        mm.update();
     }
 }

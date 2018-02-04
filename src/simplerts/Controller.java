@@ -16,6 +16,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import simplerts.audio.SoundController;
 import simplerts.audio.SoundManager;
 import simplerts.entities.actions.Build;
@@ -36,6 +38,8 @@ import simplerts.ui.GUI;
  * @author Markus
  */
 public class Controller {
+    
+    public static final int SELECT_LIMIT = 9;
     
     private Player player;
     private Handler handler;
@@ -119,11 +123,8 @@ public class Controller {
             for(int i = 0; i < selected.size(); i++)
             {
                 Entity e = selected.get(i);
-                g.setColor(Color.GREEN);
+                g.setColor(getColorFromAllegiance(e));
                 g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
-//                g.setColor(Color.WHITE);
-//                g.setFont(GUI.HEADER);
-//                Utils.drawWithShadow(g, i + "", e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY());
                 e.renderSelected(g);
             }
         }
@@ -226,8 +227,8 @@ public class Controller {
             } else {
                 if(selectBox != null && selectBox.getSize().getHeight() > 5 && selectBox.getSize().getWidth() > 5)
                 {
-                    selected = (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox);
-                    if(!selected.isEmpty())
+                    selected = filterSelection(handler.map.getEntitiesInSelection(selectBox));
+                    if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
                         selected.get(0).playSound(SoundController.WAKE_CLIP);
                     selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
                     gui.setSelectedEntities(selected);
@@ -253,33 +254,39 @@ public class Controller {
         
         int index = 0;
         selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
-        if(!selected.isEmpty())
+        if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
             selected.get(0).playSound(SoundController.CONFIRM_CLIP);
         for(Entity e : selected)
         {
-            if(e instanceof Unit)
+            if(isPlayerControlled(e))
             {
-                Unit u = (Unit) e;
-                u.clearActions();
-                int gridX = (int)(ml.posX + handler.camera.getOffsetX()) / Game.CELLSIZE;
-                int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
-                if(handler.map.getCells()[gridX][gridY].getEntity() != null)
+                if(e instanceof Unit)
                 {
-                    u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
-                } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
-                {
-                    if(u instanceof Lumberman)
+                    Unit u = (Unit) e;
+                    u.clearActions();
+                    int gridX = (int)(ml.posX + handler.camera.getOffsetX()) / Game.CELLSIZE;
+                    int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
+                    if(handler.map.isInBounds(gridX, gridY))
                     {
-                        u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
+                        if(handler.map.getCells()[gridX][gridY].getEntity() != null)
+                        {
+                            u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
+                        } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
+                        {
+                            if(u instanceof Lumberman)
+                            {
+                                u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
+                            }
+                        } else {
+                            int offsetX = (int)(index%(Math.sqrt(selected.size())));
+                            int offsetY = (int)(index/(Math.sqrt(selected.size())));
+                            int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
+                            int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
+                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
+                        }
+                        index++;
                     }
-                } else {
-                    int offsetX = (int)(index%(Math.sqrt(selected.size())));
-                    int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                    int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
-                    int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
-                    u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
                 }
-                index++;
             }
         }
     }
@@ -318,6 +325,44 @@ public class Controller {
 
     public Player getPlayer() {
         return player;
+    }
+
+    private Color getColorFromAllegiance(Entity e) {
+        Color c;
+        
+        if(e.getPlayer() == player)
+        {
+            c = Color.GREEN;
+        } else if (e.getPlayer() != handler.map.getNeutral())
+        {
+            c = Color.RED;
+        } else {
+            c = Color.YELLOW;
+        }
+        
+        return c;
+    }
+
+    private ArrayList<Entity> filterSelection(List<Entity> list) {
+        ArrayList<Entity> finalResult = (ArrayList<Entity>)list;
+        if(list.stream().anyMatch(e -> e.getPlayer() == player))
+        {
+            finalResult = (ArrayList<Entity>)list.stream().filter(e -> e.getPlayer() == player).collect(Collectors.toList());
+        }
+        
+        if(finalResult.size() > SELECT_LIMIT)
+        {
+            for(int i = finalResult.size() - 1; i > 8; i--)
+            {
+                finalResult.remove(i);
+            }
+        }
+        
+        return finalResult;
+    }
+
+    public boolean isPlayerControlled(Entity entity) {
+        return player.getEntities().contains(entity);
     }
     
 }

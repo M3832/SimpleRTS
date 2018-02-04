@@ -24,6 +24,7 @@ import simplerts.gfx.AnimationController;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
 import simplerts.ui.UIObject;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -358,6 +359,6 @@ public abstract class Unit extends Entity {
     protected void die()
     {
         super.die();
-        isVisible = false;
+        taskManager.addTask(new TimerTask(30000, () -> {player.getEntities().remove(this); player.getHandler().map.getEntities().remove(this);}));
     }
 }

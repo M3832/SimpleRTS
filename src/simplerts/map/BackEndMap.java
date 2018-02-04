@@ -100,14 +100,21 @@ public class BackEndMap {
     {
         ArrayList<Entity> list = new ArrayList<>();
         entities.stream().forEach(e -> {
-            if(e.isVisible() && rectangleIntersectsEntity(r, e))
+            if(e.isVisible() && !e.isDead() && rectangleIntersectsEntity(r, e))
             {
                 list.add(e);
             }
         });
+
+        
+        return filterList(list);
+    }
+    
+    public List<Entity> filterList(List<Entity> list)
+    {
         if(list.stream().anyMatch(e -> e instanceof Unit))
         {
-            return list.stream().filter(e -> e instanceof Unit).collect(Collectors.toList());
+            list = list.stream().filter(e -> e instanceof Unit).collect(Collectors.toList());
         }
         
         return list;
@@ -115,7 +122,7 @@ public class BackEndMap {
     
     public boolean checkUnitCollision(Rectangle r, Entity entity)
     {
-       return entities.stream().anyMatch(e -> {if(e == entity || !e.isVisible()){return false;} return rectangleIntersectsEntity(r, e);});
+       return entities.stream().anyMatch(e -> {if(e == entity || !e.isVisible() || e.isDead()){return false;} return rectangleIntersectsEntity(r, e);});
     }
     
     public CopyOnWriteArrayList<Entity> getEntities()
@@ -195,7 +202,8 @@ public class BackEndMap {
             {
                 for(int y1 = e.getGridY(); y1 < e.getGridY()+e.getGridHeight(); y1++)
                 {
-                    cells[x1][y1].setEntity(e);
+                    if(isInBounds(x1, y1))
+                        cells[x1][y1].setEntity(e);
                 }
             }
         } else {

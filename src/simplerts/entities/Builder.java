@@ -6,7 +6,6 @@
 package simplerts.entities;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
@@ -133,31 +132,40 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     
     @Override
     protected void setAnimation()
-    {       
-        if(chopping)
+    {
+        if(isDead)
         {
-            ac.setAnimation("chop");
-            ac.update();
-        } else {
-            if(actions.size() > 0 && actions.get(0).isMoving())
+            ac.setAnimation("dead");
+        } else { 
+            if(chopping)
             {
-                if(lumber > 0)
+                ac.setAnimation("chop");
+                ac.update();
+            } else {
+                if(actions.size() > 0 && actions.get(0).isMoving())
                 {
-                    ac.setAnimation("walkTree");
-                } else {
-                    ac.setAnimation("walk");
+                    if(lumber > 0)
+                    {
+                        ac.setAnimation("walkTree");
+                    } else if(gold > 0) {
+                        ac.setAnimation("walkGold");
+                    } else {
+                        ac.setAnimation("walk");
+                    }
                 }
-            }
-            else 
-            {
-                if(lumber > 0)
+                else 
                 {
-                    ac.setAnimation("standTree");                    
-                } else {
-                    ac.setAnimation("stand");
+                    if(lumber > 0)
+                    {
+                        ac.setAnimation("standTree");                    
+                    } else if(gold > 0) {
+                        ac.setAnimation("standGold");
+                    } else {
+                        ac.setAnimation("stand");
+                    }
                 }
+                ac.update();
             }
-            ac.update();
         }
     }
     
@@ -188,17 +196,6 @@ public class Builder extends Unit implements Goldminer, Lumberman{
                 chopping = ((Chop) actions.get(0)).isChopping();
         }
 
-    }
-    
-    @Override
-    public void render(Graphics g)
-    {
-        super.render(g);
-        if(gold > 0)
-        {
-            g.setColor(Color.WHITE);
-            g.drawString("Gold", x - offsetX, y - offsetY);
-        }
     }
 
     @Override

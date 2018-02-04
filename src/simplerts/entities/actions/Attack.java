@@ -5,6 +5,7 @@
  */
 package simplerts.entities.actions;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import simplerts.entities.Attacker;
 import simplerts.entities.Entity;
@@ -37,12 +38,16 @@ public class Attack extends Action {
         }
         
         if(target.isDead())
+        {
             owner.getPlayer().deselectEntity(target);
+            owner.removeAction(this);
+        }
     }
 
     @Override
     public void render(Graphics g) {
-        
+        g.setColor(Color.RED);
+        g.drawRect(target.getX() - (int)owner.getMap().getHandler().camera.getOffsetX(), target.getY() - (int)owner.getMap().getHandler().camera.getOffsetY(), target.getWidth(), target.getHeight());
     }
     
     @Override

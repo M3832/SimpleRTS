@@ -72,11 +72,22 @@ public class Footman extends Unit implements Attacker {
         if(!hasAttacked)
         {
             hasAttacked = true;
-            renderAttack = true;
             setDirection(e.getGridX() - getGridX(), e.getGridY() - getGridY());
             e.hit(Math.max(attackDamage - e.getArmor(), 0));
-            tasks.add(new TimerTask(attackSpeed, () -> {hasAttacked = false;}));
-            tasks.add(new TimerTask(attackRenderSpeed, () -> {renderAttack = false;}));
+            taskManager.addTask(new TimerTask(attackSpeed, () -> {hasAttacked = false;}));
+            ac.setAnimation("attack");
+            ac.playAnimation();
+        }
+    }
+    
+    @Override
+    public void setAnimation()
+    {
+        if(hasAttacked)
+        {
+            ac.update();
+        } else {
+            super.setAnimation();
         }
     }
 

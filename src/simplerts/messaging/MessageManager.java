@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.Handler;
+import simplerts.utils.TaskManager;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -17,30 +19,28 @@ import simplerts.Handler;
  */
 public class MessageManager {
     
+    
     public static int MESSAGE_LENGTH = 3000;
     private Handler handler;
     private CopyOnWriteArrayList<Message> messages;
+    private TaskManager taskManager;
     
     public MessageManager(Handler handler)
     {
         this.handler = handler;
         messages = new CopyOnWriteArrayList<>();
+        taskManager = new TaskManager();
+    }
+    
+    public void update()
+    {
+        taskManager.update();
     }
     
     public void addMessage(Message message)
     {
         messages.add(0, message);
-        new Thread(() -> {
-            long done = System.currentTimeMillis() + MESSAGE_LENGTH;
-            while(true)
-            {
-                if(System.currentTimeMillis() >= done)
-                {
-                    messages.remove(message);
-                    break;
-                }
-            }
-        }).start();
+        taskManager.addTask(new TimerTask(MESSAGE_LENGTH, () -> {messages.remove(message);}));
     }
     
     public void render(Graphics g)
