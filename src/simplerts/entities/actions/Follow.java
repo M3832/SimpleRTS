@@ -15,9 +15,9 @@ import simplerts.entities.Unit;
  */
 public class Follow extends Action {
 
-    private Entity target;
+    private final Entity target;
     private long nextRepathing;
-    private int waittime = 1000;
+    private final int waittime = 1000;
     private MoveTo movePath;
     
     public Follow(Unit owner, Entity target) {

@@ -28,13 +28,8 @@ public class Farm extends Building implements FoodProvider {
     public Farm(int x, int y, int cellSize, Player player) {
         super(x, y, cellSize, player, false);
         
-        sprite = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = sprite.getGraphics();
-        g.setColor(color);
-        g.setFont(GUI.BREAD);
-        g.drawString("FARM", sprite.getWidth()/2 - g.getFontMetrics().stringWidth("FARM")/2, sprite.getHeight()/2 + g.getFontMetrics().getHeight()/4);
-        g.setColor(Color.BLACK);
-        g.drawRect(1, 1, width-2, height-2);
+        sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/Buildings/Farm/sprite.png", width, height),
+                                                     Assets.loadAndResizeImage("/Buildings/Farm/teamcolor.png", width, height), color);
         
         initVariables();
     }

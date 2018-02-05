@@ -385,9 +385,9 @@ public class MapEditor extends javax.swing.JFrame {
     
     public static void maskMap(BackEndMap map)
     {
-        for(int gx = 0; gx < map.getCells().length; gx++)
+        for(int gx = 0; gx < map.getCells().length; gx+=3)
         {
-            for(int gy = 0; gy < map.getCells()[0].length; gy++)
+            for(int gy = 0; gy < map.getCells()[0].length; gy+=3)
             {
                 maskMap(map, gx, gy);
             }
