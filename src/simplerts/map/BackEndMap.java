@@ -21,6 +21,7 @@ import simplerts.Player;
 import simplerts.editor.LoadedObject;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.resources.Goldmine;
+import simplerts.entities.units.Builder;
 
 /**
  *
@@ -30,10 +31,10 @@ public class BackEndMap {
     
     private final CopyOnWriteArrayList<Entity> entities;
     private final Cell[][] cells;
-    private ArrayList<LoadedObject> loadObjects;
-    private Handler handler;
+    private final ArrayList<LoadedObject> loadObjects;
+    private final ArrayList<Destination> startLocations; 
     private final PathFinder pathFinder;
-    private Rectangle selectBox;
+    private Handler handler;
     private Player neutral;
     
     public BackEndMap(int colSize, int rowSize)
@@ -49,6 +50,7 @@ public class BackEndMap {
         }
         pathFinder = new PathFinder(this);
         loadObjects = new ArrayList<>();
+        startLocations = new ArrayList<>();
     }
     
     public void setHandler(Handler handler)
@@ -62,6 +64,28 @@ public class BackEndMap {
         entities.add(e);
         updateEntityCell(e.getGridX(), e.getGridY(), e);
         e.getPlayer().addEntity(e);
+    }
+    
+    public void start(CopyOnWriteArrayList<Player> players, int startGold, int startLumber, int startWorkers)
+    {
+        for(Player p: players)
+        {
+            p.setGold(startGold);
+            p.setLumber(startLumber);
+            if(!startLocations.isEmpty())
+            {
+                Destination startLocation = startLocations.get((int)(Math.random() * (startLocations.size())));
+                TownHall th = new TownHall(startLocation.getX(), startLocation.getY(), 4, p, true);
+                addEntity(th);
+                for(int i = 0; i < startWorkers; i++)
+                {
+                    Destination target = getAvailableNeighborCell(th);
+                    Builder b = new Builder(target.getX(), target.getY(), p);
+                    addEntity(b);
+                }
+                startLocations.remove(startLocation);
+            }
+        }
     }
     
     public Cell[][] getCells()
@@ -222,10 +246,6 @@ public class BackEndMap {
         return handler;
     }
 
-    public void setSelectBox(Rectangle selectBox) {
-        this.selectBox = selectBox;
-    }
-
     public void setEntityPosition(Entity entity, Destination destination) {
         entity.setPosition(destination);
         updateEntityCell(entity.getGridX(), entity.getGridY(), entity);
@@ -252,11 +272,6 @@ public class BackEndMap {
             if(o.name.equals("Goldmine"))
             {
                 addEntity(new Goldmine(o.gridX, o.gridY, getNeutral()));
-            }
-            
-            if(o.name.equals("StartingLocation"))
-            {
-                addEntity(new TownHall(o.gridX, o.gridY, 4, getNeutral(), true));
             }
         }
     }
@@ -340,6 +355,6 @@ public class BackEndMap {
             loadObjects.add(new LoadedObject("Goldmine", gridX, gridY));
         
         if(name.equals("StartingLocation"))
-            loadObjects.add(new LoadedObject("StartingLocation", gridX, gridY));
+            startLocations.add(new Destination(gridX, gridY));
     }
 }

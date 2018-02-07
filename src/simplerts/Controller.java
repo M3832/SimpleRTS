@@ -25,6 +25,7 @@ import simplerts.entities.actions.MoveTo;
 import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
 import simplerts.entities.actions.Chop;
+import simplerts.entities.buildings.TownHall;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
@@ -222,7 +223,6 @@ public class Controller {
                     currentDragX = ml.posX + (int)handler.getCamera().getOffsetX();
                     currentDragY = ml.posY + (int)handler.getCamera().getOffsetY();
                     selectBox.setBounds((int)Math.min(startDragX, currentDragX), (int)Math.min(startDragY, currentDragY), (int)Math.abs(startDragX - currentDragX), (int)Math.abs(startDragY - currentDragY));
-                    handler.map.setSelectBox(selectBox);
                 }
             } else {
                 if(selectBox != null && selectBox.getSize().getHeight() > 5 && selectBox.getSize().getWidth() > 5)
@@ -268,7 +268,7 @@ public class Controller {
                     int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
                     if(handler.map.isInBounds(gridX, gridY))
                     {
-                        if(handler.map.getCells()[gridX][gridY].getEntity() != null)
+                        if(handler.map.getCells()[gridX][gridY].getEntity() != null && !handler.map.getCells()[gridX][gridY].getEntity().isDead())
                         {
                             u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
                         } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
@@ -363,6 +363,15 @@ public class Controller {
 
     public boolean isPlayerControlled(Entity entity) {
         return player.getEntities().contains(entity);
+    }
+
+    void start() {
+        TownHall t = (TownHall)player.getEntities().stream().filter(e -> e instanceof TownHall).findFirst().get();
+        handler.camera.centerOnEntity(t);
+    }
+
+    public void showAll() {
+        renderMap.showAll();
     }
     
 }

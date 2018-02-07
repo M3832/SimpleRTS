@@ -222,5 +222,13 @@ public class FrontEndMap {
     public Player getControllingPlayer() {
         return controller.getPlayer();
     }
+
+    public void showAll() {
+        for (boolean[] mapVisibility1 : mapVisibility) {
+            for (int j = 0; j < mapVisibility[0].length; j++) {
+                mapVisibility1[j] = true;
+            }
+        }
+    }
     
 }

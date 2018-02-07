@@ -14,8 +14,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 import simplerts.editor.EditorObject;
-import simplerts.entities.buildings.TownHall;
-import simplerts.entities.resources.Goldmine;
 import simplerts.gfx.Assets;
 
 /**
@@ -65,6 +63,7 @@ public class MapIO {
             if(tokens[0].equals("StartingLocation"))
             {
                 map.addLoadedObject("StartingLocation", Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+                
             }
             
             if(tiles)

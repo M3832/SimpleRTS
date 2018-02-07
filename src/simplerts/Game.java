@@ -63,12 +63,23 @@ public class Game implements Runnable {
         mm = new MessageManager(handler);
         map.placeLoadedObjects();
         
-        Player player = new Player(handler, Color.RED);
+        Player player = new Player(handler, new Color(175, 0, 0));
+        Player enemy = new Player(handler, Color.BLUE);
+        Player enemy2 = new Player(handler, Color.YELLOW);
+        Player enemy3 = new Player(handler, Color.GREEN);
         controller = new Controller(handler, player);
         players.add(player);
-        Player enemy = new Player(handler, Color.BLUE);
+        players.add(enemy);
+        players.add(enemy2);
+        players.add(enemy3);
         
-        map.addEntity(new Builder(10, 6, player));
+        map.start(players, 500, 0, 3);
+        controller.start();
+        map.addEntity(new Footman(20, 20, player));
+        map.addEntity(new Footman(20, 21, player));
+        map.addEntity(new Footman(20, 22, player));
+        map.addEntity(new Footman(20, 23, player));
+        
         long next_game_tick = System.currentTimeMillis();
         int loops;
 

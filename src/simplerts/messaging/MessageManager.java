@@ -6,7 +6,6 @@
 package simplerts.messaging;
 
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.Handler;
@@ -41,6 +40,7 @@ public class MessageManager {
     {
         messages.add(0, message);
         taskManager.addTask(new TimerTask(MESSAGE_LENGTH, () -> {messages.remove(message);}));
+        checkCheats(message.message);
     }
     
     public void render(Graphics g)
@@ -52,6 +52,14 @@ public class MessageManager {
             g.setFont(current.getFont());
             g.setColor(current.getColor());
             g.drawString(current.getMessage(), Game.WIDTH/2 - g.getFontMetrics(current.getFont()).stringWidth(current.getMessage())/2, Game.HEIGHT - 20 - i * g.getFontMetrics(current.getFont()).getHeight());
+        }
+    }
+
+    private void checkCheats(String message) {
+        switch(message)
+        {
+            case "showall":
+                handler.game.controller.showAll();
         }
     }
     

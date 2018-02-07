@@ -58,11 +58,8 @@ public class Farm extends Building implements FoodProvider {
     
     public static BufferedImage getUIIcon(Color color)
     {
-        BufferedImage sprite = new BufferedImage(55, 55, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = sprite.getGraphics();
-        g.setColor(color);
-        g.setFont(GUI.SMALL);
-        g.drawString("FARM", sprite.getWidth()/2 - g.getFontMetrics().stringWidth("FARM")/2, sprite.getHeight()/2 + g.getFontMetrics().getHeight()/4);
+        BufferedImage sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/Buildings/Farm/sprite.png"),
+                                                     Assets.loadToCompatibleImage("/Buildings/Farm/teamcolor.png"), color);
         return Assets.makeIcon(color, sprite);
     }
 
