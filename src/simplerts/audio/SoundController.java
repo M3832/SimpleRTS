@@ -17,8 +17,8 @@ import javax.sound.sampled.Clip;
  */
 public class SoundController {
     
-    public static final int CONFIRM_CLIP = 1;
-    public static final int WAKE_CLIP = 0;
+    public static final int CONFIRM = 1;
+    public static final int WAKE = 0;
     
     private final ArrayList<Sound> confirm;
     private final ArrayList<Sound> wake;
@@ -33,10 +33,10 @@ public class SoundController {
     {
             switch(type)
             {
-                case WAKE_CLIP:
+                case WAKE:
                     wake.add(SoundController.getSoundFromURL(url));
                     break;
-                case CONFIRM_CLIP:
+                case CONFIRM:
                     confirm.add(SoundController.getSoundFromURL(url));
                     break;
             }
@@ -62,13 +62,13 @@ public class SoundController {
     {
         switch(type)
         {
-            case WAKE_CLIP:
+            case WAKE:
                 if(wake.size() > 0)
                 {
                     wake.get((int)(Math.random() * wake.size())).play();
                 }
                 break;
-            case CONFIRM_CLIP:
+            case CONFIRM:
                 if(confirm.size() > 0)
                 {
                     confirm.get((int)(Math.random() * confirm.size())).play();

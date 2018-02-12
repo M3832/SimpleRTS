@@ -71,14 +71,14 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     
     private void initSounds()
     {
-        soundManager.addSound("/Units/Peasant/wake1.wav", SoundController.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/wake2.wav", SoundController.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/wake3.wav", SoundController.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/wake4.wav", SoundController.WAKE_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm1.wav", SoundController.CONFIRM_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm2.wav", SoundController.CONFIRM_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm3.wav", SoundController.CONFIRM_CLIP);
-        soundManager.addSound("/Units/Peasant/confirm4.wav", SoundController.CONFIRM_CLIP);
+        soundManager.addSound("/Units/Peasant/wake1.wav", SoundController.WAKE);
+        soundManager.addSound("/Units/Peasant/wake2.wav", SoundController.WAKE);
+        soundManager.addSound("/Units/Peasant/wake3.wav", SoundController.WAKE);
+        soundManager.addSound("/Units/Peasant/wake4.wav", SoundController.WAKE);
+        soundManager.addSound("/Units/Peasant/confirm1.wav", SoundController.CONFIRM);
+        soundManager.addSound("/Units/Peasant/confirm2.wav", SoundController.CONFIRM);
+        soundManager.addSound("/Units/Peasant/confirm3.wav", SoundController.CONFIRM);
+        soundManager.addSound("/Units/Peasant/confirm4.wav", SoundController.CONFIRM);
     }
     
     public void setupActions()

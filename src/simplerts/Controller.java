@@ -201,7 +201,7 @@ public class Controller {
                         Building building = (Building)entityplacer.getEntity().duplicate();
                         building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
                         b.clearActions();
-                        b.playSound(SoundController.CONFIRM_CLIP);
+                        b.playSound(SoundController.CONFIRM);
                         b.addAction(new MoveTo(b, player.getHandler().map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2))));
                         b.addAction(new Build(b, building));
                     } else {
@@ -250,7 +250,7 @@ public class Controller {
     private void select()
     {
         if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
-            selected.get(0).playSound(SoundController.WAKE_CLIP);
+            selected.get(0).playSound(SoundController.WAKE);
         selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
         gui.setSelectedEntities(selected);
     }
@@ -266,7 +266,7 @@ public class Controller {
         int index = 0;
         selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
         if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
-            selected.get(0).playSound(SoundController.CONFIRM_CLIP);
+            selected.get(0).playSound(SoundController.CONFIRM);
         for(Entity e : selected)
         {
             if(isPlayerControlled(e))
