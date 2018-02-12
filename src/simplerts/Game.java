@@ -64,9 +64,9 @@ public class Game implements Runnable {
         map.placeLoadedObjects();
         
         Player player = new Player(handler, new Color(175, 0, 0));
-        Player enemy = new Player(handler, Color.BLUE);
-        Player enemy2 = new Player(handler, Color.YELLOW);
-        Player enemy3 = new Player(handler, Color.GREEN);
+        Player enemy = new Player(handler, new Color(0, 0, 175));
+        Player enemy2 = new Player(handler, new Color(175, 175, 0));
+        Player enemy3 = new Player(handler, new Color(0, 175, 0));
         controller = new Controller(handler, player);
         players.add(player);
         players.add(enemy);

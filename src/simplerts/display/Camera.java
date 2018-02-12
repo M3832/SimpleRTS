@@ -18,11 +18,17 @@ public class Camera {
     
     private Handler handler;
     private float offsetX, offsetY;
+    private int mouseX, mouseY;
     
     public Camera ()
     {
         offsetX = 0;
         offsetY = 0;
+    }
+    
+    public Camera(Handler handler)
+    {
+        this.handler = handler;
     }
     
     public void addOffset(float x, float y){
@@ -70,7 +76,7 @@ public class Camera {
     
     public void render(Graphics g)
     {
-        handler.renderMap.render(g, offsetX, offsetY);
+        handler.renderMap.render(g, this);
     }
     
     public void setHandler(Handler handler)
@@ -91,5 +97,27 @@ public class Camera {
     public float getOffsetY()
     {
         return offsetY;
+    }
+    
+    public void setFinalMouse(int x, int y)
+    {
+        mouseX = x + (int)offsetX;
+        mouseY = y + (int)offsetY;
+    }
+    
+    public int getMouseX() {
+        return mouseX;
+    }
+    
+    public int getMouseY() {
+        return mouseY;
+    }
+    
+    public int getMouseGridX() {
+        return mouseX / Game.CELLSIZE;
+    }
+    
+    public int getMouseGridY() {
+        return mouseY / Game.CELLSIZE;
     }
 }

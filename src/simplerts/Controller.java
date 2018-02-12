@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import simplerts.audio.SoundController;
 import simplerts.audio.SoundManager;
+import simplerts.display.Camera;
 import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
 import simplerts.entities.units.Builder;
@@ -42,8 +43,8 @@ public class Controller {
     
     public static final int SELECT_LIMIT = 9;
     
-    private Player player;
-    private Handler handler;
+    private final Player player;
+    private final Handler handler;
     
     private Placer entityplacer;
     
@@ -53,6 +54,7 @@ public class Controller {
     private float boundary;
     
     private GUI gui;
+    private Camera camera;
     private FrontEndMap renderMap;
     private PlayerMessager messager;
     private SoundManager soundManager;
@@ -76,14 +78,12 @@ public class Controller {
         
         selected = new ArrayList<>();
         messager = new PlayerMessager(this);
-        entityplacer = new Placer(handler);
+        entityplacer = new Placer(this);
         renderMap = new FrontEndMap(handler.map);
-        handler.setCamera(renderMap.getCamera());
         handler.setRenderMap(renderMap);
-        renderMap.getCamera().setHandler(handler);
-        gui = new GUI(renderMap, handler);
-        
-        ml = new MouseInput();
+        camera = new Camera(handler);
+        gui = new GUI(renderMap, this);
+        ml = new MouseInput(camera);
         km = new KeyManager();
         km.setPlayerMessager(messager);
         handler.getDisplay().getGamePanel().addMouseListener(ml);
@@ -95,7 +95,7 @@ public class Controller {
         
         ((MouseInput)handler.display.getGamePanel().getMouseListeners()[0]).setGUI(gui);
         
-        boundary = 50;
+        boundary = 20;
     }
     
     public void update()
@@ -104,7 +104,7 @@ public class Controller {
         renderMap.update();
         gui.update();
         ml.isMouseClicked();
-        entityplacer.setPosition(ml.posX + (int)handler.camera.getOffsetX(), ml.posY + (int)handler.camera.getOffsetY());
+        entityplacer.setPosition(camera.getMouseX(), camera.getMouseY());
     }
     
     public void render(Graphics g)
@@ -112,11 +112,11 @@ public class Controller {
         if(selectBox != null)
         {
             g.setColor(Color.GREEN);
-            g.drawRect((int)(selectBox.getX() - handler.getCamera().getOffsetX()), (int)(selectBox.getY() - handler.getCamera().getOffsetY()), (int)selectBox.getWidth(), (int)selectBox.getHeight());
+            g.drawRect((int)(selectBox.getX() - camera.getOffsetX()), (int)(selectBox.getY() - camera.getOffsetY()), (int)selectBox.getWidth(), (int)selectBox.getHeight());
             g.setColor(new Color(0, 255, 0, 100));
             for(Entity e : (ArrayList<Entity>)handler.map.getEntitiesInSelection(selectBox))
             {
-                    g.drawRect(e.getX() - (int)handler.getCamera().getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
+                    g.drawRect(e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY(), e.getWidth(), e.getHeight());
             }
         }
         if(selected.size() > 0)
@@ -125,11 +125,11 @@ public class Controller {
             {
                 Entity e = selected.get(i);
                 g.setColor(getColorFromAllegiance(e));
-                g.drawRect(e.getX() - (int)handler.camera.getOffsetX(), e.getY() - (int)handler.camera.getOffsetY(), e.getWidth(), e.getHeight());
+                g.drawRect(e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY(), e.getWidth(), e.getHeight());
                 e.renderSelected(g);
             }
         }
-        if(entityplacer.entity != null)
+        if(entityplacer.getEntity() != null)
             entityplacer.render(g);
         
         gui.render(g);
@@ -150,22 +150,22 @@ public class Controller {
         
         if(ml.posX > Game.WIDTH - boundary && ml.isHovering)
         {
-            handler.getCamera().addOffset(frameScroll, 0);
+            camera.addOffset(frameScroll, 0);
         }
         
         if(ml.posX < 0 + boundary && ml.isHovering)
         {
-            handler.getCamera().addOffset(-frameScroll, 0);
+            camera.addOffset(-frameScroll, 0);
         }
         
         if(ml.posY > Game.HEIGHT + Game.GUIHEIGHT - boundary && ml.isHovering)
         {
-            handler.getCamera().addOffset(0, frameScroll);
+            camera.addOffset(0, frameScroll);
         }
         
         if(ml.posY < 0 + boundary && ml.isHovering)
         {
-            handler.getCamera().addOffset(0, -frameScroll);
+            camera.addOffset(0, -frameScroll);
         }
     }
     
@@ -193,12 +193,12 @@ public class Controller {
         {
             if(ml.isMouseClicked())
             {
-                if(entityplacer.entity != null)
+                if(entityplacer.hasEntity())
                 {
                     if(!selected.isEmpty() && selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
                     {
                         Builder b = ((Builder)selected.get(0));
-                        Building building = (Building)entityplacer.entity.duplicate();
+                        Building building = (Building)entityplacer.getEntity().duplicate();
                         building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
                         b.clearActions();
                         b.playSound(SoundController.CONFIRM_CLIP);
@@ -207,31 +207,34 @@ public class Controller {
                     } else {
                         handler.game.mm.addMessage(new ErrorMessage("Building can't be placed here."));
                     }
-                    entityplacer.entity = null;
+                    entityplacer.clear();
                     return;
+                }
+                if(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity() != null)
+                {
+                    selected.clear();
+                    selected.add(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity());
+                    select();
                 }
             }
 
-            if(ml.isMouseDown && entityplacer.entity == null)
+            if(ml.isMouseDown && !entityplacer.hasEntity())
             {
                 if(selectBox == null)
                 {
-                    startDragX = ml.posX + (int)handler.getCamera().getOffsetX();
-                    startDragY = ml.posY + (int)handler.getCamera().getOffsetY();
-                    selectBox = new Rectangle(ml.posX + (int)handler.getCamera().getOffsetX(), ml.posY + (int)handler.getCamera().getOffsetY(), 0, 0);
+                    startDragX = camera.getMouseX();
+                    startDragY = camera.getMouseY();
+                    selectBox = new Rectangle(camera.getMouseX(), camera.getMouseY(), 0, 0);
                 } else {
-                    currentDragX = ml.posX + (int)handler.getCamera().getOffsetX();
-                    currentDragY = ml.posY + (int)handler.getCamera().getOffsetY();
+                    currentDragX = camera.getMouseX();
+                    currentDragY = camera.getMouseY();
                     selectBox.setBounds((int)Math.min(startDragX, currentDragX), (int)Math.min(startDragY, currentDragY), (int)Math.abs(startDragX - currentDragX), (int)Math.abs(startDragY - currentDragY));
                 }
             } else {
                 if(selectBox != null && selectBox.getSize().getHeight() > 5 && selectBox.getSize().getWidth() > 5)
                 {
                     selected = filterSelection(handler.map.getEntitiesInSelection(selectBox));
-                    if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
-                        selected.get(0).playSound(SoundController.WAKE_CLIP);
-                    selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
-                    gui.setSelectedEntities(selected);
+                    select();
                 }
 
                 selectBox = null;
@@ -244,11 +247,19 @@ public class Controller {
         }
     }
     
+    private void select()
+    {
+        if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
+            selected.get(0).playSound(SoundController.WAKE_CLIP);
+        selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
+        gui.setSelectedEntities(selected);
+    }
+    
     private void rightMouseClick()
     {
-        if(entityplacer.entity != null)
+        if(entityplacer.hasEntity())
         {
-            entityplacer.entity = null;
+            entityplacer.clear();
             return;
         }
         
@@ -264,8 +275,8 @@ public class Controller {
                 {
                     Unit u = (Unit) e;
                     u.clearActions();
-                    int gridX = (int)(ml.posX + handler.camera.getOffsetX()) / Game.CELLSIZE;
-                    int gridY = (int)(ml.posY + handler.camera.getOffsetY()) / Game.CELLSIZE;
+                    int gridX = camera.getMouseGridX();
+                    int gridY = camera.getMouseGridY();
                     if(handler.map.isInBounds(gridX, gridY))
                     {
                         if(handler.map.getCells()[gridX][gridY].getEntity() != null && !handler.map.getCells()[gridX][gridY].getEntity().isDead())
@@ -280,8 +291,8 @@ public class Controller {
                         } else {
                             int offsetX = (int)(index%(Math.sqrt(selected.size())));
                             int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                            int targetX = (int)(ml.posX + handler.getCamera().getOffsetX())/Game.CELLSIZE + offsetX;
-                            int targetY = (int)(ml.posY + handler.getCamera().getOffsetY())/Game.CELLSIZE + offsetY;
+                            int targetX = camera.getMouseGridX() + offsetX;
+                            int targetY = camera.getMouseGridY() + offsetY;
                             u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
                         }
                         index++;
@@ -367,11 +378,21 @@ public class Controller {
 
     void start() {
         TownHall t = (TownHall)player.getEntities().stream().filter(e -> e instanceof TownHall).findFirst().get();
-        handler.camera.centerOnEntity(t);
+        camera.centerOnEntity(t);
     }
 
     public void showAll() {
         renderMap.showAll();
+    }
+    
+    public Camera getCamera()
+    {
+        return camera;
+    }
+    
+    public FrontEndMap getMap()
+    {
+        return renderMap;
     }
     
 }

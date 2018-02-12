@@ -20,19 +20,19 @@ import java.awt.image.BufferedImage;
  */
 public class Placer {
     
-    Entity entity;
+    private Entity entity;
+    private Controller controller;
     private Color color;
     private Color errorColor;
     private int cellX, cellY, cellWidth, cellHeight;
-    private Handler handler;
     private BufferedImage image;
     
-    public Placer(Handler handler)
+    public Placer(Controller controller)
     {
         color = new Color(0, 0, 255, 150);
         errorColor = new Color(255, 0, 0, 150);
         entity = null;
-        this.handler = handler;
+        this.controller = controller;
     }
     
     public void setEntity(Entity entity)
@@ -51,8 +51,8 @@ public class Placer {
     
     public void render(Graphics g)
     {
-        int offsetCellX = (int)handler.getCamera().getOffsetX() / Game.CELLSIZE;
-        int offsetCellY = (int)handler.getCamera().getOffsetY() / Game.CELLSIZE;
+        int offsetCellX = (int)controller.getCamera().getOffsetX() / Game.CELLSIZE;
+        int offsetCellY = (int)controller.getCamera().getOffsetY() / Game.CELLSIZE;
         
         if(entity instanceof Building)
         {
@@ -62,15 +62,15 @@ public class Placer {
         {
             for(int j = cellY; j < cellHeight + cellY; j++)
             {
-                if(i >= 0 && j >= 0 && i < handler.map.getCells().length && j < handler.map.getCells()[0].length)
+                if(i >= 0 && j >= 0 && i < controller.getMap().getCells().length && j < controller.getMap().getCells()[0].length)
                 {
-                    g.setColor(!handler.map.checkCollision(i, j) ? color : errorColor);
-                    g.fillRect(((i - offsetCellX) * Game.CELLSIZE) - (int)handler.getCamera().getOffsetX() % Game.CELLSIZE, (j - offsetCellY) * Game.CELLSIZE - (int)handler.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE);
+                    g.setColor(!controller.getMap().getBackEnd().checkCollision(i, j) ? color : errorColor);
+                    g.fillRect(((i - offsetCellX) * Game.CELLSIZE) - (int)controller.getCamera().getOffsetX() % Game.CELLSIZE, (j - offsetCellY) * Game.CELLSIZE - (int)controller.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE, Game.CELLSIZE);
                 }
             }
         }
         ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-        g.drawImage(image, ((cellX - offsetCellX) * Game.CELLSIZE) - (int)handler.getCamera().getOffsetX() % Game.CELLSIZE, (cellY - offsetCellY) * Game.CELLSIZE - (int)handler.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE * cellWidth, Game.CELLSIZE * cellHeight, null);
+        g.drawImage(image, ((cellX - offsetCellX) * Game.CELLSIZE) - (int)controller.getCamera().getOffsetX() % Game.CELLSIZE, (cellY - offsetCellY) * Game.CELLSIZE - (int)controller.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE * cellWidth, Game.CELLSIZE * cellHeight, null);
 //        g.setColor(color);
 //        g.fillRect(cellX * BackEndMap.CELLSIZE, cellY * BackEndMap.CELLSIZE, cellSize * BackEndMap.CELLSIZE, cellSize * BackEndMap.CELLSIZE);
     }
@@ -98,7 +98,7 @@ public class Placer {
         {
             for(int j = cellY; j < cellHeight + cellY; j++)
             {
-                if(handler.map.checkCollision(i, j, excludeThis))
+                if(controller.getMap().getBackEnd().checkCollision(i, j, excludeThis))
                 {
                     placeable = false;
                 }
@@ -110,5 +110,15 @@ public class Placer {
     public Destination getDestination()
     {
         return new Destination(cellX, cellY);
+    }
+    
+    public Entity getEntity()
+    {
+        return entity;
+    }
+    
+    public boolean hasEntity()
+    {
+        return entity != null;
     }
 }

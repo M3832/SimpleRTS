@@ -15,6 +15,7 @@ import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.audio.SoundController;
+import simplerts.display.Camera;
 import simplerts.map.Destination;
 import simplerts.messaging.Message;
 import simplerts.ui.UIAction;
@@ -83,10 +84,10 @@ public abstract class Entity {
         uiObjects = new ArrayList<>();
     }
     
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-        offsetX = (int)player.getHandler().getCamera().getOffsetX();
-        offsetY = (int)player.getHandler().getCamera().getOffsetY();
+        this.offsetX = (int)camera.getOffsetX();
+        this.offsetY = (int)camera.getOffsetY();
     }
     
     public void renderSelected(Graphics g)

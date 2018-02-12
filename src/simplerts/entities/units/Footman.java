@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.display.Camera;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
@@ -63,7 +64,7 @@ public class Footman extends Unit implements Attacker {
     
     public void setupActions()
     {     
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
     }
     
     @Override
@@ -116,9 +117,9 @@ public class Footman extends Unit implements Attacker {
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-        super.render(g);
+        super.render(g, camera);
         g.setColor(Color.WHITE);
         if(renderAttack)
             g.drawString("HIT", x - offsetX, y - offsetY);

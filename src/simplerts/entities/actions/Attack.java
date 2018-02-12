@@ -47,7 +47,7 @@ public class Attack extends Action {
     @Override
     public void render(Graphics g) {
         g.setColor(Color.RED);
-        g.drawRect(target.getX() - (int)owner.getMap().getHandler().camera.getOffsetX(), target.getY() - (int)owner.getMap().getHandler().camera.getOffsetY(), target.getWidth(), target.getHeight());
+        g.drawRect(target.getX() - (int)owner.getPlayer().getController().getCamera().getOffsetX(), target.getY() - (int)owner.getPlayer().getController().getCamera().getOffsetY(), target.getWidth(), target.getHeight());
     }
     
     @Override

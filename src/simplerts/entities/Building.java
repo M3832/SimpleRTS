@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.display.Camera;
 import simplerts.utils.Utils;
 import simplerts.gfx.Assets;
 import simplerts.messaging.ErrorMessage;
@@ -69,6 +70,7 @@ public abstract class Building extends Entity {
     public void setBuilt()
     {
         currentTime = buildTime;
+        setupActions();
     }
     
     @Override
@@ -121,9 +123,9 @@ public abstract class Building extends Entity {
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-        super.render(g);
+        super.render(g, camera);
         g.drawImage(sprite.getSubimage(width * (int)((1f * currentTime/buildTime) * (sprite.getWidth()/width - 1)), 0, width, height), (int)(x - offsetX), (int)(y - offsetY), width, height, null);
     }
     

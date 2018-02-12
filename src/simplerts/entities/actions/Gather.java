@@ -55,8 +55,8 @@ public class Gather extends Action {
             movePath.render(g);
         
         g.setColor(Color.yellow);
-        g.drawRect(((Entity)mine).getX() - (int)owner.getPlayer().getHandler().camera.getOffsetX(),
-                   ((Entity)mine).getY() - (int)owner.getPlayer().getHandler().camera.getOffsetY(),
+        g.drawRect(((Entity)mine).getX() - (int)owner.getPlayer().getController().getCamera().getOffsetX(),
+                   ((Entity)mine).getY() - (int)owner.getPlayer().getController().getCamera().getOffsetY(),
                    ((Entity)mine).getWidth(), ((Entity)mine).getHeight());
     }
     

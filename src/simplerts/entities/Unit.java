@@ -13,6 +13,7 @@ import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.audio.SoundController;
+import simplerts.display.Camera;
 import simplerts.utils.Utils;
 import simplerts.entities.actions.Action;
 import simplerts.map.Destination;
@@ -176,9 +177,9 @@ public abstract class Unit extends Entity {
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-        super.render(g);
+        super.render(g, camera);
         g.drawImage(ac.getCurrentFrame(), (int)(x - offsetX), (int)(y - offsetY), null);
     }
     

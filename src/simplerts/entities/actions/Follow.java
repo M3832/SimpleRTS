@@ -45,7 +45,7 @@ public class Follow extends Action {
             movePath.render(g);
         
         g.setColor(owner.getPlayer().getController().getColorFromAllegiance(target));
-        g.drawRect(target.getX() - (int)owner.getPlayer().getHandler().getCamera().getOffsetX(), target.getY() - (int)owner.getPlayer().getHandler().getCamera().getOffsetY(), target.getWidth(), target.getHeight());
+        g.drawRect(target.getX() - (int)owner.getPlayer().getController().getCamera().getOffsetX(), target.getY() - (int)owner.getPlayer().getController().getCamera().getOffsetY(), target.getWidth(), target.getHeight());
     }
     
     @Override

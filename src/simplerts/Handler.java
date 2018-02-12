@@ -21,7 +21,7 @@ public class Handler {
     public BackEndMap map;
     public FrontEndMap renderMap;
     
-    public Camera camera;
+    //public Camera camera;
     
     public Display display;
     
@@ -35,20 +35,20 @@ public class Handler {
         this.display.getGamePanel().setHandler(this);
     }
     
-    public Camera getCamera()
-    {
-        return camera;
-    }
+//    public Camera getCamera()
+//    {
+//        return camera;
+//    }
     
     public Display getDisplay()
     {
         return display;
     }
     
-    public void setCamera(Camera c)
-    {
-        camera = c;
-    }
+//    public void setCamera(Camera c)
+//    {
+//        camera = c;
+//    }
     
     public void setRenderMap(FrontEndMap renderMap)
     {

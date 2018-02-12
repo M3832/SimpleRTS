@@ -6,12 +6,15 @@
 package simplerts.map;
 
 import composite.GraphicsUtil;
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
-import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import simplerts.Controller;
 import simplerts.Game;
 import simplerts.Player;
@@ -25,19 +28,17 @@ import simplerts.ui.MiniMap;
  */
 public class FrontEndMap {
     
-    private BackEndMap map;
-    private Cell[][] cells;
-    private CopyOnWriteArrayList<Entity> entities;
-    private Camera camera;
+    private final BackEndMap map;
+    private final Cell[][] cells;
+    private final CopyOnWriteArrayList<Entity> entities;
+    private final boolean[][] mapVisibility;
     private Controller controller;
-    private boolean[][] mapVisibility;
     
     public FrontEndMap(BackEndMap map)
     {
         this.map = map;
         this.cells = map.getCells();
         this.entities = map.getEntities();
-        camera = new Camera();
         mapVisibility = new boolean[cells.length][cells[0].length];
     }
     
@@ -75,12 +76,12 @@ public class FrontEndMap {
         }
     }
     
-    public void render(Graphics g, float offsetX, float offsetY)
+    public void render(Graphics g, Camera camera)
     {
-        int startX = Math.max((int)offsetX / Game.CELLSIZE, 0);
+        int startX = Math.max((int)camera.getOffsetX() / Game.CELLSIZE, 0);
         int endX = Math.min(2 + startX + map.getHandler().game.WIDTH / Game.CELLSIZE, cells.length);
         
-        int startY = Math.max((int)offsetY / Game.CELLSIZE, 0);
+        int startY = Math.max((int)camera.getOffsetY() / Game.CELLSIZE, 0);
         int endY = Math.min(1 + startY + map.getHandler().game.WIDTH / Game.CELLSIZE, cells[0].length);
 
         
@@ -88,7 +89,7 @@ public class FrontEndMap {
         {
             for(int j = startY; j < endY; j++)
             {
-                    g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE) - offsetX), (int)((j * Game.CELLSIZE) - offsetY), Game.CELLSIZE, Game.CELLSIZE, null);
+                    g.drawImage(cells[i][j].getImage(), (int)((i * Game.CELLSIZE) - camera.getOffsetX()), (int)((j * Game.CELLSIZE) - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE, null);
             }
         }
 //        renderGrid(g, (int)offsetX, (int)offsetY);
@@ -97,8 +98,8 @@ public class FrontEndMap {
                 .sorted((e1, e2) -> { return Integer.compare(e1.getGridY(), e2.getGridY());})
                 .sorted((e1, e2) -> {return Boolean.compare(e2.isDead(), e1.isDead());})
                 .forEach(e -> {
-                    if (inView(e, offsetX, offsetY) && e.isVisible()) {
-                        e.render(g);
+                    if (inView(e, camera.getOffsetX(), camera.getOffsetY()) && e.isVisible()) {
+                        e.render(g, camera);
                     }
                 });
         
@@ -123,7 +124,7 @@ public class FrontEndMap {
                         }
                     }
                     g.setColor(neighborVisible ? new Color(0, 0, 0, 100) : Color.black);
-                    g.fillRect((int)((i * Game.CELLSIZE) - offsetX), (int)((j * Game.CELLSIZE) - offsetY), Game.CELLSIZE, Game.CELLSIZE);
+                    g.fillRect((int)((i * Game.CELLSIZE) - camera.getOffsetX()), (int)((j * Game.CELLSIZE) - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
                 }
             }
         }
@@ -189,11 +190,6 @@ public class FrontEndMap {
 
     public BackEndMap getBackEnd() {
         return map;
-    }
-    
-    public Camera getCamera()
-    {
-        return camera;
     }
     
     public Cell[][] getCells()

@@ -11,10 +11,10 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import simplerts.Controller;
 import simplerts.entities.Entity;
 import simplerts.gfx.Assets;
 import simplerts.Game;
-import simplerts.Handler;
 import simplerts.map.FrontEndMap;
 
 /**
@@ -29,15 +29,15 @@ public class GUI {
     
     private final FrontEndMap renderMap;
     private final MiniMap minimap;
-    private final Handler handler;
+    private final Controller controller;
     private final int mapOffsetX = 35, mapOffsetY = Game.HEIGHT + 31;
     private final CopyOnWriteArrayList<UIObject> objects;
     private ArrayList<Entity> entities;
     
-    public GUI(FrontEndMap map, Handler handler)
+    public GUI(FrontEndMap map, Controller controller)
     {
         renderMap = map;
-        this.handler = handler;
+        this.controller = controller;
         minimap = renderMap.getMiniMap(175, 175);
         entities = new ArrayList<>();
         objects = new CopyOnWriteArrayList<>();
@@ -68,7 +68,7 @@ public class GUI {
         {
             int x1 = (int)((posX - mapOffsetX) / minimap.getPixelRatio()) - Game.WIDTH / 2;
             int y1 = (int)((posY - mapOffsetY) / minimap.getPixelRatio()) - Game.HEIGHT / 2;
-            handler.getCamera().setOffset(x1, y1);
+            controller.getCamera().setOffset(x1, y1);
         }
     }
     
@@ -78,7 +78,7 @@ public class GUI {
         objects.clear();
         if(entities.size() == 1)
         {
-            if(!entities.get(0).getUIActions().isEmpty() && handler.game.controller.isPlayerControlled(entities.get(0)))
+            if(!entities.get(0).getUIActions().isEmpty() && controller.isPlayerControlled(entities.get(0)))
             {
                 for(UIAction a : entities.get(0).getUIActions())
                 {
@@ -105,7 +105,7 @@ public class GUI {
         g.drawImage(Assets.GUI, 0, Game.HEIGHT, null);
         g.drawImage(minimap.getMinimapWithEntities(), 35, Game.HEIGHT + 31, null);
         g.setColor(Color.WHITE);
-        g.drawRect((int)(handler.getCamera().getOffsetX() * minimap.getPixelRatio()) + mapOffsetX, (int)(handler.getCamera().getOffsetY() * minimap.getPixelRatio()) + mapOffsetY, (int)(Game.WIDTH * minimap.getPixelRatio()), (int)(Game.HEIGHT * minimap.getPixelRatio()));
+        g.drawRect((int)(controller.getCamera().getOffsetX() * minimap.getPixelRatio()) + mapOffsetX, (int)(controller.getCamera().getOffsetY() * minimap.getPixelRatio()) + mapOffsetY, (int)(Game.WIDTH * minimap.getPixelRatio()), (int)(Game.HEIGHT * minimap.getPixelRatio()));
         
         if(entities != null && entities.size() == 1)
         {

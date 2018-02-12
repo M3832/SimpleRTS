@@ -51,7 +51,7 @@ public class Barracks extends Building {
     protected void setupActions()
     {
         uiActions.add(Footman.getUIAction(player, this));
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
     }
     
     public static UIAction getUIAction(Player player)

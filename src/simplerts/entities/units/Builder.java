@@ -87,7 +87,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
         uiActions.add(Farm.getUIAction(player));
         uiActions.add(Tower.getUIAction(player));        
         uiActions.add(Barracks.getUIAction(player));        
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().camera.centerOnEntity(this);}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().game.controller.getCamera().centerOnEntity(this);}));
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.display.Camera;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
@@ -71,9 +72,9 @@ public class Goldmine extends Building implements GoldProvider{
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-        super.render(g);
+        super.render(g, camera);
         if(miner != null)
         {
             g.drawImage(mineOn, x - offsetX, y - offsetY, null);

@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.display.Camera;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
 import simplerts.entities.interfaces.FoodProvider;
@@ -27,19 +28,15 @@ public class Farm extends Building implements FoodProvider {
 
     public Farm(int x, int y, int cellSize, Player player) {
         super(x, y, cellSize, player, false);
-        
         sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/Buildings/Farm/sprite.png", width, height),
                                                      Assets.loadAndResizeImage("/Buildings/Farm/teamcolor.png", width, height), color);
-        
         initVariables();
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-        super.render(g);
-//        g.setColor(color);
-//        g.fillRect(x - (int)player.getHandler().camera.getOffsetX(), y - (int)player.getHandler().camera.getOffsetY(), width, height);
+        super.render(g, camera);
     }
     
     private void initVariables()

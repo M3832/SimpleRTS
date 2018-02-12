@@ -8,6 +8,8 @@ package simplerts.input;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import simplerts.Game;
+import simplerts.display.Camera;
 import simplerts.ui.GUI;
 
 /**
@@ -21,6 +23,14 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
     public boolean isScrollDown;
     public boolean isHovering = true;
     private GUI gui;
+    private Camera camera;
+    
+    public MouseInput(Camera camera)
+    {
+        this.camera = camera;
+        posX = Game.WIDTH/2;
+        posY = Game.HEIGHT/2;
+    }
     
     public void setGUI(GUI gui)
     {
@@ -31,13 +41,14 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
     public void mouseDragged(MouseEvent e) {
         posX = e.getX();
         posY = e.getY();
+        camera.setFinalMouse(posX, posY);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         posX = e.getX();
         posY = e.getY();
-        
+        camera.setFinalMouse(posX, posY);
         if(gui != null)
             gui.onMouseMove(e);
     }

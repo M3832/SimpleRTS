@@ -33,7 +33,7 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         if(handler != null)
         {
-            handler.camera.render(g);
+            handler.game.controller.getCamera().render(g);
 
             if(System.currentTimeMillis() > nextSecond)
             {
