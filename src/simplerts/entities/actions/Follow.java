@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 
@@ -16,8 +17,6 @@ import simplerts.entities.Unit;
 public class Follow extends Action {
 
     private final Entity target;
-    private long nextRepathing;
-    private final int waittime = 1000;
     private MoveTo movePath;
     
     public Follow(Unit owner, Entity target) {
@@ -27,11 +26,10 @@ public class Follow extends Action {
 
     @Override
     public void performAction() {
-        if(nextRepathing < System.currentTimeMillis() && (Math.abs(owner.getGridX() - target.getGridX()) > 1 || Math.abs(owner.getGridY() - target.getGridY()) > 1))
+        if(movePath == null)
         {
-//            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, target), true));
-            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, target)));
-            nextRepathing = System.currentTimeMillis() + waittime;
+            movePath = new MoveTo(owner, target);
+            System.out.println("New movepath for follow");
         }
         
         if(movePath != null)
@@ -39,13 +37,13 @@ public class Follow extends Action {
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
         if(movePath != null)
-            movePath.render(g);
+            movePath.render(g, camera);
         
         g.setColor(owner.getPlayer().getController().getColorFromAllegiance(target));
-        g.drawRect(target.getX() - (int)owner.getPlayer().getController().getCamera().getOffsetX(), target.getY() - (int)owner.getPlayer().getController().getCamera().getOffsetY(), target.getWidth(), target.getHeight());
+        g.drawRect(target.getX() - (int)camera.getOffsetX(), target.getY() - (int)camera.getOffsetY(), target.getWidth(), target.getHeight());
     }
     
     @Override
@@ -54,6 +52,6 @@ public class Follow extends Action {
         if(movePath != null)
             return movePath.isMoving();
         
-        return false;
+        return true;
     }
 }

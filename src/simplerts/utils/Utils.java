@@ -43,8 +43,6 @@ public class Utils {
         return false;
     }
     
-    
-    
     public static boolean isAdjacent(Destination d1, Destination d2)
     {
         int deltaX = Math.abs(d1.getX() - d2.getX());
@@ -54,5 +52,10 @@ public class Utils {
             return true;
         }
         return false;
+    }
+    
+    public static Color getRandomColor()
+    {
+        return new Color((int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
     }
 }

@@ -5,11 +5,16 @@
  */
 package simplerts.entities.actions;
 
+import java.awt.Color;
 import simplerts.map.Destination;
 import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
+import simplerts.Game;
+import simplerts.display.Camera;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
+import simplerts.utils.TaskManager;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -18,31 +23,64 @@ import simplerts.entities.Unit;
 public class MoveTo extends Action {
     
     public static final int CHECK_AHEAD_DISTANCE = 1;
-    public static final int COLLISION_CHECK_BUFFER = 3;
+    public static final int COLLISION_CHECK_BUFFER = 5;
     public static final long STUCK_TIME = 50;
     
+    protected TaskManager tm;
     protected CopyOnWriteArrayList<Destination> destinations;
     protected int collisions;
     protected boolean stuckWarning, stuck, lastOccupied;
     protected long stuckTimer;
-    private Destination lastDestination;
+    private final Destination lastDestination;
+    private final Entity targetEntity;
 
-    public MoveTo(Unit owner, CopyOnWriteArrayList<Destination> destinations) {
+    public MoveTo(Unit owner, Destination d) {
         super(owner);
-        this.destinations = destinations;
-        if(!destinations.isEmpty())
-            lastDestination = destinations.get(Math.max(destinations.size()-1, 0));
+        lastDestination = d;
+        targetEntity = null;
+        initialize();
+    }
+    
+    public MoveTo(Unit owner, Entity e)
+    {
+        super(owner);
+        lastDestination = null;
+        targetEntity = e;
+        initialize();
+    }
+    
+    private void initialize()
+    {
+        this.destinations = new CopyOnWriteArrayList<>();
+        tm = new TaskManager();
         collisions = 0;
         stuckWarning = false;
         stuck = false;
         moving = true;
         lastOccupied = false;
         stuckTimer = 0;
+        calcPath();
+    }
+    
+    private void calcPath()
+    {
+        if(lastDestination != null)
+        {
+            destinations = owner.getMap().getPathFinder().findPath(owner, lastDestination);
+            if(!destinations.isEmpty() && lastDestination.getX() != owner.getGridX() && lastDestination.getY() != owner.getGridY())
+                tm.addTask(new TimerTask(1500, () -> {calcPath();}));
+        } 
+        
+        if(targetEntity != null) {
+            destinations = owner.getMap().getPathFinder().findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
+            tm.addTask(new TimerTask(1500, () -> {calcPath();}));
+        }
     }
 
     @Override
     public void performAction() {
         int x, y;
+        tm.update();
         if(destinations.isEmpty())
         {
             if(owner.getActions().contains(this))
@@ -67,9 +105,10 @@ public class MoveTo extends Action {
             }
         }
         
-        if(owner.getDeltaX() == 0 && owner.getDeltaY() == 0)
+        if(!destinations.isEmpty() && owner.getX() == destinations.get(0).getX() * Game.CELLSIZE && owner.getY() == destinations.get(0).getY() * Game.CELLSIZE)
         {
             destinations.remove(0);
+            System.out.println("removing");
         }
         
         if(isCollisionAhead())
@@ -80,7 +119,10 @@ public class MoveTo extends Action {
         }
         
         if(collisions == COLLISION_CHECK_BUFFER)
+        {
             avoid();
+            collisions = 0;
+        }
         
         if(stuckWarning && !destinations.isEmpty())
         {
@@ -92,85 +134,52 @@ public class MoveTo extends Action {
             }
         }
         
-        if(stuck)
-            owner.getMap().getPathFinder().findPath(owner.getDestination(), lastDestination);
+//        if(stuck)
+//        {
+//            System.out.println("stuck");
+//            destinations = owner.getMap().getPathFinder().findPath(owner, lastDestination);
+//            stuck = false;
+//            moving = true;
+//        }
     }
     
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
-//        destinations.forEach((d) -> {
-//            g.setColor(new Color(255, 255, 255, 50));
-//            g.fillRect((int)(d.getX() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetX()), (int)(d.getY() * Game.CELLSIZE - owner.getMap().getHandler().getCamera().getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
-//        });
+        destinations.forEach((d) -> {
+            g.setColor(new Color(255, 255, 255, 50));
+            g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
+        });
     }
 
     private boolean isCollisionAhead() {
-        int deltaX = (int)owner.getDeltaX();
-        int deltaY = (int)owner.getDeltaY();
-        int directionX = deltaX > 0 ? 1 : -1;
-        int directionY = deltaY > 0 ? 1 : -1;
-        if(deltaX == 0) directionX = 0;
-        if(deltaY == 0) directionY = 0;
         for(int i = 0; i < Math.min(CHECK_AHEAD_DISTANCE, destinations.size()); i++)
         {
-            Entity e = owner.getMap().getEntityFromCell(destinations.get(i).getX(), destinations.get(i).getY());
-            if(e != null && e instanceof Unit)
+            if(owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY(), owner))
             {
-                int deltaX1 = (int)((Unit)e).getDeltaX();
-                int deltaY1 = (int)((Unit)e).getDeltaY();
-                int directionX1 = deltaX1 > 0 ? 1 : -1;
-                int directionY1 = deltaY1 > 0 ? 1 : -1;
-                if(directionX * -1 == directionX1 || directionY * -1 == directionY1 || (deltaX1 == 0 && deltaY1 == 0))
+                Unit u = (Unit)owner.getMap().getEntityFromCell(destinations.get(i).getX(), destinations.get(i).getY());
+                if(u != null && movingInSameDirection(owner, u))
+                {
+                    return false;
+                } else {
+                    System.out.println("Not moving in same direction");
                     return true;
+                }
             }
         }
         return false;
     }
 
     private void avoid() {
-        System.out.println("avoiding");
-        int deltaX = (int)owner.getDeltaX();
-        int deltaY = (int)owner.getDeltaY();
-        if(deltaX != 0)
+        for(int i = 0; i < Math.max(0, destinations.size() - 1); i++)
         {
-            int direction = deltaX > 0 ? 1 : -1;
-            if(destinations.size() > 1)
-                direction = destinations.get(1).getY() > owner.getGridY() ? 1 : -1;
-            for(int i = 0; i < Math.min(CHECK_AHEAD_DISTANCE + 1, destinations.size() - 1); i++)
+            if(owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY(), owner))
             {
-                if(!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * direction) &&
-                        !owner.getMap().checkCollision(destinations.get(i).getX() - 1 * direction, destinations.get(i).getY() + 1 * direction))
-                {
-                    destinations.get(i).add(0, 1 * direction);
-                } else if (!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY() + 1 * -direction) &&
-                        !owner.getMap().checkCollision(destinations.get(i).getX() - 1 * direction, destinations.get(i).getY() + 1 * -direction))
-                {
-                    destinations.get(i).add(0, 1 * -direction);
-                } else {
-                    destinations.set(i, owner.getMap().getAvailableNeighborCell(owner));
-                }
-            }           
-        } else if (deltaY != 0)
-        {
-            int direction = deltaY > 0 ? 1 : -1;
-            if(destinations.size() > 1)
-                direction = destinations.get(1).getX() > owner.getGridX() ? 1 : -1;
-            for(int i = 0; i < Math.min(CHECK_AHEAD_DISTANCE + 1, destinations.size() - 1); i++)
-            {
-                if(!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * direction, destinations.get(i).getY()) &&
-                        !owner.getMap().checkCollision(destinations.get(i).getY() + 1 * direction, destinations.get(i).getY() - 1 * direction))
-                {
-                    destinations.get(i).add(1 * direction, 0);
-                } else if (!owner.getMap().checkCollision(destinations.get(i).getX() + 1 * -direction, destinations.get(i).getY()) &&
-                        !owner.getMap().checkCollision(destinations.get(i).getY() + 1 * -direction, destinations.get(i).getY() - 1 * direction))
-                {
-                    destinations.get(i).add(1 * -direction, 0);
-                } else {
-                    destinations.set(i, owner.getMap().getAvailableNeighborCell(owner));
-                }
+                System.out.println("recalculating?");
+                destinations.set(i, owner.getMap().getAvailableNeighborCell(owner.getMap().getEntityFromCell(destinations.get(i).getX(), destinations.get(i).getY())));
             }
         }
+        collisions = 0;
     }
 
     public boolean arrived() {
@@ -180,6 +189,14 @@ public class MoveTo extends Action {
     public boolean isTargetOccupied()
     {
         return lastOccupied;
+    }
+
+    private boolean movingInSameDirection(Unit owner, Unit u) {
+        int moveOwner = (int)(owner.getDeltaX() + owner.getDeltaY());
+        int moveOther = (int)(u.getDeltaX() + u.getDeltaY());
+        if (moveOwner == 0 || moveOther == 0) {
+            return false;
+        } else return (Integer.MIN_VALUE & moveOther) == (moveOwner & Integer.MIN_VALUE);
     }
     
 }

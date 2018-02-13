@@ -216,7 +216,7 @@ public class BackEndMap {
     
     private boolean isCellBlocked(int x, int y, Entity excludeEntity)
     {
-        return (cells[x][y].getEntity() != null && cells[x][y].getEntity() != excludeEntity) || !cells[x][y].available;
+        return (cells[x][y].getEntity() != null && cells[x][y].getEntity() != excludeEntity && !cells[x][y].getEntity().isDead()) || !cells[x][y].available;
     }
     
     public void updateEntityCell(int x, int y, Entity e)
@@ -292,7 +292,7 @@ public class BackEndMap {
         {
             for(int y = 0; y < destinations[0].length; y++)
             {
-                if(destinations[x][y] < score && !checkCollision(target.getGridX() - 1 + x, target.getGridY() - 1 + y))
+                if(destinations[x][y] < score && !checkCollision(target.getGridX() - 1 + x, target.getGridY() - 1 + y, owner))
                 {
                     score = destinations[x][y];
                     indexX = x;
@@ -302,6 +302,11 @@ public class BackEndMap {
             }
         }
         return new Destination(target.getGridX() - 1 + indexX, target.getGridY() - 1 + indexY);
+    }
+    
+    public Destination getClosestCell(Entity e, Destination d)
+    {
+        return getClosestCell(e, new Builder(d.getX(), d.getY(), neutral));
     }
     
     public Cell findLumberCloseTo(Destination d, int squaresAround)
@@ -356,5 +361,13 @@ public class BackEndMap {
         
         if(name.equals("StartingLocation"))
             startLocations.add(new Destination(gridX, gridY));
+    }
+
+    public void lateUpdate() {
+        for(Entity e: entities)
+        {
+            if(e instanceof Unit)
+                ((Unit)e).lateUpdate();
+        }
     }
 }

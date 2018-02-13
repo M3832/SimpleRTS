@@ -34,8 +34,7 @@ public class GUI {
     private final CopyOnWriteArrayList<UIObject> objects;
     private ArrayList<Entity> entities;
     
-    public GUI(FrontEndMap map, Controller controller)
-    {
+    public GUI(FrontEndMap map, Controller controller) {
         renderMap = map;
         this.controller = controller;
         minimap = renderMap.getMiniMap(175, 175);
@@ -44,8 +43,7 @@ public class GUI {
         initVariables();
     }
     
-    private void initVariables()
-    {
+    private void initVariables() {
         //A thread that updates the minimap every 5 seconds
         new Thread(() -> {
             int updateTime = 1000;
@@ -61,9 +59,7 @@ public class GUI {
         }).start();
     }
     
-    public void onClick(int posX, int posY)
-    {
-        
+    public void onClick(int posX, int posY) { 
         if(posX > mapOffsetX && posX < mapOffsetX + minimap.getMiniMap().getWidth() && posY > mapOffsetY && posY < mapOffsetY + minimap.getMiniMap().getHeight())
         {
             int x1 = (int)((posX - mapOffsetX) / minimap.getPixelRatio()) - Game.WIDTH / 2;
@@ -72,8 +68,7 @@ public class GUI {
         }
     }
     
-    public void setSelectedEntities(ArrayList<Entity> elist)
-    {
+    public void setSelectedEntities(ArrayList<Entity> elist) {
         entities = elist;
         objects.clear();
         if(entities.size() == 1)
@@ -95,13 +90,11 @@ public class GUI {
         }
     }
     
-    public void update()
-    {
+    public void update() {
         objects.stream().forEach((UIObject o) -> o.tick());
     }
     
-    public void render(Graphics g)
-    {
+    public void render(Graphics g) {
         g.drawImage(Assets.GUI, 0, Game.HEIGHT, null);
         g.drawImage(minimap.getMinimapWithEntities(), 35, Game.HEIGHT + 31, null);
         g.setColor(Color.WHITE);
@@ -129,36 +122,30 @@ public class GUI {
         objects.stream().forEach((UIObject o) -> {o.render(g);});
     }
     
-    public void onMouseMove(MouseEvent e)
-    {
+    public void onMouseMove(MouseEvent e) {
         objects.stream().forEach((UIObject o) -> o.onMouseMove(e));
     }
     
-    public void onMouseRelease(MouseEvent e)
-    {
+    public void onMouseRelease(MouseEvent e) {
         objects.stream().forEach((UIObject o) -> o.onMouseRelease(e));
     }
     
-    public void addUIAction(UIAction o)
-    {
+    public void addUIAction(UIAction o) {
         o.setY(Game.HEIGHT + 24 + (o.getHeight() + 7) * (objects.size()/3));
         o.setX(777 + (o.getWidth() + 8) * (objects.size()%3));
         o.updateBounds();
         objects.add(o);
     }
     
-    public void addUIObject(UIObject o)
-    {
+    public void addUIObject(UIObject o) {
         objects.add(o);
     }
     
-    public void removeObject(UIObject o)
-    {
+    public void removeObject(UIObject o) {
         objects.remove(o);
     }
     
-    public void updateMinimap()
-    {
+    public void updateMinimap() {
         minimap.setImage(renderMap.getMinimapImage(175, 175, false));
     }
     

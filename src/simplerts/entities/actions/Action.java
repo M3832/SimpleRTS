@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.entities.Unit;
 
 /**
@@ -24,7 +25,7 @@ public abstract class Action {
     }
     
     public abstract void performAction();
-    public abstract void render(Graphics g);
+    public abstract void render(Graphics g, Camera camera);
     public boolean isMoving()
     {
         return moving;

@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
 import simplerts.messaging.ErrorMessage;
@@ -39,7 +40,7 @@ public class Build extends Action {
         }
     }
     
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
         
     }

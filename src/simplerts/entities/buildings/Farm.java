@@ -24,6 +24,8 @@ import simplerts.ui.UIAction;
  */
 public class Farm extends Building implements FoodProvider {
     
+    public static String SPRITE_URL = "/Buildings/Farm/sprite.png";
+    public static String SPRITE_TEAMCOLOR_URL = "/Buildings/Farm/sprite.png";
     public static int GOLDCOST = 100;
 
     public Farm(int x, int y, int cellSize, Player player) {

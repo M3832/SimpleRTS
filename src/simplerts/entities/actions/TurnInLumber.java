@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 import simplerts.entities.interfaces.LumberReceiver;
@@ -50,7 +51,7 @@ public class TurnInLumber extends Action {
             }
             if(lr != null)
             {
-                movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)lr)));
+                movePath = new MoveTo(owner, (Entity)lr);
             } else {
                 owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("There's nowhere to turn in lumber."));
                 owner.getActions().remove(this);
@@ -58,7 +59,7 @@ public class TurnInLumber extends Action {
             }
         }
         
-        if(lr != null && Utils.isAdjacent(owner, (Entity)lr))
+        if(lr != null && !movePath.isMoving() && Utils.isAdjacent(owner, (Entity)lr))
         {
             lr.receiveLumber(((Lumberman)owner).takeLumber());
             ((Lumberman)owner).enter();
@@ -71,19 +72,13 @@ public class TurnInLumber extends Action {
             }));
             owner.clearActions();
         }
-        
-        if(movePath.stuck)
-        {
-            
-            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)lr)));
-        }
     }
 
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
         if(movePath != null)
-            movePath.render(g);
+            movePath.render(g, camera);
     }
     
     @Override

@@ -137,8 +137,8 @@ public abstract class Unit extends Entity {
 
         }
         
-        gridX = x/Game.CELLSIZE;
-        gridY = y/Game.CELLSIZE;
+        gridX = Math.round((float)x/Game.CELLSIZE);
+        gridY = Math.round((float)y/Game.CELLSIZE);
         if(tempGridX != gridX || tempGridY != gridY)
         {
             grid.updateEntityCell(tempGridX, tempGridY, null);
@@ -184,12 +184,12 @@ public abstract class Unit extends Entity {
     }
     
     @Override
-    public void renderSelected(Graphics g)
+    public void renderSelected(Graphics g, Camera camera)
     {
-        super.renderSelected(g);
+        super.renderSelected(g, camera);
         if(!actions.isEmpty())
         {
-            actions.get(0).render(g);
+            actions.get(0).render(g, camera);
         }        
     }
     
@@ -203,7 +203,12 @@ public abstract class Unit extends Entity {
         }
         
         setAnimation();
-
+    }
+    
+    public void lateUpdate()
+    {
+        deltaX = 0;
+        deltaY = 0;
     }
     
     protected void setAnimation()
@@ -321,10 +326,14 @@ public abstract class Unit extends Entity {
             {
                 addAction(new Follow(this, e));
             } else {
-                addAction(new MoveTo(this, grid.getPathFinder().findPath(getDestination(), grid.getClosestCell(this, e))));
+                addAction(new MoveTo(this, grid.getClosestCell(this, e)));
             }
         } else {
-            addAction(new Follow(this, e));
+            if(e.isDead()) {
+                addAction(new MoveTo(this, e.getDestination()));
+            } else {
+                addAction(new Follow(this, e));
+            }
         }
     }
 

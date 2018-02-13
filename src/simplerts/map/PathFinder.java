@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.Building;
+import simplerts.entities.Unit;
 
 /**
  *
@@ -27,7 +28,7 @@ public class PathFinder {
         closed = new ArrayList<>();
     }
     
-    public CopyOnWriteArrayList<Destination> findPath(Destination start, Destination goal)
+    public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination goal)
     {
         //New pathfinding, clear previous paths
         open.clear();
@@ -47,10 +48,10 @@ public class PathFinder {
         }
         
         //Get start and end node
-        Node startNode = nodeMap[(int)start.getX()][(int)start.getY()];
+        Node startNode = nodeMap[(int)owner.getGridX()][(int)owner.getGridY()];
         Node goalNode = nodeMap[(int)goal.getX()][(int)goal.getY()];
         
-        if(map.checkCollision(goalNode.gridX, goalNode.gridY))
+        if(map.checkCollision(goalNode.gridX, goalNode.gridY, owner))
         {
             goalNode = findCloseNode(goalNode, startNode);
         }

@@ -15,9 +15,8 @@ import javax.swing.JFileChooser;
 import simplerts.editor.MapEditor;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
-import simplerts.entities.units.Builder;
 import simplerts.entities.units.Footman;
-import simplerts.entities.resources.Goldmine;
+import simplerts.utils.Utils;
 //import javax.swing.JFileChooser;
 
 /**
@@ -63,10 +62,10 @@ public class Game implements Runnable {
         mm = new MessageManager(handler);
         map.placeLoadedObjects();
         
-        Player player = new Player(handler, new Color(175, 0, 0));
-        Player enemy = new Player(handler, new Color(0, 0, 175));
-        Player enemy2 = new Player(handler, new Color(175, 175, 0));
-        Player enemy3 = new Player(handler, new Color(0, 175, 0));
+        Player player = new Player(handler, Utils.getRandomColor());
+        Player enemy = new Player(handler, Utils.getRandomColor());
+        Player enemy2 = new Player(handler, Utils.getRandomColor());
+        Player enemy3 = new Player(handler, Utils.getRandomColor());
         controller = new Controller(handler, player);
         players.add(player);
         players.add(enemy);
@@ -111,6 +110,7 @@ public class Game implements Runnable {
                 update();
                 next_game_tick += SKIP_TICKS;
                 loops++;
+                lateUpdate();
             }
         }
     } 
@@ -126,5 +126,10 @@ public class Game implements Runnable {
             controller.update();
         handler.map.update();
         mm.update();
+    }
+    
+    public void lateUpdate()
+    {
+        handler.map.lateUpdate();
     }
 }

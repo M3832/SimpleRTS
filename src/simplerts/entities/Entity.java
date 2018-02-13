@@ -90,7 +90,7 @@ public abstract class Entity {
         this.offsetY = (int)camera.getOffsetY();
     }
     
-    public void renderSelected(Graphics g)
+    public void renderSelected(Graphics g, Camera camera)
     {
         
     }
@@ -129,8 +129,8 @@ public abstract class Entity {
     
     public void updateCells()
     {
-        gridX = (x)/Game.CELLSIZE;
-        gridY = (y)/Game.CELLSIZE;
+        gridX = Math.round((float)x/Game.CELLSIZE);
+        gridY = Math.round((float)y/Game.CELLSIZE);
         grid.updateEntityCell(gridX, gridY, this);
     }
     

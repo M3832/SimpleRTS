@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.utils.Utils;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
@@ -50,7 +51,7 @@ public class TurnInGold extends Action {
             }
             if(gr != null)
             {
-                movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)gr)));
+                movePath = new MoveTo(owner, (Entity)gr);
             } else {
                 owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("There's nowhere to turn in gold."));
                 owner.getActions().remove(this);
@@ -58,7 +59,7 @@ public class TurnInGold extends Action {
             }
         }
         
-        if(gr != null && Utils.isAdjacent(owner, (Entity)gr))
+        if(gr != null && !movePath.isMoving() && Utils.isAdjacent(owner, (Entity)gr))
         {
             gr.receiveGold(((Goldminer)owner));
             ((Goldminer)owner).enter();
@@ -74,10 +75,10 @@ public class TurnInGold extends Action {
     }
 
     @Override
-    public void render(Graphics g)
+    public void render(Graphics g, Camera camera)
     {
         if(movePath != null)
-            movePath.render(g);
+            movePath.render(g, camera);
     }
     
     @Override

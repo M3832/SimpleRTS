@@ -128,7 +128,7 @@ public class Footman extends Unit implements Attacker {
     @Override
     public void rightClickAction(Entity e)
     {
-        if(e.getPlayer() != player)
+        if(e.getPlayer() != player && !e.isDead())
         {
             addAction(new Attack(this, e));
         } else {

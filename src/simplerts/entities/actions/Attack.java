@@ -7,6 +7,7 @@ package simplerts.entities.actions;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.entities.interfaces.Attacker;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
@@ -28,8 +29,8 @@ public class Attack extends Action {
 
     @Override
     public void performAction() {
-        int deltaX = Math.abs(target.getGridX() - owner.getGridX());
-        int deltaY = Math.abs(target.getGridY() - owner.getGridY());
+        int deltaX = Math.abs(owner.getMap().getClosestCell(owner, target).getX() - owner.getGridX());
+        int deltaY = Math.abs(owner.getMap().getClosestCell(owner, target).getY() - owner.getGridY());
         if(deltaX <= ((Attacker)owner).getRange() && deltaY <= ((Attacker)owner).getRange() && !follow.isMoving() && !target.isDead())
         {
             ((Attacker)owner).attack(target);
@@ -45,9 +46,9 @@ public class Attack extends Action {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, Camera camera) {
         g.setColor(Color.RED);
-        g.drawRect(target.getX() - (int)owner.getPlayer().getController().getCamera().getOffsetX(), target.getY() - (int)owner.getPlayer().getController().getCamera().getOffsetY(), target.getWidth(), target.getHeight());
+        g.drawRect(target.getX() - (int)camera.getOffsetX(), target.getY() - (int)camera.getOffsetY(), target.getWidth(), target.getHeight());
     }
     
     @Override

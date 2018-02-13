@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.entities.resources.Forest;
 import simplerts.entities.Unit;
 import simplerts.entities.interfaces.Lumberman;
@@ -42,7 +43,7 @@ public class Chop extends Action {
             movePath.performAction();
             chopping = false;
         } else {
-            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), new Destination(cell.getX(), cell.getY())));
+            movePath = new MoveTo(owner, owner.getMap().getClosestCell(owner, new Destination(cell.getX(), cell.getY())));
         }
         
         if(Utils.isAdjacent(owner.getDestination(), new Destination(cell.getX(), cell.getY())) && !movePath.moving)
@@ -74,14 +75,14 @@ public class Chop extends Action {
         if(movePath.stuck)
         {
             cell = owner.getMap().findLumberCloseTo(owner.getDestination(), 1);
-            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), new Destination(cell.getX(), cell.getY())));
+            movePath = new MoveTo(owner, new Destination(cell.getX(), cell.getY()));
         }
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, Camera camera) {
         if(movePath != null)
-            movePath.render(g);
+            movePath.render(g, camera);
     }
     
     @Override

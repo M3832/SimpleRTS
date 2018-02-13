@@ -126,7 +126,7 @@ public class Controller {
                 Entity e = selected.get(i);
                 g.setColor(getColorFromAllegiance(e));
                 g.drawRect(e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY(), e.getWidth(), e.getHeight());
-                e.renderSelected(g);
+                e.renderSelected(g, camera);
             }
         }
         if(entityplacer.getEntity() != null)
@@ -202,7 +202,7 @@ public class Controller {
                         building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
                         b.clearActions();
                         b.playSound(SoundController.CONFIRM);
-                        b.addAction(new MoveTo(b, player.getHandler().map.getPathFinder().findPath(b.getDestination(), new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2))));
+                        b.addAction(new MoveTo(b, new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2)));
                         b.addAction(new Build(b, building));
                     } else {
                         handler.game.mm.addMessage(new ErrorMessage("Building can't be placed here."));
@@ -293,7 +293,7 @@ public class Controller {
                             int offsetY = (int)(index/(Math.sqrt(selected.size())));
                             int targetX = camera.getMouseGridX() + offsetX;
                             int targetY = camera.getMouseGridY() + offsetY;
-                            u.addAction(new MoveTo(u, (new PathFinder(handler.map).findPath(u.getDestination(), new Destination(targetX, targetY)))));                    
+                            u.addAction(new MoveTo(u, new Destination(targetX, targetY)));                    
                         }
                         index++;
                     }

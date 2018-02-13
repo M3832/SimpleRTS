@@ -7,6 +7,7 @@ package simplerts.entities.actions;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import simplerts.display.Camera;
 import simplerts.utils.Utils;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
@@ -39,24 +40,25 @@ public class Gather extends Action {
         {
             movePath.performAction();
         } else {
-            movePath = new MoveTo(owner, owner.getMap().getPathFinder().findPath(owner.getDestination(), owner.getMap().getClosestCell(owner, (Entity)mine)));
+            movePath = new MoveTo(owner, (Entity)mine);
         }
         
-        if(Utils.isAdjacent(owner, (Entity)mine))
+        if(Utils.isAdjacent(owner, (Entity)mine) && !movePath.isMoving())
         {
             if(mine.enterGatherer((Goldminer)owner))
                 owner.getActions().clear();
         }
     }
     
-    public void render(Graphics g)
+    @Override
+    public void render(Graphics g, Camera camera)
     {
         if(movePath != null)
-            movePath.render(g);
+            movePath.render(g, camera);
         
         g.setColor(Color.yellow);
-        g.drawRect(((Entity)mine).getX() - (int)owner.getPlayer().getController().getCamera().getOffsetX(),
-                   ((Entity)mine).getY() - (int)owner.getPlayer().getController().getCamera().getOffsetY(),
+        g.drawRect(((Entity)mine).getX() - (int)camera.getOffsetX(),
+                   ((Entity)mine).getY() - (int)camera.getOffsetY(),
                    ((Entity)mine).getWidth(), ((Entity)mine).getHeight());
     }
     

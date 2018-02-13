@@ -28,14 +28,9 @@ public class Barracks extends Building {
     
     public Barracks(int x, int y, Player player) {
         super(x, y, 3, player, false);
-        sprite = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
+        sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/Buildings/Barracks/sprite.png", width, height),
+                                                     Assets.loadAndResizeImage("/Buildings/Barracks/barrackstc.png", width, height), color);
         icon = Assets.makeIcon(color, Assets.resizeImage(sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height), 100, 100));
-        Graphics g = sprite.getGraphics();
-        g.setColor(color);
-        g.setFont(GUI.BREAD);
-        g.drawString("BARRACKS", sprite.getWidth()/2 - g.getFontMetrics().stringWidth("BARRACKS")/2, sprite.getHeight()/2 + g.getFontMetrics().getHeight()/4);
-        g.setColor(Color.BLACK);
-        g.drawRect(1, 1, width-2, height-2);
         uiObjects = new ArrayList<>();
         uiActions = new ArrayList<>();
         initVariables();
@@ -64,11 +59,8 @@ public class Barracks extends Building {
     
     public static BufferedImage getUIIcon(Color color)
     {
-        BufferedImage sprite = new BufferedImage(55, 55, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = sprite.getGraphics();
-        g.setColor(color);
-        g.setFont(GUI.SMALL);
-        g.drawString("BARRACKS", sprite.getWidth()/2 - g.getFontMetrics().stringWidth("BARRACKS")/2, sprite.getHeight()/2 + g.getFontMetrics().getHeight()/4);
+        BufferedImage sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/Buildings/Barracks/sprite.png"),
+                                                     Assets.loadToCompatibleImage("/Buildings/Barracks/barrackstc.png"), color);
         return Assets.makeIcon(color, sprite);
     }
     
