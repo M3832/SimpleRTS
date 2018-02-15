@@ -108,7 +108,6 @@ public class MoveTo extends Action {
         if(!destinations.isEmpty() && owner.getX() == destinations.get(0).getX() * Game.CELLSIZE && owner.getY() == destinations.get(0).getY() * Game.CELLSIZE)
         {
             destinations.remove(0);
-            System.out.println("removing");
         }
         
         if(isCollisionAhead())
@@ -162,7 +161,6 @@ public class MoveTo extends Action {
                 {
                     return false;
                 } else {
-                    System.out.println("Not moving in same direction");
                     return true;
                 }
             }

@@ -369,6 +369,5 @@ public abstract class Unit extends Entity {
     protected void die()
     {
         super.die();
-        taskManager.addTask(new TimerTask(30000, () -> {player.getEntities().remove(this); player.getHandler().map.getEntities().remove(this);}));
     }
 }

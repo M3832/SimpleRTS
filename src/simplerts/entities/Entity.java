@@ -260,6 +260,7 @@ public abstract class Entity {
     protected void die()
     {
         isDead = true;
+        taskManager.addTask(new TimerTask(30000, () -> {player.getEntities().remove(this); player.getHandler().map.getEntities().remove(this);}));
     }
 
     public boolean isDead() {
