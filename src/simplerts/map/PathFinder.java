@@ -28,8 +28,10 @@ public class PathFinder {
         closed = new ArrayList<>();
     }
     
-    public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination goal)
+    public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination goal, boolean avoidUnits)
     {
+        if(avoidUnits)
+            System.out.println("Avoid units");
         //New pathfinding, clear previous paths
         open.clear();
         closed.clear();
@@ -44,6 +46,9 @@ public class PathFinder {
             {
                 nodeMap[x][y] = new Node(x, y);
                 nodeMap[x][y].heuristic = (Math.abs(x - (int)goal.getX()) + Math.abs(y - (int)goal.getY()));
+                if(avoidUnits && map.getCells()[x][y].getEntity() != null && map.getCells()[x][y].getEntity() != owner){
+                    nodeMap[x][y].occupiedByUnit = true;
+                }
             }
         }
         
@@ -127,9 +132,11 @@ public class PathFinder {
     
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
     {
+        if(neighbor.occupiedByUnit)
+            System.out.println("occupied");
         if(closed.stream().anyMatch(node -> node == neighbor) ||
                 (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null && (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Building)) || 
-                !map.getCells()[neighbor.gridX][neighbor.gridY].available)
+                !map.getCells()[neighbor.gridX][neighbor.gridY].available || neighbor.occupiedByUnit)
             return;
         
         int calcCost = neighbor.heuristic + current.totalCost + moveCost;

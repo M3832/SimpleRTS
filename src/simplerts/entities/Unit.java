@@ -374,7 +374,11 @@ public abstract class Unit extends Entity {
     }
 
     public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination lastDestination) {
-        return pathFinder.findPath(owner, lastDestination);
+        return pathFinder.findPath(owner, lastDestination, false);
+    }
+    
+    public CopyOnWriteArrayList<Destination> findPathIncludeUnits(Unit owner, Destination lastDestination) {
+        return pathFinder.findPath(owner, lastDestination, true);
     }
 
     public boolean inSquare() {

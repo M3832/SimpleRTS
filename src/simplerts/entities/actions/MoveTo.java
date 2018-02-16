@@ -8,6 +8,8 @@ package simplerts.entities.actions;
 import java.awt.Color;
 import simplerts.map.Destination;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.display.Camera;
@@ -32,7 +34,7 @@ public class MoveTo extends Action {
     protected int collisions;
     protected boolean stuckWarning, stuck, lastOccupied;
     protected long stuckTimer;
-    private final Destination lastDestination;
+    private Destination lastDestination;
     private final Entity targetEntity;
 
     public MoveTo(Unit owner, Destination d) {
@@ -65,20 +67,17 @@ public class MoveTo extends Action {
     
     private void calcPath()
     {
+        if(targetEntity != null) {
+            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
+            tm.addTask(new TimerTask(1500, () -> {calcPath();}));
+            return;
+        }
+        
         if(lastDestination != null)
         {
             destinations = owner.findPath(owner, lastDestination);
         } 
-        
-        if(targetEntity != null) {
-            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
-            tm.addTask(new TimerTask(1500, () -> {calcPath();}));
-        }
-        
-        if(destinations.isEmpty() && !owner.inSquare())
-        {
-            destinations.add(owner.getDestination());
-        }
+
     }
 
     @Override
@@ -140,11 +139,18 @@ public class MoveTo extends Action {
         if(lastDestination != null && destinations.size() < 3 && destinations.size() > 0 && owner.getMap().checkCollision(destinations.get(destinations.size()-1).getX(), destinations.get(destinations.size()-1).getY(), owner))
         {
             destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, owner.getMap().getEntityFromCell(lastDestination.getX(), lastDestination.getY())));
+            if(destinations.size() > 0)
+                lastDestination = destinations.get(destinations.size()-1);
+        }
+                
+        if(destinations.isEmpty() && !owner.inSquare())
+        {
+            destinations.add(owner.getDestination());
         }
         
         if(stuck)
         {
-            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, owner.getMap().getEntityFromCell(lastDestination.getX(), lastDestination.getY())));
+            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, lastDestination));
             calcPath();
         }
     }
@@ -176,11 +182,12 @@ public class MoveTo extends Action {
     }
 
     private void avoid() {
-        for(int i = 0; i < Math.max(0, destinations.size() - 1); i++)
+        for(int i = 0; i < destinations.size(); i++)
         {
-            if(owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY(), owner))
+            if(!owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY(), owner))
             {
-                destinations.set(i, owner.getMap().getAvailableNeighborCell(owner.getMap().getEntityFromCell(destinations.get(i).getX(), destinations.get(i).getY())));
+                destinations = owner.findPathIncludeUnits(owner, destinations.get(destinations.size()-1));
+                return;
             }
         }
         collisions = 0;
