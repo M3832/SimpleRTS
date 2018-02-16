@@ -14,6 +14,7 @@ import simplerts.Game;
 import simplerts.Player;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
+import simplerts.entities.units.Archer;
 import simplerts.gfx.Assets;
 import simplerts.ui.GUI;
 import simplerts.ui.UIAction;
@@ -46,6 +47,7 @@ public class Barracks extends Building {
     protected void setupActions()
     {
         uiActions.add(Footman.getUIAction(player, this));
+        uiActions.add(Archer.getUIAction(player, this));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
     }
     

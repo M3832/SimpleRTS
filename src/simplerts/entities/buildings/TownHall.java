@@ -28,8 +28,8 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver, Lu
     
     public TownHall(int x, int y, int gridSize, Player player) {
         super(x, y, gridSize, player, false);
-        sprite = Assets.makeTeamColor(Assets.loadToCompatibleImage("/Buildings/TownHall/sprite.png"),
-                                                     Assets.loadToCompatibleImage("/Buildings/TownHall/teamcolor.png"), color);
+        sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/Buildings/TownHall/sprite.png", width * 3, height),
+                                                     Assets.loadAndResizeImage("/Buildings/TownHall/teamcolor.png", width * 3, height), color);
         icon = Assets.makeIcon(color, Assets.resizeImage(sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height), 100, 100));
         uiObjects = new ArrayList<>();
         uiActions = new ArrayList<>();

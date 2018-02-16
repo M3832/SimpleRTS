@@ -27,7 +27,7 @@ public class Game implements Runnable {
     public static final int WIDTH = 980;
     public static final int HEIGHT = 512;
     public static final int GUIHEIGHT = 225;
-    public static final int CELLSIZE = 50;
+    public static final int CELLSIZE = 58;
     public static final float GAMESPEED = 1f;
     
     public static final int TICKS_PER_SECOND = 50;
@@ -61,7 +61,7 @@ public class Game implements Runnable {
         mm = new MessageManager(handler);
         map.placeLoadedObjects();
         
-        Player player = new Player(handler, Utilities.getRandomColor());
+        Player player = new Player(handler, Color.RED);
         Player enemy = new Player(handler, Utilities.getRandomColor());
         Player enemy2 = new Player(handler, Utilities.getRandomColor());
         Player enemy3 = new Player(handler, Utilities.getRandomColor());
@@ -73,10 +73,6 @@ public class Game implements Runnable {
         
         map.start(players, 500, 0, 3);
         controller.start();
-        map.addEntity(new Footman(20, 20, player));
-        map.addEntity(new Footman(20, 21, player));
-        map.addEntity(new Footman(20, 22, player));
-        map.addEntity(new Footman(20, 23, player));
         
         long next_game_tick = System.currentTimeMillis();
         int loops;

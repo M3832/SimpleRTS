@@ -21,6 +21,7 @@ import simplerts.Player;
 import simplerts.editor.LoadedObject;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.resources.Goldmine;
+import simplerts.entities.units.Archer;
 import simplerts.entities.units.Builder;
 
 /**
@@ -82,6 +83,9 @@ public class BackEndMap {
                 Builder b = new Builder(target.getX(), target.getY(), p);
                 addEntity(b);
             }
+            Destination target = getAvailableNeighborCell(th);
+            Archer a = new Archer(target.getX(), target.getY(), p);
+            addEntity(a);
             startLocations.remove(startLocation);
         });
     }
