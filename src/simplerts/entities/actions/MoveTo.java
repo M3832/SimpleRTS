@@ -26,7 +26,7 @@ import simplerts.utils.Utilities;
 public class MoveTo extends Action {
     
     public static final int CHECK_AHEAD_DISTANCE = 1;
-    public static final int COLLISION_CHECK_BUFFER = 5;
+    public static final int COLLISION_CHECK_BUFFER = 15;
     public static final long STUCK_TIME = 50;
     
     protected TaskManager tm;
@@ -150,7 +150,11 @@ public class MoveTo extends Action {
         
         if(stuck)
         {
-            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, lastDestination));
+            if(lastDestination != null) {
+                destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, lastDestination));
+            } else if (targetEntity != null) {
+                destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
+            }
             calcPath();
         }
     }
@@ -158,10 +162,10 @@ public class MoveTo extends Action {
     @Override
     public void render(Graphics g, Camera camera)
     {
-        destinations.forEach((d) -> {
-            g.setColor(new Color(255, 255, 255, 50));
-            g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
-        });
+//        destinations.forEach((d) -> {
+//            g.setColor(new Color(255, 255, 255, 50));
+//            g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
+//        });
     }
 
     private boolean isCollisionAhead() {
@@ -190,7 +194,6 @@ public class MoveTo extends Action {
                 return;
             }
         }
-        collisions = 0;
     }
 
     public boolean arrived() {

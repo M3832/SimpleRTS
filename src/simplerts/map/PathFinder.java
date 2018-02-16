@@ -30,8 +30,6 @@ public class PathFinder {
     
     public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination goal, boolean avoidUnits)
     {
-        if(avoidUnits)
-            System.out.println("Avoid units");
         //New pathfinding, clear previous paths
         open.clear();
         closed.clear();
@@ -132,8 +130,6 @@ public class PathFinder {
     
     private void checkNeighbor(Node neighbor, Node current, int moveCost)
     {
-        if(neighbor.occupiedByUnit)
-            System.out.println("occupied");
         if(closed.stream().anyMatch(node -> node == neighbor) ||
                 (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() != null && (map.getCells()[neighbor.gridX][neighbor.gridY].getEntity() instanceof Building)) || 
                 !map.getCells()[neighbor.gridX][neighbor.gridY].available || neighbor.occupiedByUnit)
