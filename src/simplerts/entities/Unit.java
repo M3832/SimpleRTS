@@ -376,4 +376,8 @@ public abstract class Unit extends Entity {
     public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination lastDestination) {
         return pathFinder.findPath(owner, lastDestination);
     }
+
+    public boolean inSquare() {
+        return x%Game.CELLSIZE == 0 && y%Game.CELLSIZE == 0;
+    }
 }

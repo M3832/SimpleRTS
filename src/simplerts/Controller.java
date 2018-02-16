@@ -128,6 +128,7 @@ public class Controller {
                 g.setColor(getColorFromAllegiance(e));
                 g.drawRect(e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY(), e.getWidth(), e.getHeight());
                 e.renderSelected(g, camera);
+                Utilities.drawWithShadow(g, i + "", e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY());
             }
         }
         if(entityplacer.getEntity() != null)
@@ -263,9 +264,9 @@ public class Controller {
             entityplacer.clear();
             return;
         }
-        Unit leader = null;
-        int index = 0;
-        selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
+
+        selected.sort(Comparator.comparing((Entity e1) -> {return Math.abs(e1.getGridY() - camera.getMouseGridY());})
+                .thenComparing((Entity e1) -> {return Math.abs(e1.getGridX() - camera.getMouseGridX());}));
         if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
             selected.get(0).playSound(SoundController.CONFIRM);
         for(Entity e : selected)
@@ -288,20 +289,12 @@ public class Controller {
                             u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
                         }
                     } else {
-                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
-                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                        int targetX = camera.getMouseGridX() + offsetX;
-                        int targetY = camera.getMouseGridY() + offsetY;
-                        u.addAction(new MoveTo(u, new Destination(targetX, targetY)));
-//                        if(index == 0)
-//                        {
-//                            u.addAction(new MoveTo(u, new Destination(camera.getMouseGridX(), camera.getMouseGridY())));
-//                            leader = u;
-//                        } else {
-//                            u.addAction(new Follow(u, leader));
-//                        }
+//                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
+//                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
+//                        int targetX = camera.getMouseGridX() + offsetX;
+//                        int targetY = camera.getMouseGridY() + offsetY;
+                        u.addAction(new MoveTo(u, new Destination(gridX, gridY)));
                     }
-                    index++;
                 }
             }
         }

@@ -31,7 +31,7 @@ public class Attack extends Action {
     public void performAction() {
         int deltaX = Math.abs(owner.getMap().getClosestCell(owner, target).getX() - owner.getGridX());
         int deltaY = Math.abs(owner.getMap().getClosestCell(owner, target).getY() - owner.getGridY());
-        if(deltaX <= ((Attacker)owner).getRange() && deltaY <= ((Attacker)owner).getRange() && !follow.isMoving() && !target.isDead())
+        if(deltaX < ((Attacker)owner).getRange() && deltaY < ((Attacker)owner).getRange() && !target.isDead() && owner.inSquare())
         {
             ((Attacker)owner).attack(target);
         } else {

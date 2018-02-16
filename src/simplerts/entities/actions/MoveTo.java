@@ -74,6 +74,11 @@ public class MoveTo extends Action {
             destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
             tm.addTask(new TimerTask(1500, () -> {calcPath();}));
         }
+        
+        if(destinations.isEmpty() && !owner.inSquare())
+        {
+            destinations.add(owner.getDestination());
+        }
     }
 
     @Override
@@ -132,23 +137,25 @@ public class MoveTo extends Action {
             }
         }
         
+        if(lastDestination != null && destinations.size() < 3 && destinations.size() > 0 && owner.getMap().checkCollision(destinations.get(destinations.size()-1).getX(), destinations.get(destinations.size()-1).getY(), owner))
+        {
+            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, owner.getMap().getEntityFromCell(lastDestination.getX(), lastDestination.getY())));
+        }
+        
         if(stuck)
         {
-//            System.out.println("stuck");
-//            destinations = owner.getMap().getPathFinder().findPath(owner, lastDestination);
-//            stuck = false;
-//            moving = true;
-//            calcPath();
+            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, owner.getMap().getEntityFromCell(lastDestination.getX(), lastDestination.getY())));
+            calcPath();
         }
     }
     
     @Override
     public void render(Graphics g, Camera camera)
     {
-//        destinations.forEach((d) -> {
-//            g.setColor(new Color(255, 255, 255, 50));
-//            g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
-//        });
+        destinations.forEach((d) -> {
+            g.setColor(new Color(255, 255, 255, 50));
+            g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
+        });
     }
 
     private boolean isCollisionAhead() {
@@ -191,9 +198,11 @@ public class MoveTo extends Action {
     private boolean movingInSameDirection(Unit owner, Unit u) {
         int moveOwner = (int)(owner.getDeltaX() + owner.getDeltaY());
         int moveOther = (int)(u.getDeltaX() + u.getDeltaY());
+        System.out.println(Utilities.getDirection(moveOther, 0));
+        System.out.println(Utilities.getDirection(moveOwner, 0));
         if (moveOwner == 0 || moveOther == 0) {
             return false;
-        } else return (Integer.MIN_VALUE & moveOther) == (moveOwner & Integer.MIN_VALUE);
+        } else return Utilities.getDirection(moveOther, 0) == Utilities.getDirection(moveOwner, 0);
     }
     
 }

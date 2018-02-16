@@ -12,6 +12,7 @@ import simplerts.Player;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
+import simplerts.entities.actions.Attack;
 import simplerts.entities.interfaces.Attacker;
 import simplerts.gfx.Assets;
 import simplerts.map.Destination;
@@ -42,6 +43,7 @@ public class Archer extends Unit implements Attacker {
     private void initVariables()
     {
         range = 5;
+        moveSpeed = 6;
         hasAttacked = false;
         attackSpeed = 800;
         attackRenderSpeed = 300;
@@ -76,6 +78,17 @@ public class Archer extends Unit implements Attacker {
         a.setTitle("Archer");
         a.setGoldCost(GOLDCOST + "");
         return a;
+    }
+    
+    @Override
+    public void rightClickAction(Entity e)
+    {
+        if(e.getPlayer() != player && !e.isDead())
+        {
+            addAction(new Attack(this, e));
+        } else {
+            super.rightClickAction(e);
+        }
     }
 
     @Override

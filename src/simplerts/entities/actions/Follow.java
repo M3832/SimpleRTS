@@ -34,6 +34,8 @@ public class Follow extends Action {
         
         if(movePath != null)
             movePath.performAction();
+        
+        
     }
     
     @Override
