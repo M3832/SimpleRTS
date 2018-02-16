@@ -6,7 +6,7 @@
 package simplerts;
 
 import simplerts.messaging.PlayerMessager;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 import simplerts.map.PathFinder;
 import simplerts.map.Destination;
 import simplerts.entities.Unit;
@@ -26,6 +26,7 @@ import simplerts.entities.actions.MoveTo;
 import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
 import simplerts.entities.actions.Chop;
+import simplerts.entities.actions.Follow;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.input.KeyManager;
@@ -262,41 +263,45 @@ public class Controller {
             entityplacer.clear();
             return;
         }
-        
+        Unit leader = null;
         int index = 0;
         selected.sort(Comparator.comparing(Entity::getGridY).thenComparing(Entity::getGridX));
         if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
             selected.get(0).playSound(SoundController.CONFIRM);
         for(Entity e : selected)
         {
-            if(isPlayerControlled(e))
+            if(isPlayerControlled(e) && e instanceof Unit)
             {
-                if(e instanceof Unit)
+                Unit u = (Unit) e;
+                u.clearActions();
+                int gridX = camera.getMouseGridX();
+                int gridY = camera.getMouseGridY();
+                if(handler.map.isInBounds(gridX, gridY))
                 {
-                    Unit u = (Unit) e;
-                    u.clearActions();
-                    int gridX = camera.getMouseGridX();
-                    int gridY = camera.getMouseGridY();
-                    if(handler.map.isInBounds(gridX, gridY))
+                    if(handler.map.getCells()[gridX][gridY].getEntity() != null && !handler.map.getCells()[gridX][gridY].getEntity().isDead())
                     {
-                        if(handler.map.getCells()[gridX][gridY].getEntity() != null && !handler.map.getCells()[gridX][gridY].getEntity().isDead())
+                        u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
+                    } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
+                    {
+                        if(u instanceof Lumberman)
                         {
-                            u.rightClickAction(handler.map.getCells()[gridX][gridY].getEntity());
-                        } else if (handler.map.getCells()[gridX][gridY].isForest() && !handler.map.getCells()[gridX][gridY].getForest().isBarren())
-                        {
-                            if(u instanceof Lumberman)
-                            {
-                                u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
-                            }
-                        } else {
-                            int offsetX = (int)(index%(Math.sqrt(selected.size())));
-                            int offsetY = (int)(index/(Math.sqrt(selected.size())));
-                            int targetX = camera.getMouseGridX() + offsetX;
-                            int targetY = camera.getMouseGridY() + offsetY;
-                            u.addAction(new MoveTo(u, new Destination(targetX, targetY)));                    
+                            u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
                         }
-                        index++;
+                    } else {
+                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
+                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
+                        int targetX = camera.getMouseGridX() + offsetX;
+                        int targetY = camera.getMouseGridY() + offsetY;
+                        u.addAction(new MoveTo(u, new Destination(targetX, targetY)));
+//                        if(index == 0)
+//                        {
+//                            u.addAction(new MoveTo(u, new Destination(camera.getMouseGridX(), camera.getMouseGridY())));
+//                            leader = u;
+//                        } else {
+//                            u.addAction(new Follow(u, leader));
+//                        }
                     }
+                    index++;
                 }
             }
         }
@@ -311,11 +316,11 @@ public class Controller {
         g.drawRect(Game.WIDTH - resourceWidth, 0, resourceWidth - 1, resourceHeight);
         g.setFont(GUI.BREAD);
         g.setColor(Color.YELLOW);
-        Utils.drawWithShadow(g, gold, Game.WIDTH - resourceWidth + 10, 30);
+        Utilities.drawWithShadow(g, gold, Game.WIDTH - resourceWidth + 10, 30);
         g.setColor(Color.GREEN);
-        Utils.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
+        Utilities.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
         g.setColor(new Color(255, 50, 50));
-        Utils.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
+        Utilities.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
     }
 
     public void deselect(Entity e) {

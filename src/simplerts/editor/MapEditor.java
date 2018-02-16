@@ -80,7 +80,7 @@ public class MapEditor extends javax.swing.JFrame {
 
     private void initCustomComponents()
     {
-        map = new BackEndMap(100, 100);
+        map = new BackEndMap(50, 50);
         renderMap = new FrontEndMap(map);
         editorPanel = new EditorPanel(renderMap);
         editorPanel.setPreferredSize(new Dimension(map.getSize()));

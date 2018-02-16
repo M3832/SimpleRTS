@@ -16,9 +16,8 @@ import simplerts.editor.MapEditor;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
 import simplerts.entities.units.Footman;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 //import javax.swing.JFileChooser;
-
 /**
  *
  * @author Markus
@@ -56,16 +55,16 @@ public class Game implements Runnable {
         display = new Display(WIDTH, HEIGHT, GUIHEIGHT);
 //        openFile.showOpenDialog(display.window);
 //        map = MapIO.loadMap(openFile.getSelectedFile());
-        map = MapIO.loadMap("/test2.mmp");
+        map = MapIO.loadMap("/four.mmp");
         handler = new Handler(this, map, display);
         MapEditor.maskMap(map);
         mm = new MessageManager(handler);
         map.placeLoadedObjects();
         
-        Player player = new Player(handler, Utils.getRandomColor());
-        Player enemy = new Player(handler, Utils.getRandomColor());
-        Player enemy2 = new Player(handler, Utils.getRandomColor());
-        Player enemy3 = new Player(handler, Utils.getRandomColor());
+        Player player = new Player(handler, Utilities.getRandomColor());
+        Player enemy = new Player(handler, Utilities.getRandomColor());
+        Player enemy2 = new Player(handler, Utilities.getRandomColor());
+        Player enemy3 = new Player(handler, Utilities.getRandomColor());
         controller = new Controller(handler, player);
         players.add(player);
         players.add(enemy);

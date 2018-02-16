@@ -13,7 +13,7 @@ import simplerts.display.Camera;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 import simplerts.entities.actions.TurnInGold;
 import simplerts.gfx.Assets;
 import simplerts.entities.interfaces.GoldProvider;
@@ -86,7 +86,7 @@ public class Goldmine extends Building implements GoldProvider{
     {
         super.renderGUI(g);
         String goldString = "Gold: " + gold;
-        Utils.drawWithShadow(g, goldString, Game.WIDTH/2 - g.getFontMetrics().stringWidth(goldString)/2, Game.HEIGHT + 100);
+        Utilities.drawWithShadow(g, goldString, Game.WIDTH/2 - g.getFontMetrics().stringWidth(goldString)/2, Game.HEIGHT + 100);
     }
     
 }

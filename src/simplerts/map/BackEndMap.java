@@ -68,24 +68,22 @@ public class BackEndMap {
     
     public void start(CopyOnWriteArrayList<Player> players, int startGold, int startLumber, int startWorkers)
     {
-        for(Player p: players)
-        {
+        players.stream().map((p) -> {
             p.setGold(startGold);
             p.setLumber(startLumber);
-            if(!startLocations.isEmpty())
+            return p;
+        }).filter((p) -> (!startLocations.isEmpty())).forEach((p) -> {
+            Destination startLocation = startLocations.get((int)(Math.random() * (startLocations.size())));
+            TownHall th = new TownHall(startLocation.getX(), startLocation.getY(), 4, p, true);
+            addEntity(th);
+            for(int i = 0; i < startWorkers; i++)
             {
-                Destination startLocation = startLocations.get((int)(Math.random() * (startLocations.size())));
-                TownHall th = new TownHall(startLocation.getX(), startLocation.getY(), 4, p, true);
-                addEntity(th);
-                for(int i = 0; i < startWorkers; i++)
-                {
-                    Destination target = getAvailableNeighborCell(th);
-                    Builder b = new Builder(target.getX(), target.getY(), p);
-                    addEntity(b);
-                }
-                startLocations.remove(startLocation);
+                Destination target = getAvailableNeighborCell(th);
+                Builder b = new Builder(target.getX(), target.getY(), p);
+                addEntity(b);
             }
-        }
+            startLocations.remove(startLocation);
+        });
     }
     
     public Cell[][] getCells()
@@ -197,10 +195,10 @@ public class BackEndMap {
         
         if(d.isEmpty())
         {
-            if( isInBounds(e.getGridX() - 1, e.getGridY() - 1) && getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity()) != null)
+            if( e != null && isInBounds(e.getGridX() - 1, e.getGridY() - 1) && getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity()) != null)
             {
                 d = getAvailableNeighborCell(cells[e.getGridX()-1][e.getGridY()-1].getEntity());
-            } else {
+            } else if (e != null) {
                 d = e.getDestination();
             }
         }
@@ -267,13 +265,9 @@ public class BackEndMap {
     
     public void placeLoadedObjects()
     {
-        for(LoadedObject o : loadObjects)
-        {
-            if(o.name.equals("Goldmine"))
-            {
-                addEntity(new Goldmine(o.gridX, o.gridY, getNeutral()));
-            }
-        }
+        loadObjects.stream().filter((o) -> (o.name.equals("Goldmine"))).forEach((o) -> {
+            addEntity(new Goldmine(o.gridX, o.gridY, getNeutral()));
+        });
     }
     
     public Destination getClosestCell(Entity owner, Entity target)
@@ -364,10 +358,8 @@ public class BackEndMap {
     }
 
     public void lateUpdate() {
-        for(Entity e: entities)
-        {
-            if(e instanceof Unit)
-                ((Unit)e).lateUpdate();
-        }
+        entities.stream().filter((e) -> (e instanceof Unit)).forEach((e) -> {
+            ((Unit)e).lateUpdate();
+        });
     }
 }

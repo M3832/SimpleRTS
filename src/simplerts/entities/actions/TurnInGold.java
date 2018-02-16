@@ -7,7 +7,7 @@ package simplerts.entities.actions;
 
 import java.awt.Graphics;
 import simplerts.display.Camera;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 import simplerts.entities.interfaces.GoldReceiver;
@@ -59,7 +59,7 @@ public class TurnInGold extends Action {
             }
         }
         
-        if(gr != null && !movePath.isMoving() && Utils.isAdjacent(owner, (Entity)gr))
+        if(gr != null && !movePath.isMoving() && Utilities.isAdjacent(owner, (Entity)gr))
         {
             gr.receiveGold(((Goldminer)owner));
             ((Goldminer)owner).enter();

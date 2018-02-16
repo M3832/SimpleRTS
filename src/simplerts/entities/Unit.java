@@ -14,7 +14,7 @@ import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.audio.SoundController;
 import simplerts.display.Camera;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 import simplerts.entities.actions.Action;
 import simplerts.map.Destination;
 import simplerts.entities.actions.Follow;
@@ -22,6 +22,7 @@ import simplerts.entities.actions.MoveTo;
 import simplerts.gfx.Assets;
 import simplerts.gfx.Animation;
 import simplerts.gfx.AnimationController;
+import simplerts.map.PathFinder;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
 import simplerts.ui.UIObject;
@@ -50,7 +51,7 @@ public abstract class Unit extends Entity {
     private boolean collided = false;
     
     private Destination targetDestination;
-    
+    private PathFinder pathFinder;
     protected AnimationController ac;
     
     public Unit()
@@ -78,6 +79,7 @@ public abstract class Unit extends Entity {
         trainTime = 100;
         setFoodRequirement(1);
         name = "Peasant";
+        pathFinder = new PathFinder(grid);
     }
     
     protected void initGraphics()
@@ -244,13 +246,13 @@ public abstract class Unit extends Entity {
     {
         g.setColor(new Color(255, 155, 111));
         //Render name
-        Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
+        Utilities.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
         
         //Render stats
         g.setFont(GUI.BREAD);
-        Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
-        Utils.drawWithShadow(g, "Damage: " + attackDamage, 300, Game.HEIGHT + 150);
-        Utils.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, Game.HEIGHT + 175);
+        Utilities.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
+        Utilities.drawWithShadow(g, "Damage: " + attackDamage, 300, Game.HEIGHT + 150);
+        Utilities.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, Game.HEIGHT + 175);
         
         for(UIObject o : uiObjects)
         {
@@ -369,5 +371,9 @@ public abstract class Unit extends Entity {
     protected void die()
     {
         super.die();
+    }
+
+    public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination lastDestination) {
+        return pathFinder.findPath(owner, lastDestination);
     }
 }

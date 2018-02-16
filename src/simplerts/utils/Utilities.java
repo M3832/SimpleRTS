@@ -15,7 +15,7 @@ import simplerts.map.Destination;
  *
  * @author Markus
  */
-public class Utils {
+public class Utilities {
     
     public static void drawWithShadow(Graphics g, String s, int posX, int posY)
     {
@@ -57,5 +57,17 @@ public class Utils {
     public static Color getRandomColor()
     {
         return new Color((int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
+    }
+    
+    public static int getDirection(int x, int x1)
+    {
+        if(x - x1 < 0)
+            return -1;
+        if(x - x1 > 0)
+            return 1;
+        
+        return 0;
+        
+        
     }
 }

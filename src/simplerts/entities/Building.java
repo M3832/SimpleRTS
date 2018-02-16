@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.display.Camera;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 import simplerts.gfx.Assets;
 import simplerts.messaging.ErrorMessage;
 import simplerts.messaging.Message;
@@ -166,7 +166,7 @@ public abstract class Building extends Entity {
     {
         g.setColor(new Color(255, 155, 111));
         //Render name
-        Utils.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
+        Utilities.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
         
         if(currentTime < buildTime)
         {
@@ -183,8 +183,8 @@ public abstract class Building extends Entity {
                     
             //Render stats
             g.setFont(GUI.BREAD);
-            Utils.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
-            Utils.drawWithShadow(g, "Armor: " + armor, 300, Game.HEIGHT + 150);
+            Utilities.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
+            Utilities.drawWithShadow(g, "Armor: " + armor, 300, Game.HEIGHT + 150);
         }
         
     }

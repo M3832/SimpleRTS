@@ -15,6 +15,7 @@ import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 import simplerts.utils.TaskManager;
 import simplerts.utils.TimerTask;
+import simplerts.utils.Utilities;
 
 /**
  *
@@ -66,13 +67,11 @@ public class MoveTo extends Action {
     {
         if(lastDestination != null)
         {
-            destinations = owner.getMap().getPathFinder().findPath(owner, lastDestination);
-            if(!destinations.isEmpty() && lastDestination.getX() != owner.getGridX() && lastDestination.getY() != owner.getGridY())
-                tm.addTask(new TimerTask(1500, () -> {calcPath();}));
+            destinations = owner.findPath(owner, lastDestination);
         } 
         
         if(targetEntity != null) {
-            destinations = owner.getMap().getPathFinder().findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
+            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
             tm.addTask(new TimerTask(1500, () -> {calcPath();}));
         }
     }
@@ -133,13 +132,14 @@ public class MoveTo extends Action {
             }
         }
         
-//        if(stuck)
-//        {
+        if(stuck)
+        {
 //            System.out.println("stuck");
 //            destinations = owner.getMap().getPathFinder().findPath(owner, lastDestination);
 //            stuck = false;
 //            moving = true;
-//        }
+//            calcPath();
+        }
     }
     
     @Override
@@ -173,7 +173,6 @@ public class MoveTo extends Action {
         {
             if(owner.getMap().checkCollision(destinations.get(i).getX(), destinations.get(i).getY(), owner))
             {
-                System.out.println("recalculating?");
                 destinations.set(i, owner.getMap().getAvailableNeighborCell(owner.getMap().getEntityFromCell(destinations.get(i).getX(), destinations.get(i).getY())));
             }
         }

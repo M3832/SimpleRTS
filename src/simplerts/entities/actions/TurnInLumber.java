@@ -13,7 +13,7 @@ import simplerts.entities.interfaces.LumberReceiver;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.messaging.ErrorMessage;
 import simplerts.utils.TimerTask;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 
 /**
  *
@@ -59,7 +59,7 @@ public class TurnInLumber extends Action {
             }
         }
         
-        if(lr != null && !movePath.isMoving() && Utils.isAdjacent(owner, (Entity)lr))
+        if(lr != null && !movePath.isMoving() && Utilities.isAdjacent(owner, (Entity)lr))
         {
             lr.receiveLumber(((Lumberman)owner).takeLumber());
             ((Lumberman)owner).enter();

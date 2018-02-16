@@ -12,7 +12,7 @@ import simplerts.entities.Unit;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.map.Cell;
 import simplerts.map.Destination;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 
 /**
  *
@@ -46,7 +46,7 @@ public class Chop extends Action {
             movePath = new MoveTo(owner, owner.getMap().getClosestCell(owner, new Destination(cell.getX(), cell.getY())));
         }
         
-        if(Utils.isAdjacent(owner.getDestination(), new Destination(cell.getX(), cell.getY())) && !movePath.moving)
+        if(Utilities.isAdjacent(owner.getDestination(), new Destination(cell.getX(), cell.getY())) && !movePath.moving)
         {
             chopping = true;
             if(nextChop < System.currentTimeMillis())

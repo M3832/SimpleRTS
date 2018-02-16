@@ -8,7 +8,7 @@ package simplerts.entities.actions;
 import java.awt.Color;
 import java.awt.Graphics;
 import simplerts.display.Camera;
-import simplerts.utils.Utils;
+import simplerts.utils.Utilities;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 import simplerts.entities.interfaces.GoldProvider;
@@ -43,7 +43,7 @@ public class Gather extends Action {
             movePath = new MoveTo(owner, (Entity)mine);
         }
         
-        if(Utils.isAdjacent(owner, (Entity)mine) && !movePath.isMoving())
+        if(Utilities.isAdjacent(owner, (Entity)mine) && !movePath.isMoving())
         {
             if(mine.enterGatherer((Goldminer)owner))
                 owner.getActions().clear();
