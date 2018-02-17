@@ -15,5 +15,6 @@ public interface Attacker {
     
     public void attack(Entity e);
     public int getRange();
+    public int getDamage();
     
 }

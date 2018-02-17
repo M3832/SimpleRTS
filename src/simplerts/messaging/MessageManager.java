@@ -60,6 +60,11 @@ public class MessageManager {
         {
             case "showall":
                 handler.game.controller.showAll();
+                break;
+            case "debug":
+                Game.DEBUG = !Game.DEBUG;
+                addMessage(new Message("Debug: " + Game.DEBUG));
+                break;
         }
     }
     

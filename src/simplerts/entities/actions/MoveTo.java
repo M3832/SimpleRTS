@@ -25,7 +25,7 @@ import simplerts.utils.Utilities;
  */
 public class MoveTo extends Action {
     
-    public static final int CHECK_AHEAD_DISTANCE = 1;
+    public static final int CHECK_AHEAD_DISTANCE = 2;
     public static final int COLLISION_CHECK_BUFFER = 15;
     public static final long STUCK_TIME = 50;
     
@@ -162,10 +162,13 @@ public class MoveTo extends Action {
     @Override
     public void render(Graphics g, Camera camera)
     {
-//        destinations.forEach((d) -> {
-//            g.setColor(new Color(255, 255, 255, 50));
-//            g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
-//        });
+        if(Game.DEBUG)
+        {
+            destinations.forEach((d) -> {
+                g.setColor(new Color(255, 255, 255, 50));
+                g.fillRect((int)(d.getX() * Game.CELLSIZE - camera.getOffsetX()), (int)(d.getY() * Game.CELLSIZE - camera.getOffsetY()), Game.CELLSIZE, Game.CELLSIZE);
+            });
+        }
     }
 
     private boolean isCollisionAhead() {
@@ -208,11 +211,9 @@ public class MoveTo extends Action {
     private boolean movingInSameDirection(Unit owner, Unit u) {
         int moveOwner = (int)(owner.getDeltaX() + owner.getDeltaY());
         int moveOther = (int)(u.getDeltaX() + u.getDeltaY());
-        System.out.println(Utilities.getDirection(moveOther, 0));
-        System.out.println(Utilities.getDirection(moveOwner, 0));
         if (moveOwner == 0 || moveOther == 0) {
             return false;
-        } else return Utilities.getDirection(moveOther, 0) == Utilities.getDirection(moveOwner, 0);
+        } else return Utilities.getMovementDirection(moveOther, 0) == Utilities.getMovementDirection(moveOwner, 0);
     }
     
 }

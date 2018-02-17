@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
+import simplerts.gfx.Animation;
 import simplerts.map.Destination;
 
 /**
@@ -59,7 +60,7 @@ public class Utilities {
         return new Color((int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255));
     }
     
-    public static int getDirection(int x, int x1)
+    public static int getMovementDirection(int x, int x1)
     {
         if(x - x1 < 0)
             return -1;
@@ -67,7 +68,26 @@ public class Utilities {
             return 1;
         
         return 0;
+    }
+    
+    public static int getFacingDirection(int x, int y) {
+        if(x > 0)
+            return Animation.EAST;
+        if(x < 0)
+            return Animation.WEST;
+        if(y > 0)
+            return Animation.SOUTH;
+        if(y < 0)
+            return Animation.NORTH;
+        if(x > 0 && y > 0)
+            return Animation.SOUTHEAST;
+        if(x < 0 && y > 0)
+            return Animation.SOUTHWEST;
+        if(x < 0 && y < 0)
+            return Animation.NORTHWEST;
+        if(x > 0 && y < 0)
+            return Animation.NORTHEAST;
         
-        
+        return Animation.SOUTH;
     }
 }

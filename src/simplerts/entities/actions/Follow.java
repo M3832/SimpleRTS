@@ -29,7 +29,6 @@ public class Follow extends Action {
         if(movePath == null)
         {
             movePath = new MoveTo(owner, target);
-            System.out.println("New movepath for follow");
         }
         
         if(movePath != null)

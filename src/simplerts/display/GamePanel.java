@@ -7,6 +7,7 @@ package simplerts.display;
 
 import java.awt.Graphics;
 import javax.swing.JPanel;
+import simplerts.Game;
 import simplerts.Handler;
 
 /**
@@ -37,7 +38,8 @@ public class GamePanel extends JPanel {
 
             if(System.currentTimeMillis() > nextSecond)
             {
-                System.out.println(renderUpdates);
+                if(Game.DEBUG)
+                    System.out.println("Renders/second: " + renderUpdates);
                 renderUpdates = 0;
                 nextSecond = System.currentTimeMillis() + 1000;
             }

@@ -39,6 +39,8 @@ public class Game implements Runnable {
     public static final int SKIP_RENDERS = 1000 / RENDERS_PER_SECOND;
     public static final int MAX_RENDERSKIP = 10;
     public static long time_since_last_render = 0;
+    
+    public static boolean DEBUG = false;
 
     public BackEndMap map;
     public Handler handler;
@@ -71,10 +73,10 @@ public class Game implements Runnable {
         players.add(enemy2);
         players.add(enemy3);
         
-        map.addEntity(new Footman(25, 25, player));
-        map.addEntity(new Footman(25, 26, player));
-        map.addEntity(new Footman(26, 25, player));
-        map.addEntity(new Footman(26, 26, player));
+//        map.addEntity(new Footman(25, 25, player));
+//        map.addEntity(new Footman(25, 26, player));
+//        map.addEntity(new Footman(26, 25, player));
+//        map.addEntity(new Footman(26, 26, player));
         
         map.start(players, 500, 0, 3);
         controller.start();

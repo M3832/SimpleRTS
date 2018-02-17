@@ -155,22 +155,7 @@ public abstract class Unit extends Entity {
     
     public void setDirection(int x, int y)
     {
-        if(x > 0)
-            ac.setDirection(Animation.EAST);
-        if(x < 0)
-            ac.setDirection(Animation.WEST);
-        if(y > 0)
-            ac.setDirection(Animation.SOUTH);
-        if(y < 0)
-            ac.setDirection(Animation.NORTH);
-        if(x > 0 && y > 0)
-            ac.setDirection(Animation.SOUTHEAST);
-        if(x < 0 && y > 0)
-            ac.setDirection(Animation.SOUTHWEST);
-        if(x < 0 && y < 0)
-            ac.setDirection(Animation.NORTHWEST);
-        if(x > 0 && y < 0)
-            ac.setDirection(Animation.NORTHEAST);
+        ac.setDirection(Utilities.getFacingDirection(x, y));
     }
     
     public void clearActions()

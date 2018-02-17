@@ -128,7 +128,8 @@ public class Controller {
                 g.setColor(getColorFromAllegiance(e));
                 g.drawRect(e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY(), e.getWidth(), e.getHeight());
                 e.renderSelected(g, camera);
-                Utilities.drawWithShadow(g, i + "", e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY());
+                if(Game.DEBUG)
+                    Utilities.drawWithShadow(g, i + "", e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY());
             }
         }
         if(entityplacer.getEntity() != null)
@@ -289,10 +290,6 @@ public class Controller {
                             u.addAction(new Chop(u, handler.map.getCells()[gridX][gridY]));
                         }
                     } else {
-//                        int offsetX = (int)(index%(Math.sqrt(selected.size())));
-//                        int offsetY = (int)(index/(Math.sqrt(selected.size())));
-//                        int targetX = camera.getMouseGridX() + offsetX;
-//                        int targetY = camera.getMouseGridY() + offsetY;
                         u.addAction(new MoveTo(u, new Destination(gridX, gridY)));
                     }
                 }

@@ -101,6 +101,11 @@ public class Footman extends Unit implements Attacker {
         return range;
     }
     
+    @Override
+    public int getDamage() {
+        return attackDamage;
+    }
+    
     public static BufferedImage getUIIcon(Color color)
     {
         return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/portrait.png"), Assets.loadToCompatibleImage("/Units/Footman/portraittc.png"), color));
@@ -128,7 +133,7 @@ public class Footman extends Unit implements Attacker {
     @Override
     public void rightClickAction(Entity e)
     {
-        if(e.getPlayer() != player && !e.isDead())
+        if(e.getPlayer() != player && e.isDead())
         {
             addAction(new Attack(this, e));
         } else {

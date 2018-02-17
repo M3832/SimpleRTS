@@ -377,7 +377,6 @@ public class MapEditor extends javax.swing.JFrame {
                             cells[x][y].setTile(terrain.getSquare()[17]);
                             
                     }
-                    System.out.println(terrain.terrainSquare[getTile] + " " + getTile);
                 }
             }
         }

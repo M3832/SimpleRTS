@@ -98,6 +98,14 @@ public class BackEndMap {
     public void update()
     {
         entities.stream().forEach(e -> e.update());
+        for(int i = entities.size() - 1; i >= 0; i--)
+        {
+            if(entities.get(i).timeToRemove())
+            {
+                entities.get(i).getPlayer().getEntities().remove(entities.get(i));
+                entities.remove(entities.get(i));
+            }
+        }
     }
     
     public boolean checkCollision(int cellX, int cellY)

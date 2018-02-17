@@ -17,6 +17,8 @@ public class SpriteManager {
     private AnimationController footman;
     private AnimationController archer;
     
+    private AnimationController arrow;
+    
     public SpriteManager(Color color)
     {
         peasant = new AnimationController();
@@ -50,6 +52,12 @@ public class SpriteManager {
                                              Assets.loadToCompatibleImage("/Units/Archer/walktc.png"), color)));
         archer.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/stand.png"),
                                              Assets.loadToCompatibleImage("/Units/Archer/standtc.png"), color)));
+        archer.addAnimation("attack", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/attack.png"),
+                                     Assets.loadToCompatibleImage("/Units/Archer/attacktc.png"), color), false));
+        
+        arrow = new AnimationController();
+        arrow.addAnimation("default", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Other/Projectiles/arrow.png"),
+                                                Assets.loadToCompatibleImage("/Other/Projectiles/arrowtc.png"), color)));
         
     }
     
@@ -66,6 +74,10 @@ public class SpriteManager {
     public AnimationController getArcherAC()
     {
         return new AnimationController(archer);
+    }
+    
+    public AnimationController getArrowAC() {
+        return new AnimationController(arrow);
     }
     
 }

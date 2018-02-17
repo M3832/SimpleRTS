@@ -29,7 +29,6 @@ public class Build extends Action {
         if(owner.getPlayer().hasGoldFor(building))
         {
             owner.getPlayer().pay(building.getGoldCost());
-            System.out.println(owner.getPlayer().getGold());
             Building newBuilding = building.build((Builder)owner);
             owner.getMap().addEntity(newBuilding);
             owner.removeAction(this);

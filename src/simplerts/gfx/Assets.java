@@ -55,7 +55,6 @@ public class Assets {
         BufferedImage tileImage = loadToCompatibleImage("/tileset.bmp");
         tiles = new BufferedImage[(tileImage.getWidth()/tileSize) * (tileImage.getHeight() / tileSize)];
         int width = tileImage.getWidth()/tileSize;
-        System.out.println(tiles.length);
         for(int i = 0; i < tiles.length; i++)
         {
             tiles[i] = tileImage.getSubimage((i%width) * tileSize, (i/width) * tileSize, tileSize, tileSize);

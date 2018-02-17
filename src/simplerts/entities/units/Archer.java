@@ -14,9 +14,11 @@ import simplerts.entities.Entity;
 import simplerts.entities.Unit;
 import simplerts.entities.actions.Attack;
 import simplerts.entities.interfaces.Attacker;
+import simplerts.entities.projectiles.Arrow;
 import simplerts.gfx.Assets;
 import simplerts.map.Destination;
 import simplerts.ui.UIAction;
+import simplerts.utils.TimerTask;
 
 /**
  *
@@ -26,8 +28,8 @@ public class Archer extends Unit implements Attacker {
     
     public static int GOLDCOST = 400;
     private int range;
-    private boolean hasAttacked, renderAttack;
-    private int attackSpeed, attackRenderSpeed;
+    private boolean hasAttacked;
+    private int attackSpeed;
     
     public Archer(int x, int y, Player player)
     {
@@ -46,7 +48,6 @@ public class Archer extends Unit implements Attacker {
         moveSpeed = 6;
         hasAttacked = false;
         attackSpeed = 800;
-        attackRenderSpeed = 300;
         attackDamage = 5;
         ac = player.getSpriteManager().getArcherAC();
         name = "Archer";
@@ -90,15 +91,39 @@ public class Archer extends Unit implements Attacker {
             super.rightClickAction(e);
         }
     }
+    
+    @Override
+    public void setAnimation()
+    {
+        if(hasAttacked)
+        {
+            ac.update();
+        } else {
+            super.setAnimation();
+        }
+    }
 
     @Override
     public void attack(Entity e) {
-        System.out.println("Archer attack not yet implemented.");
+        if(!hasAttacked)
+        {
+            hasAttacked = true;
+            setDirection(e.getGridX() - getGridX(), e.getGridY() - getGridY());
+            grid.addEntity(new Arrow(this, e));
+            taskManager.addTask(new TimerTask(attackSpeed, () -> {hasAttacked = false;}));
+            ac.setAnimation("attack");
+            ac.playAnimation();
+        }
     }
 
     @Override
     public int getRange() {
         return range;
+    }
+    
+    @Override
+    public int getDamage() {
+        return attackDamage;
     }
 
     @Override

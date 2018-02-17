@@ -66,10 +66,8 @@ public class Cell {
     
     public void variate()
     {
-        System.out.println(tileId);
         if(Arrays.asList(terrain.getAlternatives()).contains(tileId))
         {
-        System.out.println("Variation in progress");
             double d = Math.random();
             if(d < .8)
             {

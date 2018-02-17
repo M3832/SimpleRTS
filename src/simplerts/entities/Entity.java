@@ -38,7 +38,7 @@ public abstract class Entity {
     protected ArrayList<UIObject> uiObjects;
     protected ArrayList<UIAction> uiActions;
     protected Player player;
-    protected boolean isVisible, isDead;
+    protected boolean isVisible, isDead, remove;
     public Color color;
     public BackEndMap grid;
     protected SoundController soundManager;
@@ -61,6 +61,7 @@ public abstract class Entity {
         viewRange = 2;
         isVisible = true;
         isDead = false;
+        remove = false;
         health = maxHealth;
         soundManager = new SoundController();
         taskManager = new TaskManager();
@@ -260,7 +261,7 @@ public abstract class Entity {
     protected void die()
     {
         isDead = true;
-        taskManager.addTask(new TimerTask(30000, () -> {player.getEntities().remove(this); player.getHandler().map.getEntities().remove(this);}));
+        taskManager.addTask(new TimerTask(30000, () -> { remove = true;}));
     }
 
     public boolean isDead() {
@@ -278,5 +279,9 @@ public abstract class Entity {
     public void addTask(TimerTask t)
     {
         taskManager.addTask(t);
+    }
+    
+    public boolean timeToRemove() {
+        return remove;
     }
 }

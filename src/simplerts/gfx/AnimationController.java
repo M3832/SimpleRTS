@@ -66,4 +66,8 @@ public class AnimationController {
         this.direction = direction;
     }
     
+    public int getDirection() {
+        return direction;
+    }
+    
 }
