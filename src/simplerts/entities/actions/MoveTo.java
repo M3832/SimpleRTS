@@ -191,8 +191,8 @@ public class MoveTo extends Action {
         {
             if(owner.getMap().checkCollision(destinations.get(i).getGridX(), destinations.get(i).getGridY(), owner))
             {
-                Unit u = (Unit)owner.getMap().getEntityFromCell(destinations.get(i).getGridX(), destinations.get(i).getGridY());
-                if(u != null && movingInSameDirection(owner, u))
+                Entity e = owner.getMap().getEntityFromCell(destinations.get(i).getGridX(), destinations.get(i).getGridY());
+                if(e != null && e instanceof Unit && movingInSameDirection(owner, (Unit)e))
                 {
                     return false;
                 } else {
