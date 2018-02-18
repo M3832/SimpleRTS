@@ -50,7 +50,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     
     public Builder(Destination d, Player player)
     {
-        this(d.getX(), d.getY(), player);
+        this(d.getGridX(), d.getGridY(), player);
     }
     
     private void initVariables()

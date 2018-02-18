@@ -30,14 +30,14 @@ public class GUI {
     private final FrontEndMap renderMap;
     private final MiniMap minimap;
     private final Controller controller;
-    private final int mapOffsetX = 35, mapOffsetY = Game.HEIGHT + 31;
+    private final int mapOffsetX = 27, mapOffsetY = Game.HEIGHT + 14;
     private final CopyOnWriteArrayList<UIObject> objects;
     private ArrayList<Entity> entities;
     
     public GUI(FrontEndMap map, Controller controller) {
         renderMap = map;
         this.controller = controller;
-        minimap = renderMap.getMiniMap(175, 175);
+        minimap = renderMap.getMiniMap(197, 197);
         entities = new ArrayList<>();
         objects = new CopyOnWriteArrayList<>();
         initVariables();
@@ -96,7 +96,7 @@ public class GUI {
     
     public void render(Graphics g) {
         g.drawImage(Assets.GUI, 0, Game.HEIGHT, null);
-        g.drawImage(minimap.getMinimapWithEntities(), 35, Game.HEIGHT + 31, null);
+        g.drawImage(minimap.getMinimapWithEntities(), mapOffsetX, mapOffsetY, null);
         g.setColor(Color.WHITE);
         g.drawRect((int)(controller.getCamera().getOffsetX() * minimap.getPixelRatio()) + mapOffsetX, (int)(controller.getCamera().getOffsetY() * minimap.getPixelRatio()) + mapOffsetY, (int)(Game.WIDTH * minimap.getPixelRatio()), (int)(Game.HEIGHT * minimap.getPixelRatio()));
         
@@ -109,13 +109,13 @@ public class GUI {
         {
             for(int i = 0; i < entities.size(); i++)
             {
-                g.drawImage(entities.get(i).getIcon(), 275 + i * 75, Game.HEIGHT + 100, null);
+                g.drawImage(entities.get(i).getIcon(), 300 + i * 75, Game.HEIGHT + 75, null);
             }
         } else if (entities != null && entities.size() > 5)
         {
             for(int i = 0; i < entities.size(); i++)
             {
-                g.drawImage(entities.get(i).getIcon(), (275 + ((i%5) * 75)), Game.HEIGHT + 100 + (75 * (i/5)), null);
+                g.drawImage(entities.get(i).getIcon(), (300 + ((i%5) * 75)), Game.HEIGHT + 50 + (75 * (i/5)), null);
             }
         }
         
@@ -131,8 +131,8 @@ public class GUI {
     }
     
     public void addUIAction(UIAction o) {
-        o.setY(Game.HEIGHT + 24 + (o.getHeight() + 7) * (objects.size()/3));
-        o.setX(777 + (o.getWidth() + 8) * (objects.size()%3));
+        o.setY(Game.HEIGHT + 20 + (o.getHeight() + 10) * (objects.size()/3));
+        o.setX(762 + (o.getWidth() + 10) * (objects.size()%3));
         o.updateBounds();
         objects.add(o);
     }
@@ -146,7 +146,7 @@ public class GUI {
     }
     
     public void updateMinimap() {
-        minimap.setImage(renderMap.getMinimapImage(175, 175, false));
+        minimap.setImage(renderMap.getMinimapImage(197, 197, false));
     }
     
 }

@@ -19,6 +19,7 @@ import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Player;
 import simplerts.editor.LoadedObject;
+import simplerts.entities.Projectile;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.resources.Goldmine;
 import simplerts.entities.units.Archer;
@@ -63,7 +64,8 @@ public class BackEndMap {
     public void addEntity(Entity e)
     {
         entities.add(e);
-        updateEntityCell(e.getGridX(), e.getGridY(), e);
+        if(!(e instanceof Projectile))
+            updateEntityCell(e.getGridX(), e.getGridY(), e);
         e.getPlayer().addEntity(e);
     }
     
@@ -75,16 +77,16 @@ public class BackEndMap {
             return p;
         }).filter((p) -> (!startLocations.isEmpty())).forEach((p) -> {
             Destination startLocation = startLocations.get((int)(Math.random() * (startLocations.size())));
-            TownHall th = new TownHall(startLocation.getX(), startLocation.getY(), 4, p, true);
+            TownHall th = new TownHall(startLocation.getGridX(), startLocation.getGridY(), 4, p, true);
             addEntity(th);
             for(int i = 0; i < startWorkers; i++)
             {
                 Destination target = getAvailableNeighborCell(th);
-                Builder b = new Builder(target.getX(), target.getY(), p);
+                Builder b = new Builder(target.getGridX(), target.getGridY(), p);
                 addEntity(b);
             }
             Destination target = getAvailableNeighborCell(th);
-            Archer a = new Archer(target.getX(), target.getY(), p);
+            Archer a = new Archer(target.getGridX(), target.getGridY(), p);
             addEntity(a);
             startLocations.remove(startLocation);
         });
@@ -312,7 +314,7 @@ public class BackEndMap {
     
     public Destination getClosestCell(Entity e, Destination d)
     {
-        return getClosestCell(e, new Builder(d.getX(), d.getY(), neutral));
+        return getClosestCell(e, new Builder(d.getGridX(), d.getGridY(), neutral));
     }
     
     public Cell findLumberCloseTo(Destination d, int squaresAround)
@@ -333,7 +335,7 @@ public class BackEndMap {
         
         if(squaresAround > maxSquaresAround)
         {
-            return cells[d.getX()][d.getY()];
+            return cells[d.getGridX()][d.getGridY()];
         } else {
             return findLumberCloseTo(d, ++squaresAround);
         }
@@ -349,8 +351,8 @@ public class BackEndMap {
     
     public Rectangle getArea(Destination d, int squaresAround)
     {
-        int x = d.getX();
-        int y = d.getY();
+        int x = d.getGridX();
+        int y = d.getGridY();
         int width = 1 + 2 * squaresAround;
         int height = 1 + 2 * squaresAround;
         return new Rectangle(x, y, width, height);

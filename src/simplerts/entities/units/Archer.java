@@ -39,13 +39,12 @@ public class Archer extends Unit implements Attacker {
     
     public Archer(Destination d, Player player)
     {
-        this(d.getX(), d.getY(), player);
+        this(d.getGridX(), d.getGridY(), player);
     }
     
     private void initVariables()
     {
         range = 5;
-        moveSpeed = 6;
         hasAttacked = false;
         attackSpeed = 800;
         attackDamage = 5;

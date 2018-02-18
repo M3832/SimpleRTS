@@ -43,7 +43,7 @@ public class Chop extends Action {
             movePath.performAction();
             chopping = false;
         } else {
-            movePath = new MoveTo(owner, owner.getMap().getClosestCell(owner, new Destination(cell.getX(), cell.getY())));
+            movePath = new MoveTo(owner, owner.getMap().getClosestCell(owner, new Destination(cell.getX(), cell.getY())), true);
         }
         
         if(Utilities.isAdjacent(owner.getDestination(), new Destination(cell.getX(), cell.getY())) && !movePath.moving)
@@ -75,7 +75,7 @@ public class Chop extends Action {
         if(movePath.stuck)
         {
             cell = owner.getMap().findLumberCloseTo(owner.getDestination(), 1);
-            movePath = new MoveTo(owner, new Destination(cell.getX(), cell.getY()));
+            movePath = new MoveTo(owner, new Destination(cell.getX(), cell.getY()), true);
         }
     }
 

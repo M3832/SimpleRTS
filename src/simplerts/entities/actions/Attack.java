@@ -25,17 +25,19 @@ public class Attack extends Action {
         super(owner);
         this.target = target;
         follow = new Follow(owner, target);
+        System.out.println("Attacking?");
     }
 
     @Override
     public void performAction() {
-        int deltaX = Math.abs(owner.getMap().getClosestCell(owner, target).getX() - owner.getGridX());
-        int deltaY = Math.abs(owner.getMap().getClosestCell(owner, target).getY() - owner.getGridY());
+        int deltaX = Math.abs(owner.getMap().getClosestCell(owner, target).getGridX() - owner.getGridX());
+        int deltaY = Math.abs(owner.getMap().getClosestCell(owner, target).getGridY() - owner.getGridY());
         if(deltaX < ((Attacker)owner).getRange() && deltaY < ((Attacker)owner).getRange() && !target.isDead() && owner.inSquare())
         {
             ((Attacker)owner).attack(target);
         } else {
-            follow.performAction();
+            if(!target.isDead())
+                follow.performAction();
         }
         
         if(target.isDead())

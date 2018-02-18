@@ -5,67 +5,77 @@
  */
 package simplerts.map;
 
+import simplerts.Game;
+
 /**
  *
  * @author Markus
  */
 public class Destination {
     
-    private int x, y;
+    private int gridX, gridY;
     
     public Destination(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        this.gridX = x;
+        this.gridY = y;
     }
     
     public Destination(Destination d)
     {
-        this.x = d.getX();
-        this.y = d.getY();
+        this.gridX = d.getGridX();
+        this.gridY = d.getGridY();
     }
 
     /**
-     * @return the x
+     * @return the gridX
      */
+    public int getGridX() {
+        return gridX;
+    }
+
+    /**
+     * @param gridX the gridX to set
+     */
+    public void setGridX(int gridX) {
+        this.gridX = gridX;
+    }
+
+    /**
+     * @return the gridY
+     */
+    public int getGridY() {
+        return gridY;
+    }
+
+    /**
+     * @param gridY the gridY to set
+     */
+    public void setGridY(int gridY) {
+        this.gridY = gridY;
+    }
+    
     public int getX() {
-        return x;
+        return gridX * Game.CELLSIZE;
     }
-
-    /**
-     * @param x the x to set
-     */
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    /**
-     * @return the y
-     */
+    
     public int getY() {
-        return y;
-    }
-
-    /**
-     * @param y the y to set
-     */
-    public void setY(int y) {
-        this.y = y;
+        return gridY * Game.CELLSIZE;
     }
     
     @Override
     public String toString()
     {
-        return "Destination: " + x + ", " + y;
+        return "Destination: " + gridX + ", " + gridY;
     }
 
     public void add(int x, int y) {
-        this.x += x;
-        this.y += y;
+        this.gridX += x;
+        this.gridY += y;
     }
 
     public boolean isEmpty() {
-        return x == -1 || y == -1;
+        return gridX == -1 || gridY == -1;
     }
     
     

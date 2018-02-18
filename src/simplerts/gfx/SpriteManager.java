@@ -36,7 +36,7 @@ public class SpriteManager {
                                                      Assets.loadToCompatibleImage("/Units/Peasant/standGoldtc.png"), color)));
         peasant.addAnimation("chop", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/chop.png"),
                                                      Assets.loadToCompatibleImage("/Units/Peasant/choptc.png"), color), false));
-        peasant.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/dead.png"),
+        peasant.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/death.png"),
                                                      Assets.loadToCompatibleImage("/Units/Peasant/deadtc.png"), color), false));
         
         footman = new AnimationController();

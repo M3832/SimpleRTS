@@ -29,6 +29,7 @@ import simplerts.entities.actions.Chop;
 import simplerts.entities.actions.Follow;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.interfaces.Lumberman;
+import simplerts.gfx.Assets;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
 import simplerts.map.FrontEndMap;
@@ -202,7 +203,7 @@ public class Controller {
                     {
                         Builder b = ((Builder)selected.get(0));
                         Building building = (Building)entityplacer.getEntity().duplicate();
-                        building.setPosition(entityplacer.getDestination().getX() * Game.CELLSIZE, entityplacer.getDestination().getY() * Game.CELLSIZE);
+                        building.setPosition(entityplacer.getDestination().getGridX() * Game.CELLSIZE, entityplacer.getDestination().getGridY() * Game.CELLSIZE);
                         b.clearActions();
                         b.playSound(SoundController.CONFIRM);
                         b.addAction(new MoveTo(b, new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2)));
@@ -298,19 +299,25 @@ public class Controller {
     }
 
     private void renderResources(Graphics g) {
-        int resourceWidth = 300, resourceHeight = 50;
-        String gold = "Gold: " + player.getGold(), wood = "Wood: " + player.getLumber(), food = "Food: " + player.getCurrentFood() + "/" + player.getMaxFood();
-        g.setColor(new Color(100, 100, 100, 100));
-        g.fillRect(Game.WIDTH - resourceWidth, 0, resourceWidth -1, resourceHeight);
-        g.setColor(Color.BLACK);
-        g.drawRect(Game.WIDTH - resourceWidth, 0, resourceWidth - 1, resourceHeight);
+//        String gold = "Gold: " + player.getGold(), wood = "Wood: " + player.getLumber(), food = "Food: " + player.getCurrentFood() + "/" + player.getMaxFood();
+//        g.setColor(new Color(100, 100, 100, 100));
+//        g.fillRect(Game.WIDTH - resourceWidth, 0, resourceWidth -1, resourceHeight);
+//        g.setColor(Color.BLACK);
+//        g.drawRect(Game.WIDTH - resourceWidth, 0, resourceWidth - 1, resourceHeight);
+//        g.setFont(GUI.BREAD);
+//        g.setColor(Color.YELLOW);
+//        Utilities.drawWithShadow(g, gold, Game.WIDTH - resourceWidth + 10, 30);
+//        g.setColor(Color.GREEN);
+//        Utilities.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
+//        g.setColor(new Color(255, 50, 50));
+//        Utilities.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
+        g.drawImage(Assets.resourceBar, Game.WIDTH - Assets.resourceBar.getWidth(), 0, null);
+        g.setColor(Color.WHITE);
         g.setFont(GUI.BREAD);
-        g.setColor(Color.YELLOW);
-        Utilities.drawWithShadow(g, gold, Game.WIDTH - resourceWidth + 10, 30);
-        g.setColor(Color.GREEN);
-        Utilities.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
-        g.setColor(new Color(255, 50, 50));
-        Utilities.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
+        Utilities.drawWithShadow(g, player.getGold() + "", Game.WIDTH - Assets.resourceBar.getWidth() + 55, 30);
+        Utilities.drawWithShadow(g, player.getLumber() + "", Game.WIDTH - Assets.resourceBar.getWidth() + 160, 30);
+        Utilities.drawWithShadow(g, player.getCurrentFood() + "/" + player.getMaxFood(), Game.WIDTH - Assets.resourceBar.getWidth() + 252, 30);
+        
     }
 
     public void deselect(Entity e) {

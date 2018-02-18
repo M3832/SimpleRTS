@@ -46,8 +46,8 @@ public class Utilities {
     
     public static boolean isAdjacent(Destination d1, Destination d2)
     {
-        int deltaX = Math.abs(d1.getX() - d2.getX());
-        int deltaY = Math.abs(d1.getY() - d2.getY());
+        int deltaX = Math.abs(d1.getGridX() - d2.getGridX());
+        int deltaY = Math.abs(d1.getGridY() - d2.getGridY());
         if(deltaX < 2 && deltaY < 2)
         {
             return true;
@@ -71,23 +71,24 @@ public class Utilities {
     }
     
     public static int getFacingDirection(int x, int y) {
+        int finalAnimtion = 0;
         if(x > 0)
-            return Animation.EAST;
+            finalAnimtion = Animation.EAST;
         if(x < 0)
-            return Animation.WEST;
+            finalAnimtion = Animation.WEST;
         if(y > 0)
-            return Animation.SOUTH;
+            finalAnimtion = Animation.SOUTH;
         if(y < 0)
-            return Animation.NORTH;
+            finalAnimtion = Animation.NORTH;
         if(x > 0 && y > 0)
-            return Animation.SOUTHEAST;
+            finalAnimtion = Animation.SOUTHEAST;
         if(x < 0 && y > 0)
-            return Animation.SOUTHWEST;
+            finalAnimtion = Animation.SOUTHWEST;
         if(x < 0 && y < 0)
-            return Animation.NORTHWEST;
+            finalAnimtion = Animation.NORTHWEST;
         if(x > 0 && y < 0)
-            return Animation.NORTHEAST;
+            finalAnimtion = Animation.NORTHEAST;
         
-        return Animation.SOUTH;
+        return finalAnimtion;
     }
 }

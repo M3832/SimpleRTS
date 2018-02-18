@@ -68,7 +68,7 @@ public abstract class Unit extends Entity {
     
     public Unit(Destination d, Player player)
     {
-        this(d.getX(), d.getY(), player);
+        this(d.getGridX(), d.getGridY(), player);
     }
     
     private void initVariables()
@@ -89,8 +89,8 @@ public abstract class Unit extends Entity {
     
     public void move(Destination d)
     {
-        deltaX = d.getX() * Game.CELLSIZE - x;
-        deltaY = d.getY() * Game.CELLSIZE - y;
+        deltaX = d.getGridX() * Game.CELLSIZE - x;
+        deltaY = d.getGridY() * Game.CELLSIZE - y;
         tempX = x;
         tempY = y;
 
@@ -231,13 +231,13 @@ public abstract class Unit extends Entity {
     {
         g.setColor(new Color(255, 155, 111));
         //Render name
-        Utilities.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 75);
+        Utilities.drawWithShadow(g, name, Game.WIDTH/2 - g.getFontMetrics(HEADER).stringWidth(name)/2, Game.HEIGHT + 50);
         
         //Render stats
         g.setFont(GUI.BREAD);
-        Utilities.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 125);
-        Utilities.drawWithShadow(g, "Damage: " + attackDamage, 300, Game.HEIGHT + 150);
-        Utilities.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, Game.HEIGHT + 175);
+        Utilities.drawWithShadow(g, "Health: " + health + "/" + maxHealth, 300, Game.HEIGHT + 100);
+        Utilities.drawWithShadow(g, "Damage: " + attackDamage, 300, Game.HEIGHT + 125);
+        Utilities.drawWithShadow(g, "Movespeed: " + moveSpeed, 300, Game.HEIGHT + 150);
         
         for(UIObject o : uiObjects)
         {
@@ -368,5 +368,9 @@ public abstract class Unit extends Entity {
 
     public boolean inSquare() {
         return x%Game.CELLSIZE == 0 && y%Game.CELLSIZE == 0;
+    }
+
+    public int getMoveSpeed() {
+        return moveSpeed;
     }
 }

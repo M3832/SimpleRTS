@@ -20,7 +20,7 @@ import simplerts.utils.Utilities;
 public abstract class Projectile extends Entity {
     
     protected AnimationController ac;
-    protected int speed;
+    protected int speed, currentUpdate;
     protected int damage;
     protected Entity owner, target;
     protected Destination targetDestination, startDestination;
@@ -36,7 +36,8 @@ public abstract class Projectile extends Entity {
         this.gridX = this.owner.getGridX();
         this.gridY = this.owner.getGridY();
         player = this.owner.getPlayer();
-        speed = 10;
+        speed = 1000;
+        currentUpdate = 3;
         damage = owner.getDamage();
     }
     
@@ -49,33 +50,16 @@ public abstract class Projectile extends Entity {
     @Override
     public void update()
     {
-        int deltaX = targetDestination.getX() * Game.CELLSIZE - x;
-        int deltaY = targetDestination.getY() * Game.CELLSIZE - y;
+        float tempSpeed = speed*Math.max(Math.abs(owner.getGridX() - target.getGridX()), Math.abs(owner.getGridY() - target.getGridY()));
+        x = (int)((((float)targetDestination.getGridX() * Game.CELLSIZE) - ((float)startDestination.getGridX() * Game.CELLSIZE)) * ((float)currentUpdate/tempSpeed)) + startDestination.getGridX() * Game.CELLSIZE;
+        y = (int)((((float)targetDestination.getGridY() * Game.CELLSIZE) - ((float)startDestination.getGridY() * Game.CELLSIZE)) * ((float)currentUpdate/tempSpeed)) + startDestination.getGridY() * Game.CELLSIZE;
         
-        if(deltaX > 0)
-        {
-            x += Math.min(speed, Math.abs(deltaX));
-        } else if (deltaX < 0)
-        {
-            x -= Math.min(speed, Math.abs(deltaX));
-        }
-//        if(deltaY > 0)
-//        {
-//            y += Math.min(speed, Math.abs(deltaY));
-//        }
-//        if(deltaY < 0)
-//        {
-//            y -= Math.min(speed, Math.abs(deltaY));
-//        }
-        float xTravelPercentage = deltaX / (((float)targetDestination.getX() * Game.CELLSIZE) - ((float)startDestination.getX() * Game.CELLSIZE));
-        System.out.println(xTravelPercentage);
-        y = (int)((((float)startDestination.getY() * Game.CELLSIZE) - ((float)targetDestination.getY() * Game.CELLSIZE)) * xTravelPercentage) + targetDestination.getY() * Game.CELLSIZE;
-        
-        if(deltaX == 0 && deltaY == 0)
+        if(currentUpdate == tempSpeed)
             arrive();
         
         gridX = x / Game.CELLSIZE;
         gridY = y / Game.CELLSIZE;
+        currentUpdate++;
     }
     
     protected void arrive()

@@ -50,6 +50,8 @@ public class Goldmine extends Building implements GoldProvider{
             miner.enter();
             miner.setGold(miner.getGoldCapacity());
             gold -= miner.getGoldCapacity();
+            if(gold <= 0)
+                remove = true;
             g.setLatestMine(this);
             addTask(new TimerTask(1000, () -> {
                 exitGatherer();

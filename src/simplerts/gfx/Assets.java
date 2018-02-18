@@ -35,6 +35,7 @@ public class Assets {
     public static Terrain trees;
     public static ArrayList<Terrain> terrains;
     public static BufferedImage GUI;
+    public static BufferedImage resourceBar;
     public static BufferedImage iconBG;
 
     public static void setup() {
@@ -45,7 +46,8 @@ public class Assets {
         terrains.add(grass);
         darkGrass = loadTerrain("/darkgrass2.bmp", "darkGrass", true, new Color(0, 200, 0));
         trees = loadTerrain("/forest.bmp", "trees", false, new Color(0, 125, 0));
-        GUI = loadToCompatibleImage("/gui.bmp");
+        GUI = loadToCompatibleImage("/gui2.png");
+        resourceBar = loadToCompatibleImage("/resourceBar2.png");
         iconBG = loadToCompatibleImage("/iconbg.bmp");
         barrenTree = loadAndResizeImage("/barrenWood.bmp", Game.CELLSIZE, Game.CELLSIZE);
     }

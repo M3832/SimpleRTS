@@ -43,7 +43,7 @@ public class PathFinder {
             for(int y = 0; y < nodeMap[0].length; y++)
             {
                 nodeMap[x][y] = new Node(x, y);
-                nodeMap[x][y].heuristic = (Math.abs(x - (int)goal.getX()) + Math.abs(y - (int)goal.getY()));
+                nodeMap[x][y].heuristic = (Math.abs(x - (int)goal.getGridX()) + Math.abs(y - (int)goal.getGridY()));
                 if(avoidUnits && map.getCells()[x][y].getEntity() != null && map.getCells()[x][y].getEntity() != owner){
                     nodeMap[x][y].occupiedByUnit = true;
                 }
@@ -52,7 +52,7 @@ public class PathFinder {
         
         //Get start and end node
         Node startNode = nodeMap[(int)owner.getGridX()][(int)owner.getGridY()];
-        Node goalNode = nodeMap[(int)goal.getX()][(int)goal.getY()];
+        Node goalNode = nodeMap[(int)goal.getGridX()][(int)goal.getGridY()];
         
         if(map.checkCollision(goalNode.gridX, goalNode.gridY, owner))
         {

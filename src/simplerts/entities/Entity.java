@@ -106,18 +106,18 @@ public abstract class Entity {
     
      public void setPosition(Destination d)
      {
-         int newX = d.getX() * Game.CELLSIZE;
-         int newY = d.getY() * Game.CELLSIZE;
+         int newX = d.getGridX() * Game.CELLSIZE;
+         int newY = d.getGridY() * Game.CELLSIZE;
          if(!grid.checkUnitCollision(new Rectangle(newX, newY, width, height), this))
          {
-            setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE); 
+            setPosition(d.getGridX() * Game.CELLSIZE, d.getGridY() * Game.CELLSIZE); 
          } else {
             Entity temp = grid.getEntityFromCell(newX/Game.CELLSIZE, newY/Game.CELLSIZE);
             if(temp != null)
             {
                 setPosition(grid.getAvailableNeighborCell(temp));
             } else {
-                setPosition(d.getX() * Game.CELLSIZE, d.getY() * Game.CELLSIZE);
+                setPosition(d.getGridX() * Game.CELLSIZE, d.getGridY() * Game.CELLSIZE);
             }
          }
          updateCells();

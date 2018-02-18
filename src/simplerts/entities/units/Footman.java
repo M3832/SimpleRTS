@@ -40,7 +40,7 @@ public class Footman extends Unit implements Attacker {
     
     public Footman(Destination d, Player player)
     {
-        this(d.getX(), d.getY(), player);
+        this(d.getGridX(), d.getGridY(), player);
     }
     
     private void initVariables()
@@ -133,7 +133,7 @@ public class Footman extends Unit implements Attacker {
     @Override
     public void rightClickAction(Entity e)
     {
-        if(e.getPlayer() != player && e.isDead())
+        if(e.getPlayer() != player && !e.isDead())
         {
             addAction(new Attack(this, e));
         } else {
