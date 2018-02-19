@@ -24,6 +24,8 @@ import simplerts.entities.buildings.TownHall;
 import simplerts.entities.resources.Goldmine;
 import simplerts.entities.units.Archer;
 import simplerts.entities.units.Builder;
+import simplerts.entities.units.Footman;
+import simplerts.entities.units.Healer;
 
 /**
  *
@@ -88,6 +90,12 @@ public class BackEndMap {
             Destination target = getAvailableNeighborCell(th);
             Archer a = new Archer(target.getGridX(), target.getGridY(), p);
             addEntity(a);
+            target = getAvailableNeighborCell(th);
+            Footman f = new Footman(target.getGridX(), target.getGridY(), p);
+            addEntity(f);
+            target = getAvailableNeighborCell(th);
+            Healer h = new Healer(target.getGridX(), target.getGridY(), p);
+            addEntity(h);
             startLocations.remove(startLocation);
         });
     }
@@ -105,6 +113,13 @@ public class BackEndMap {
             if(entities.get(i).timeToRemove())
             {
                 entities.get(i).getPlayer().getEntities().remove(entities.get(i));
+                for(int x = entities.get(i).getGridX(); x < entities.get(i).getGridX() + entities.get(i).getGridWidth(); x++)
+                {
+                    for(int y = entities.get(i).getGridY(); y < entities.get(i).getGridY() + entities.get(i).getGridHeight(); y++)
+                    {
+                        cells[x][y].setEntity(null);
+                    }
+                }
                 entities.remove(entities.get(i));
             }
         }

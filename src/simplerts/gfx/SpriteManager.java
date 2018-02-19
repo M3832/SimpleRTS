@@ -16,6 +16,7 @@ public class SpriteManager {
     private AnimationController peasant;
     private AnimationController footman;
     private AnimationController archer;
+    private AnimationController healer;
     
     private AnimationController arrow;
     
@@ -46,6 +47,8 @@ public class SpriteManager {
                                              Assets.loadToCompatibleImage("/Units/Footman/attacktc.png"), color), false));
         footman.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/stand.png"),
                                              Assets.loadToCompatibleImage("/Units/Footman/standtc.png"), color)));
+        footman.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/death.png"),
+                                             Assets.loadToCompatibleImage("/Units/Footman/deathtc.png"), color), false));
         
         archer = new AnimationController();
         archer.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/walk.png"),
@@ -54,6 +57,12 @@ public class SpriteManager {
                                              Assets.loadToCompatibleImage("/Units/Archer/standtc.png"), color)));
         archer.addAnimation("attack", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/attack.png"),
                                      Assets.loadToCompatibleImage("/Units/Archer/attacktc.png"), color), false));
+        archer.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/death.png"),
+                                             Assets.loadToCompatibleImage("/Units/Archer/deathtc.png"), color), false));
+        
+        healer = new AnimationController();
+        healer.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Healer/stand2.png"),
+                                             Assets.loadToCompatibleImage("/Units/Healer/stand2tc.png"), color)));
         
         arrow = new AnimationController();
         arrow.addAnimation("default", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Other/Projectiles/arrow.png"),
@@ -74,6 +83,11 @@ public class SpriteManager {
     public AnimationController getArcherAC()
     {
         return new AnimationController(archer);
+    }
+    
+    public AnimationController getHealerAC()
+    {
+        return new AnimationController(healer);
     }
     
     public AnimationController getArrowAC() {

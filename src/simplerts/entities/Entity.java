@@ -253,7 +253,6 @@ public abstract class Entity {
         health -= damage;
         if(health <= 0)
         {
-            player.getHandler().game.mm.addMessage(new Message("Died"));
             die();
         }
     }

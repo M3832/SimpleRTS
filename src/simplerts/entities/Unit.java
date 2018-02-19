@@ -200,7 +200,10 @@ public abstract class Unit extends Entity {
     
     protected void setAnimation()
     {
-        if(actions.size() > 0 && actions.get(0).isMoving())
+        if(isDead)
+        {
+            ac.setAnimation("dead");
+        } else if (actions.size() > 0 && actions.get(0).isMoving())
         {
             ac.setAnimation("walk");
         }
@@ -350,12 +353,6 @@ public abstract class Unit extends Entity {
      */
     public void setFoodRequirement(int foodRequirement) {
         this.foodRequirement = foodRequirement;
-    }
-    
-    @Override
-    protected void die()
-    {
-        super.die();
     }
 
     public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination lastDestination) {
