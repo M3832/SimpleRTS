@@ -29,11 +29,8 @@ public class Barracks extends Building {
     
     public Barracks(int x, int y, Player player) {
         super(x, y, 3, player, false);
-        sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/Buildings/Barracks/sprite.png", width, height),
-                                                     Assets.loadAndResizeImage("/Buildings/Barracks/barrackstc.png", width, height), color);
-        icon = Assets.makeIcon(color, Assets.resizeImage(sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height), 100, 100));
         uiObjects = new ArrayList<>();
-        uiActions = new ArrayList<>();
+        actionButtons = new ArrayList<>();
         initVariables();
     }
     
@@ -44,10 +41,17 @@ public class Barracks extends Building {
     }
     
     @Override
+    protected void initGraphics(){
+        sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/Buildings/Barracks/sprite.png", width, height),
+                                             Assets.loadAndResizeImage("/Buildings/Barracks/barrackstc.png", width, height), color);
+        icon = Assets.makeIcon(color, Assets.resizeImage(sprite.getSubimage(width * (int)(1 * (sprite.getWidth()/width - 1)), 0, width, height), 100, 100));
+    }
+    
+    @Override
     protected void setupActions()
     {
-        uiActions.add(Footman.getUIAction(player, this));
-        uiActions.add(Archer.getUIAction(player, this));
+        addActionButton(actionButtons, Footman.getUIAction(player, this));
+        addActionButton(actionButtons, Archer.getUIAction(player, this));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
     }
     

@@ -16,6 +16,7 @@ import simplerts.map.BackEndMap;
 import simplerts.Player;
 import simplerts.audio.SoundController;
 import simplerts.display.Camera;
+import simplerts.gfx.Assets;
 import simplerts.map.Destination;
 import simplerts.messaging.Message;
 import simplerts.ui.UIAction;
@@ -36,7 +37,7 @@ public abstract class Entity {
     protected int viewRange;
     protected BufferedImage sprite, icon;
     protected ArrayList<UIObject> uiObjects;
-    protected ArrayList<UIAction> uiActions;
+    protected ArrayList<UIAction> actionButtons;
     protected Player player;
     protected boolean isVisible, isDead, remove;
     public Color color;
@@ -65,6 +66,8 @@ public abstract class Entity {
         health = maxHealth;
         soundManager = new SoundController();
         taskManager = new TaskManager();
+        actionButtons = new ArrayList<>();
+        uiObjects = new ArrayList<>();
     }
     
     public Entity(int x, int y, int size, Player player)
@@ -81,8 +84,27 @@ public abstract class Entity {
         this.player = player;
         color = player.getColor();
         grid = player.getHandler().map;
-        uiActions = new ArrayList<>();
-        uiObjects = new ArrayList<>();
+        initGraphics();
+        setupActions();
+    }
+    
+    protected void initGraphics(){
+        
+    }
+    
+    protected void setupActions(){
+
+    }
+    
+    protected void addActionButton(ArrayList<UIAction> menu, UIAction button){
+        addActionButton(menu, button, (menu.size()/3), (menu.size()%3));
+    }
+    
+    protected void addActionButton(ArrayList<UIAction> menu, UIAction button, int x, int y){
+        button.setY(Game.HEIGHT + 20 + (button.getHeight() + 10) * x);
+        button.setX(762 + (button.getWidth() + 10) * y);
+        button.updateBounds();
+        menu.add(button);
     }
     
     public void render(Graphics g, Camera camera)
@@ -195,7 +217,7 @@ public abstract class Entity {
     
     public ArrayList<UIAction> getUIActions()
     {
-        return uiActions;
+        return actionButtons;
     }
     
     public BufferedImage getIcon()

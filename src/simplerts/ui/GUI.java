@@ -32,6 +32,7 @@ public class GUI {
     private final Controller controller;
     private final int mapOffsetX = 27, mapOffsetY = Game.HEIGHT + 14;
     private final CopyOnWriteArrayList<UIObject> objects;
+    private ArrayList<UIAction> actionButtons, empty;
     private ArrayList<Entity> entities;
     
     public GUI(FrontEndMap map, Controller controller) {
@@ -40,6 +41,8 @@ public class GUI {
         minimap = renderMap.getMiniMap(197, 197);
         entities = new ArrayList<>();
         objects = new CopyOnWriteArrayList<>();
+        actionButtons = new ArrayList<>();
+        empty = new ArrayList<>();
         initVariables();
     }
     
@@ -75,10 +78,9 @@ public class GUI {
         {
             if(!entities.get(0).getUIActions().isEmpty() && controller.isPlayerControlled(entities.get(0)))
             {
-                for(UIAction a : entities.get(0).getUIActions())
-                {
-                    addUIAction(a);
-                }
+                actionButtons = entities.get(0).getUIActions();
+            } else {
+                actionButtons = empty;
             }
             if(!entities.get(0).getUIObjects().isEmpty())
             {
@@ -105,6 +107,8 @@ public class GUI {
             g.setColor(Color.WHITE);
             g.setFont(HEADER);
             entities.get(0).renderGUI(g);
+            if(actionButtons != null)
+                actionButtons.stream().forEach((UIAction button) -> button.render(g));
         } else if (entities != null && entities.size() > 1 && entities.size() < 6)
         {
             for(int i = 0; i < entities.size(); i++)
@@ -119,23 +123,25 @@ public class GUI {
             }
         }
         
-        objects.stream().forEach((UIObject o) -> {o.render(g);});
+//        objects.stream().forEach((UIObject o) -> {o.render(g);});
     }
     
     public void onMouseMove(MouseEvent e) {
         objects.stream().forEach((UIObject o) -> o.onMouseMove(e));
+        actionButtons.stream().forEach((UIObject o) -> o.onMouseMove(e));
     }
     
     public void onMouseRelease(MouseEvent e) {
         objects.stream().forEach((UIObject o) -> o.onMouseRelease(e));
+        actionButtons.stream().forEach((UIObject o) -> o.onMouseRelease(e));
     }
     
-    public void addUIAction(UIAction o) {
-        o.setY(Game.HEIGHT + 20 + (o.getHeight() + 10) * (objects.size()/3));
-        o.setX(762 + (o.getWidth() + 10) * (objects.size()%3));
-        o.updateBounds();
-        objects.add(o);
-    }
+//    public void addUIAction(UIAction o) {
+//        o.setY(Game.HEIGHT + 20 + (o.getHeight() + 10) * (objects.size()/3));
+//        o.setX(762 + (o.getWidth() + 10) * (objects.size()%3));
+//        o.updateBounds();
+//        objects.add(o);
+//    }
     
     public void addUIObject(UIObject o) {
         objects.add(o);
@@ -147,6 +153,14 @@ public class GUI {
     
     public void updateMinimap() {
         minimap.setImage(renderMap.getMinimapImage(197, 197, false));
+    }
+
+    public void setActionButtons(ArrayList<UIAction> actionButtons) {
+        this.actionButtons = actionButtons;
+    }
+
+    public void clear() {
+        actionButtons = empty;
     }
     
 }

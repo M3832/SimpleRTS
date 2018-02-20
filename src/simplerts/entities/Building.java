@@ -84,11 +84,6 @@ public abstract class Building extends Entity {
             training();
     }
     
-    protected void setupActions()
-    {
-        
-    }
-    
     private void building()
     {
         if(builder != null && currentTime < buildTime)
@@ -98,12 +93,8 @@ public abstract class Building extends Entity {
         {
             builder.exit(grid.getAvailableNeighborCell(this));
             builder = null;
-            setupActions();
-            if(player.getController() != null)
-            {
-                player.getController().selectEntity(this);
-            }
             building = false;
+            setupActions();
         }
     }
     

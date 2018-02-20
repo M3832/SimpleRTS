@@ -25,6 +25,8 @@ import simplerts.gfx.AnimationController;
 import simplerts.map.PathFinder;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
+import simplerts.ui.UIAction;
+import simplerts.ui.UIActionButton;
 import simplerts.ui.UIObject;
 import simplerts.utils.TimerTask;
 
@@ -82,10 +84,18 @@ public abstract class Unit extends Entity {
         pathFinder = new PathFinder(grid);
     }
     
-    protected void initGraphics()
-    {
-        icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));        
+    @Override
+    protected void setupActions(){
+        
+        
+        addActionButton(actionButtons, new UIActionButton(Assets.iconMove, () ->{System.out.println("Clicked move");}, "Move"));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconStop, () ->{actions.clear();}, "Stop"));
     }
+    
+//    protected void initGraphics()
+//    {
+//        icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));        
+//    }
     
     public void move(Destination d)
     {

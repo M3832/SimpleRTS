@@ -6,7 +6,6 @@
             <name>SimpleRTS</name>
             <source-roots>
                 <root id="src.gamedata.dir"/>
-                <root id="src.workingfiles.dir"/>
                 <root id="src.dir"/>
                 <root id="src.sprites.dir"/>
             </source-roots>

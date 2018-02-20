@@ -21,7 +21,7 @@ public class UIAction extends UIObject {
     private BufferedImage icon;
     private boolean visible;
     private boolean action;
-    private String title, goldCost, lumberCost;
+    protected String title, goldCost, lumberCost;
     
     public UIAction(BufferedImage icon, ClickListener clicker)
     {
@@ -121,7 +121,7 @@ public class UIAction extends UIObject {
         this.lumberCost = lumberCost;
     }
 
-    private void renderToolTip(Graphics g) {
+    protected void renderToolTip(Graphics g) {
                 g.setColor(new Color(25, 25, 25, 245));
                 g.fillRect((int)x - 25, (int)y - 100, 100, 100);
                 g.setColor(Color.black);

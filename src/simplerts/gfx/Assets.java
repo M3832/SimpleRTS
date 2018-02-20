@@ -37,6 +37,13 @@ public class Assets {
     public static BufferedImage GUI;
     public static BufferedImage resourceBar;
     public static BufferedImage iconBG;
+    public static BufferedImage iconMove;
+    public static BufferedImage iconStop;
+    public static BufferedImage iconAttack;
+    public static BufferedImage iconCancel;
+    public static BufferedImage iconBuild;
+    public static BufferedImage iconGather;
+    public static BufferedImage iconReturn;
 
     public static void setup() {
         terrains = new ArrayList<>();
@@ -50,6 +57,14 @@ public class Assets {
         resourceBar = loadToCompatibleImage("/resourceBar2.png");
         iconBG = loadToCompatibleImage("/iconbg.bmp");
         barrenTree = loadAndResizeImage("/barrenWood.bmp", Game.CELLSIZE, Game.CELLSIZE);
+        
+        iconMove = loadAndResizeImage("/Other/UI/Buttons/move.png", 55, 55);
+        iconStop = loadAndResizeImage("/Other/UI/Buttons/stop.png", 55, 55);
+        iconAttack = loadAndResizeImage("/Other/UI/Buttons/attack.png", 55, 55);
+        iconBuild = loadAndResizeImage("/Other/UI/Buttons/build.png", 55, 55);
+        iconCancel = loadAndResizeImage("/Other/UI/Buttons/cancel.png", 55, 55);
+        iconGather = loadAndResizeImage("/Other/UI/Buttons/gather.png", 55, 55);
+        iconReturn = loadAndResizeImage("/Other/UI/Buttons/returnresource.png", 55, 55);
     }
     
     private static void loadTiles(int tileSize)

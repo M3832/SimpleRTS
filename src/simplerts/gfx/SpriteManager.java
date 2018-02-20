@@ -63,6 +63,8 @@ public class SpriteManager {
         healer = new AnimationController();
         healer.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Healer/stand2.png"),
                                              Assets.loadToCompatibleImage("/Units/Healer/stand2tc.png"), color)));
+        healer.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Healer/walk.png"),
+                                             Assets.loadToCompatibleImage("/Units/Healer/walktc.png"), color)));
         
         arrow = new AnimationController();
         arrow.addAnimation("default", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Other/Projectiles/arrow.png"),

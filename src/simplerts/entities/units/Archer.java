@@ -6,30 +6,38 @@
 package simplerts.entities.units;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.Player;
+import simplerts.display.Camera;
 import simplerts.entities.Building;
 import simplerts.entities.Entity;
+import simplerts.entities.projectiles.Projectile;
 import simplerts.entities.Unit;
 import simplerts.entities.actions.Attack;
 import simplerts.entities.interfaces.Attacker;
+import simplerts.entities.interfaces.Ranger;
 import simplerts.entities.projectiles.Arrow;
 import simplerts.gfx.Assets;
 import simplerts.map.Destination;
 import simplerts.ui.UIAction;
+import simplerts.ui.UIActionButton;
 import simplerts.utils.TimerTask;
 
 /**
  *
  * @author Markus
  */
-public class Archer extends Unit implements Attacker {
+public class Archer extends Unit implements Attacker, Ranger {
     
     public static int GOLDCOST = 400;
-    private int range;
+    
+    private int range, attackSpeed;
     private boolean hasAttacked;
-    private int attackSpeed;
+    
+    private CopyOnWriteArrayList<Projectile> projectiles;
     
     public Archer(int x, int y, Player player)
     {
@@ -50,8 +58,7 @@ public class Archer extends Unit implements Attacker {
         attackDamage = 5;
         ac = player.getSpriteManager().getArcherAC();
         name = "Archer";
-        initGraphics();
-        setupActions();
+        projectiles = new CopyOnWriteArrayList<>();
     }
     
     @Override
@@ -60,24 +67,24 @@ public class Archer extends Unit implements Attacker {
         icon = getUIIcon(color);        
     }
     
+    @Override
     public void setupActions()
-    {     
+    {    
+        super.setupActions();
+        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack"));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
     }
     
-    public static BufferedImage getUIIcon(Color color)
-    {
-        return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/portrait.png"), Assets.loadToCompatibleImage("/Units/Archer/portraittc.png"), color));
+    @Override
+    public void update(){
+        super.update();
+        projectiles.stream().forEach((Projectile p) -> p.update());
     }
     
-    public static UIAction getUIAction(Player player, Building building)
-    {
-        UIAction a = new UIAction(Assets.resizeImage(Archer.getUIIcon(player.getColor()), 55, 55), () -> {
-            building.train(new Archer(player.getHandler().map.getAvailableNeighborCell(building), player));
-        });
-        a.setTitle("Archer");
-        a.setGoldCost(GOLDCOST + "");
-        return a;
+    @Override
+    public void render(Graphics g, Camera c){
+        super.render(g, c);
+        projectiles.stream().forEach((Projectile p) -> p.render(g, c));
     }
     
     @Override
@@ -108,7 +115,7 @@ public class Archer extends Unit implements Attacker {
         {
             hasAttacked = true;
             setDirection(e.getGridX() - getGridX(), e.getGridY() - getGridY());
-            grid.addEntity(new Arrow(this, e));
+            projectiles.add(new Arrow(this, e));
             taskManager.addTask(new TimerTask(attackSpeed, () -> {hasAttacked = false;}));
             ac.setAnimation("attack");
             ac.playAnimation();
@@ -129,5 +136,25 @@ public class Archer extends Unit implements Attacker {
     public Entity duplicate() {
         return new Archer(x, y, player);
     }
+
+    @Override
+    public void removeProjectile(Projectile p) {
+        if(projectiles.contains(p))
+            projectiles.remove(p);
+    }
     
+    public static BufferedImage getUIIcon(Color color)
+    {
+        return Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/portrait.png"), Assets.loadToCompatibleImage("/Units/Archer/portraittc.png"), color));
+    }
+    
+    public static UIAction getUIAction(Player player, Building building)
+    {
+        UIAction a = new UIAction(Assets.resizeImage(Archer.getUIIcon(player.getColor()), 55, 55), () -> {
+            building.train(new Archer(player.getHandler().map.getAvailableNeighborCell(building), player));
+        });
+        a.setTitle("Archer");
+        a.setGoldCost(GOLDCOST + "");
+        return a;
+    }
 }

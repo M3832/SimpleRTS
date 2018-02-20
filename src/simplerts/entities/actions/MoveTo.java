@@ -77,6 +77,9 @@ public class MoveTo extends Action {
         if(targetEntity != null) {
             destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
             tm.addTask(new TimerTask(1500, () -> {calcPath();}));
+            if(!destinations.isEmpty())
+                lastDestination = destinations.get(destinations.size()-1);
+            System.out.println("Calculating new path");
         } else {
             destinations = owner.findPath(owner, lastDestination);
         }

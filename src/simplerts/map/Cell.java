@@ -103,7 +103,9 @@ public class Cell {
     
     public Entity getEntity()
     {
-        return entity;
+        if(entity != null && !entity.isDead())
+            return entity;
+        return null;
     }
     
     public boolean isForest()

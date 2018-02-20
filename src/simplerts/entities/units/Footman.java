@@ -19,6 +19,7 @@ import simplerts.entities.actions.Attack;
 import simplerts.gfx.Assets;
 import simplerts.map.Destination;
 import simplerts.ui.UIAction;
+import simplerts.ui.UIActionButton;
 import simplerts.utils.TimerTask;
 
 /**
@@ -30,7 +31,7 @@ public class Footman extends Unit implements Attacker {
     private static int GOLDCOST = 100;
     private int range;
     private boolean hasAttacked, renderAttack;
-    private int attackSpeed, attackRenderSpeed;
+    private int attackSpeed;
 
     public Footman(int x, int y, Player player)
     {
@@ -48,12 +49,9 @@ public class Footman extends Unit implements Attacker {
         range = 1;
         hasAttacked = false;
         attackSpeed = 800;
-        attackRenderSpeed = 300;
         attackDamage = 5;
         ac = player.getSpriteManager().getFootmanAC();
         name = "Footman";
-        initGraphics();
-        setupActions();
     }
     
     @Override
@@ -62,8 +60,11 @@ public class Footman extends Unit implements Attacker {
         icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/portrait.png"), Assets.loadToCompatibleImage("/Units/Footman/portraittc.png"), color));        
     }
     
+    @Override
     public void setupActions()
     {     
+        super.setupActions();
+        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack"));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
     }
     

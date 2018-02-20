@@ -7,6 +7,7 @@ package simplerts.entities.units;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.audio.SoundController;
@@ -22,6 +23,7 @@ import simplerts.entities.actions.*;
 import simplerts.entities.interfaces.*;
 import simplerts.gfx.Assets;
 import simplerts.ui.UIAction;
+import simplerts.ui.UIActionButton;
 
 /**
  *
@@ -35,6 +37,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     private final int goldCapacity = 25;
     private static int GOLDCOST = 0;
     private boolean chopping;
+    private ArrayList<UIAction> buildMenu;
     
     public Builder()
     {
@@ -64,9 +67,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
         lumberCapacity = 10;
         chopping = false;
         goldCost = GOLDCOST;
-        initGraphics();
         initSounds();
-        setupActions();
     }
     
     private void initSounds()
@@ -81,12 +82,24 @@ public class Builder extends Unit implements Goldminer, Lumberman{
         soundManager.addSound("/Units/Peasant/confirm4.wav", SoundController.CONFIRM);
     }
     
+    @Override
+    protected void initGraphics()
+    {
+        icon = Assets.makeIcon(color, Assets.makeTeamColor(Assets.loadToCompatibleImage("/peasantPortrait.png"), Assets.loadToCompatibleImage("/peasantPortraittc.png"), color));        
+    }
+    
+    @Override
     public void setupActions()
     {
-        uiActions.add(TownHall.getUIAction(player));
-        uiActions.add(Farm.getUIAction(player));
-        uiActions.add(Tower.getUIAction(player));        
-        uiActions.add(Barracks.getUIAction(player));        
+        super.setupActions();
+        buildMenu = new ArrayList<>();
+        addActionButton(actionButtons, new UIActionButton(Assets.iconGather, () -> {System.out.println("Pressed gather");}, "Gather"));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconBuild, () -> {player.getController().changeActionMenu(buildMenu);}, "Build"), 2, 0);
+        addActionButton(buildMenu, TownHall.getUIAction(player));
+        addActionButton(buildMenu, Farm.getUIAction(player));
+        addActionButton(buildMenu, Tower.getUIAction(player));        
+        addActionButton(buildMenu, Barracks.getUIAction(player));
+        addActionButton(buildMenu, new UIActionButton(Assets.iconCancel, () -> {player.getController().changeActionMenu(actionButtons);}, "Cancel"), 2, 2);
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().game.controller.getCamera().centerOnEntity(this);}));
     }
 

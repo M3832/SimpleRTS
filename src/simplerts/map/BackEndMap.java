@@ -19,7 +19,7 @@ import simplerts.Game;
 import simplerts.Handler;
 import simplerts.Player;
 import simplerts.editor.LoadedObject;
-import simplerts.entities.Projectile;
+import simplerts.entities.projectiles.Projectile;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.resources.Goldmine;
 import simplerts.entities.units.Archer;
@@ -66,8 +66,7 @@ public class BackEndMap {
     public void addEntity(Entity e)
     {
         entities.add(e);
-        if(!(e instanceof Projectile))
-            updateEntityCell(e.getGridX(), e.getGridY(), e);
+        updateEntityCell(e.getGridX(), e.getGridY(), e);
         e.getPlayer().addEntity(e);
     }
     

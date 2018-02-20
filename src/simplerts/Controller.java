@@ -7,7 +7,6 @@ package simplerts;
 
 import simplerts.messaging.PlayerMessager;
 import simplerts.utils.Utilities;
-import simplerts.map.PathFinder;
 import simplerts.map.Destination;
 import simplerts.entities.Unit;
 import simplerts.entities.Entity;
@@ -26,7 +25,6 @@ import simplerts.entities.actions.MoveTo;
 import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
 import simplerts.entities.actions.Chop;
-import simplerts.entities.actions.Follow;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.gfx.Assets;
@@ -36,6 +34,7 @@ import simplerts.map.FrontEndMap;
 import simplerts.messaging.ErrorMessage;
 import simplerts.messaging.Message;
 import simplerts.ui.GUI;
+import simplerts.ui.UIAction;
 
 /**
  *
@@ -179,6 +178,11 @@ public class Controller {
         selected.add(e);
         gui.setSelectedEntities(selected);
 
+    }
+    
+    public void clearSelection(){
+        selected.clear();
+        gui.clear();
     }
     
     private void input()
@@ -395,6 +399,11 @@ public class Controller {
     public FrontEndMap getMap()
     {
         return renderMap;
+    }
+    
+    public void changeActionMenu(ArrayList<UIAction> actionButtons)
+    {
+        gui.setActionButtons(actionButtons);
     }
     
 }
