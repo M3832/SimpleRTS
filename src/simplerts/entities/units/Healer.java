@@ -52,7 +52,7 @@ public class Healer extends Unit {
     
     public void setupActions()
     {     
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}, 'e'));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {grid.getHandler().game.controller.getCamera().centerOnEntity(this);}, 'e'));
     }
 
     @Override

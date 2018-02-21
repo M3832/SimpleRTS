@@ -201,7 +201,7 @@ public class Controller {
         {
             if(ml.isMouseClicked())
             {
-                if(!selected.isEmpty())
+                if(!selected.isEmpty() && selected.get(0).getPlayer() == player)
                     placer.place(selected.get(0));
 //                if(entityplacer.hasEntity())
 //                {

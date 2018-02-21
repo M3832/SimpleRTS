@@ -16,7 +16,7 @@ public class SoundManager {
     public SoundManager()
     {
         backgroundSound = SoundController.getSoundFromURL("/music.wav");
-        init();
+//        init();
     }
     
     private void init()
