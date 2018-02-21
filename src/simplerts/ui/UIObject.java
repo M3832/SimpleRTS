@@ -118,6 +118,10 @@ public abstract class UIObject {
     {
         bounds = new Rectangle((int)x, (int)y, width, height);
     }
+    
+    public void clear(){
+        hovering = false;
+    }
 
     /**
      * @return the hovering

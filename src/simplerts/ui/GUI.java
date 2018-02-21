@@ -8,6 +8,7 @@ package simplerts.ui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,6 +35,7 @@ public class GUI {
     private final CopyOnWriteArrayList<UIObject> objects;
     private ArrayList<UIAction> actionButtons, empty;
     private ArrayList<Entity> entities;
+    private int mouseX, mouseY;
     
     public GUI(FrontEndMap map, Controller controller) {
         renderMap = map;
@@ -129,6 +131,8 @@ public class GUI {
     public void onMouseMove(MouseEvent e) {
         objects.stream().forEach((UIObject o) -> o.onMouseMove(e));
         actionButtons.stream().forEach((UIObject o) -> o.onMouseMove(e));
+        mouseX = e.getX();
+        mouseY = e.getY();
     }
     
     public void onMouseRelease(MouseEvent e) {
@@ -157,10 +161,19 @@ public class GUI {
 
     public void setActionButtons(ArrayList<UIAction> actionButtons) {
         this.actionButtons = actionButtons;
+        this.actionButtons.stream().forEach(b -> b.clear());
     }
 
     public void clear() {
         actionButtons = empty;
+    }
+
+    public void pressedKey(KeyEvent e) {
+        actionButtons.stream().forEach((UIAction action) -> {
+            if(action.getHotkey() == e.getKeyChar()){
+                action.click();
+            }
+        });
     }
     
 }

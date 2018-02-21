@@ -20,6 +20,7 @@ import simplerts.gfx.Assets;
 import simplerts.map.Destination;
 import simplerts.messaging.Message;
 import simplerts.ui.UIAction;
+import simplerts.ui.UIActionButton;
 import simplerts.ui.UIObject;
 import simplerts.utils.TaskManager;
 import simplerts.utils.TimerTask;
@@ -37,7 +38,7 @@ public abstract class Entity {
     protected int viewRange;
     protected BufferedImage sprite, icon;
     protected ArrayList<UIObject> uiObjects;
-    protected ArrayList<UIAction> actionButtons;
+    protected ArrayList<UIAction> actionButtons, cancelMenu;
     protected Player player;
     protected boolean isVisible, isDead, remove;
     public Color color;
@@ -67,6 +68,7 @@ public abstract class Entity {
         soundManager = new SoundController();
         taskManager = new TaskManager();
         actionButtons = new ArrayList<>();
+        cancelMenu = new ArrayList<>();
         uiObjects = new ArrayList<>();
     }
     
@@ -93,7 +95,7 @@ public abstract class Entity {
     }
     
     protected void setupActions(){
-
+        addActionButton(cancelMenu, new UIActionButton(Assets.iconCancel, () -> {cancel();}, "Cancel", 'c'), 2, 2);
     }
     
     protected void addActionButton(ArrayList<UIAction> menu, UIAction button){
@@ -297,6 +299,11 @@ public abstract class Entity {
         }
     }
     
+    protected void cancel(){
+        player.getController().changeActionMenu(actionButtons);
+        player.getController().cancel();
+    }
+    
     public void addTask(TimerTask t)
     {
         taskManager.addTask(t);
@@ -304,5 +311,13 @@ public abstract class Entity {
     
     public boolean timeToRemove() {
         return remove;
+    }
+
+    public void setCancelMenu() {
+        player.getController().changeActionMenu(cancelMenu);
+    }
+
+    public void setDefaultMenu() {
+        player.getController().changeActionMenu(actionButtons);
     }
 }

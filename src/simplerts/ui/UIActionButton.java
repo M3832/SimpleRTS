@@ -16,8 +16,8 @@ import simplerts.utils.Utilities;
  */
 public class UIActionButton extends UIAction{
 
-    public UIActionButton(BufferedImage icon, ClickListener clicker, String title) {
-        super(icon, clicker);
+    public UIActionButton(BufferedImage icon, ClickListener clicker, String title, char hotkey) {
+        super(icon, clicker, hotkey);
         this.title = title;
     }
     

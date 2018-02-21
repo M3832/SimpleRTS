@@ -64,8 +64,8 @@ public class Footman extends Unit implements Attacker {
     public void setupActions()
     {     
         super.setupActions();
-        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack"));
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack", 'a'));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}, 'e'));
     }
     
     @Override
@@ -116,7 +116,7 @@ public class Footman extends Unit implements Attacker {
     {
         UIAction a = new UIAction(Assets.resizeImage(Footman.getUIIcon(player.getColor()), 55, 55), () -> {
             building.train(new Footman(player.getHandler().map.getAvailableNeighborCell(building), player));
-        });
+        }, 'f');
         a.setTitle("Footman");
         a.setGoldCost(GOLDCOST + "");
         return a;

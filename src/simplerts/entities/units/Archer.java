@@ -71,8 +71,8 @@ public class Archer extends Unit implements Attacker, Ranger {
     public void setupActions()
     {    
         super.setupActions();
-        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack"));
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack", 'a'));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}, 'e'));
     }
     
     @Override
@@ -152,7 +152,7 @@ public class Archer extends Unit implements Attacker, Ranger {
     {
         UIAction a = new UIAction(Assets.resizeImage(Archer.getUIIcon(player.getColor()), 55, 55), () -> {
             building.train(new Archer(player.getHandler().map.getAvailableNeighborCell(building), player));
-        });
+        }, 'a');
         a.setTitle("Archer");
         a.setGoldCost(GOLDCOST + "");
         return a;

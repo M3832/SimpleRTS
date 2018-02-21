@@ -93,14 +93,14 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     {
         super.setupActions();
         buildMenu = new ArrayList<>();
-        addActionButton(actionButtons, new UIActionButton(Assets.iconGather, () -> {System.out.println("Pressed gather");}, "Gather"));
-        addActionButton(actionButtons, new UIActionButton(Assets.iconBuild, () -> {player.getController().changeActionMenu(buildMenu);}, "Build"), 2, 0);
+        addActionButton(actionButtons, new UIActionButton(Assets.iconGather, () -> {System.out.println("Pressed gather");}, "Gather", 'g'));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconBuild, () -> {player.getController().changeActionMenu(buildMenu);}, "Build", 'b'), 2, 0);
         addActionButton(buildMenu, TownHall.getUIAction(player));
         addActionButton(buildMenu, Farm.getUIAction(player));
         addActionButton(buildMenu, Tower.getUIAction(player));        
         addActionButton(buildMenu, Barracks.getUIAction(player));
-        addActionButton(buildMenu, new UIActionButton(Assets.iconCancel, () -> {player.getController().changeActionMenu(actionButtons);}, "Cancel"), 2, 2);
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().game.controller.getCamera().centerOnEntity(this);}));
+        addActionButton(buildMenu, new UIActionButton(Assets.iconCancel, () -> {player.getController().changeActionMenu(actionButtons);}, "Cancel", 'c'), 2, 2);
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().game.controller.getCamera().centerOnEntity(this);}, 'e'));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     {
         UIAction a = new UIAction(Assets.resizeImage(Builder.getUIIcon(player.getColor()), 55, 55), () -> {
             building.train(new Builder(player.getHandler().map.getAvailableNeighborCell(building), player));
-        });
+        }, 'b');
         a.setTitle("Peasant");
         a.setGoldCost(GOLDCOST + "");
         return a;

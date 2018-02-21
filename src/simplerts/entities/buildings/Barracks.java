@@ -52,12 +52,12 @@ public class Barracks extends Building {
     {
         addActionButton(actionButtons, Footman.getUIAction(player, this));
         addActionButton(actionButtons, Archer.getUIAction(player, this));
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}, 'e'));
     }
     
     public static UIAction getUIAction(Player player)
     {
-        UIAction a = new UIAction(Assets.resizeImage(getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Barracks(0, 0, player));});
+        UIAction a = new UIAction(Assets.resizeImage(getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Barracks(0, 0, player));}, 'b');
         a.setTitle("Barracks");
         a.setGoldCost(GOLDCOST + "");
         return a;

@@ -52,7 +52,7 @@ public class Healer extends Unit {
     
     public void setupActions()
     {     
-        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}));
+        uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}, 'e'));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class Healer extends Unit {
     {
         UIAction a = new UIAction(Assets.resizeImage(Healer.getUIIcon(player.getColor()), 55, 55), () -> {
             building.train(new Healer(player.getHandler().map.getAvailableNeighborCell(building), player));
-        });
+        }, 'h');
         a.setTitle("Healer");
         a.setGoldCost(GOLDCOST + "");
         return a;

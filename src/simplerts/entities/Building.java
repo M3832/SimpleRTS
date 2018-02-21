@@ -197,7 +197,7 @@ public abstract class Building extends Entity {
     }
     
     public static UIAction getUIAction(Player player){
-        UIAction a = new UIAction(Assets.resizeImage(Tower.getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Tower(0, 0, 2, player));});
+        UIAction a = new UIAction(Assets.resizeImage(Tower.getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Tower(0, 0, 2, player));}, 't');
         a.setTitle("PLACEHOLDER");
         return a;
     }

@@ -22,23 +22,22 @@ public class UIAction extends UIObject {
     private boolean visible;
     private boolean action;
     protected String title, goldCost, lumberCost;
+    protected char hotkey;
     
-    public UIAction(BufferedImage icon, ClickListener clicker)
+    public UIAction(BufferedImage icon, ClickListener clicker, char hotkey)
     {
-        super(0, 0, icon.getWidth(), icon.getHeight());
-        this.icon = icon;
-        this.clicker = clicker;
-        visible = true;
+        this(0, 0, icon, clicker, hotkey);
         action = true;
     }
     
-    public UIAction(float x, float y, BufferedImage icon, ClickListener clicker)
+    public UIAction(float x, float y, BufferedImage icon, ClickListener clicker, char hotkey)
     {
         super(x, y, icon.getWidth(), icon.getHeight());
         this.icon = icon;
         this.clicker = clicker;
         visible = true;
         action = false;
+        this.hotkey = hotkey;
     }
     
     @Override
@@ -120,6 +119,11 @@ public class UIAction extends UIObject {
     public void setLumberCost(String lumberCost) {
         this.lumberCost = lumberCost;
     }
+    
+    public char getHotkey()
+    {
+        return hotkey;
+    }
 
     protected void renderToolTip(Graphics g) {
                 g.setColor(new Color(25, 25, 25, 245));
@@ -134,6 +138,10 @@ public class UIAction extends UIObject {
                     Utilities.drawWithShadow(g, "Gold: " + goldCost, (int)x - 20, (int)y - 100 + 20 + g.getFontMetrics(GUI.SMALL).getHeight());
                 if(lumberCost != null)
                     Utilities.drawWithShadow(g, "Wood: " + lumberCost, (int)x - 20, (int)y - 100 + 35 + g.getFontMetrics(GUI.SMALL).getHeight());
+    }
+
+    public void click() {
+        clicker.onClick();
     }
     
     

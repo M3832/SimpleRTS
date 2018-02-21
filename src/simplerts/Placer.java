@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import simplerts.entities.Unit;
+import simplerts.entities.actions.MoveTo;
 
 /**
  *
@@ -21,10 +23,11 @@ import java.awt.image.BufferedImage;
 public class Placer {
     
     private Entity entity;
+    private String action;
     private Controller controller;
     private Color color;
     private Color errorColor;
-    private int cellX, cellY, cellWidth, cellHeight;
+    private int gridX, gridY, cellWidth, cellHeight, x, y;
     private BufferedImage image;
     
     public Placer(Controller controller)
@@ -32,21 +35,29 @@ public class Placer {
         color = new Color(0, 0, 255, 150);
         errorColor = new Color(255, 0, 0, 150);
         entity = null;
+        action = "none";
         this.controller = controller;
     }
     
     public void setEntity(Entity entity)
     {
+        action = "none";
         this.entity = entity;
-        cellX = 0;
-        cellY = 0;
+        gridX = 0;
+        gridY = 0;
         cellWidth = entity.getGridWidth();
         cellHeight = entity.getGridHeight();
+    }
+    
+    public void setAction(String action){
+        entity = null;
+        this.action = action;
     }
     
     public void clear()
     {
         entity = null;
+        action = "none";
     }
     
     public void render(Graphics g)
@@ -58,9 +69,9 @@ public class Placer {
         {
             image = ((Building)entity).getFinalSprite();
         }
-        for(int i = cellX; i < cellWidth + cellX; i++)
+        for(int i = gridX; i < cellWidth + gridX; i++)
         {
-            for(int j = cellY; j < cellHeight + cellY; j++)
+            for(int j = gridY; j < cellHeight + gridY; j++)
             {
                 if(i >= 0 && j >= 0 && i < controller.getMap().getCells().length && j < controller.getMap().getCells()[0].length)
                 {
@@ -70,33 +81,31 @@ public class Placer {
             }
         }
         ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-        g.drawImage(image, ((cellX - offsetCellX) * Game.CELLSIZE) - (int)controller.getCamera().getOffsetX() % Game.CELLSIZE, (cellY - offsetCellY) * Game.CELLSIZE - (int)controller.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE * cellWidth, Game.CELLSIZE * cellHeight, null);
+        g.drawImage(image, ((gridX - offsetCellX) * Game.CELLSIZE) - (int)controller.getCamera().getOffsetX() % Game.CELLSIZE, (gridY - offsetCellY) * Game.CELLSIZE - (int)controller.getCamera().getOffsetY() % Game.CELLSIZE, Game.CELLSIZE * cellWidth, Game.CELLSIZE * cellHeight, null);
 //        g.setColor(color);
 //        g.fillRect(cellX * BackEndMap.CELLSIZE, cellY * BackEndMap.CELLSIZE, cellSize * BackEndMap.CELLSIZE, cellSize * BackEndMap.CELLSIZE);
     }
     
-    public int getWidth()
-    {
+    public int getWidth(){
         return entity.getWidth();
     }
     
-    public int getHeight()
-    {
+    public int getHeight(){
         return entity.getHeight();
     }
     
-    public void setPosition(int x, int y)
-    {
-        this.cellX = x/Game.CELLSIZE;
-        this.cellY = y/Game.CELLSIZE;
+    public void setPosition(int x, int y){
+        this.gridX = x/Game.CELLSIZE;
+        this.gridY = y/Game.CELLSIZE;
+        this.x = x;
+        this.y = y;
     }
     
-    public boolean isPlaceable(Entity excludeThis)
-    {
+    public boolean isPlaceable(Entity excludeThis){
         boolean placeable = true;
-        for(int i = cellX; i < cellWidth + cellX; i++)
+        for(int i = gridX; i < cellWidth + gridX; i++)
         {
-            for(int j = cellY; j < cellHeight + cellY; j++)
+            for(int j = gridY; j < cellHeight + gridY; j++)
             {
                 if(controller.getMap().getBackEnd().checkCollision(i, j, excludeThis))
                 {
@@ -109,7 +118,7 @@ public class Placer {
     
     public Destination getDestination()
     {
-        return new Destination(cellX, cellY);
+        return new Destination(gridX, gridY);
     }
     
     public Entity getEntity()
@@ -120,5 +129,24 @@ public class Placer {
     public boolean hasEntity()
     {
         return entity != null;
+    }
+
+    public void place(Entity owner) {
+        Entity e = owner.grid.getEntityFromCell(gridX, gridY);
+        if(!action.equals("none") && owner instanceof Unit){
+            switch (action){
+                case "move":
+                    ((Unit)owner).addAction(new MoveTo((Unit)owner, new Destination(gridX, gridY)));
+                    break;
+            }
+        }
+        
+        if(entity != null){
+            System.out.println("placing " + entity.getClass().getSimpleName());
+        }
+        
+        entity = null;
+        action = "none";
+        owner.setDefaultMenu();
     }
 }

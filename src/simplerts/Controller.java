@@ -47,7 +47,7 @@ public class Controller {
     private final Player player;
     private final Handler handler;
     
-    private Placer entityplacer;
+    private Placer placer;
     
     private MouseInput ml;
     private KeyManager km;
@@ -79,13 +79,13 @@ public class Controller {
         
         selected = new ArrayList<>();
         messager = new PlayerMessager(this);
-        entityplacer = new Placer(this);
+        placer = new Placer(this);
         renderMap = new FrontEndMap(handler.map);
         handler.setRenderMap(renderMap);
         camera = new Camera(handler);
         gui = new GUI(renderMap, this);
         ml = new MouseInput(camera);
-        km = new KeyManager();
+        km = new KeyManager(gui);
         km.setPlayerMessager(messager);
         handler.getDisplay().getGamePanel().addMouseListener(ml);
         handler.getDisplay().getGamePanel().addMouseMotionListener(ml);
@@ -105,7 +105,7 @@ public class Controller {
         renderMap.update();
         gui.update();
         ml.isMouseClicked();
-        entityplacer.setPosition(camera.getMouseX(), camera.getMouseY());
+        placer.setPosition(camera.getMouseX(), camera.getMouseY());
     }
     
     public void render(Graphics g)
@@ -132,8 +132,8 @@ public class Controller {
                     Utilities.drawWithShadow(g, i + "", e.getX() - (int)camera.getOffsetX(), e.getY() - (int)camera.getOffsetY());
             }
         }
-        if(entityplacer.getEntity() != null)
-            entityplacer.render(g);
+        if(placer.getEntity() != null)
+            placer.render(g);
         
         gui.render(g);
         messager.render(g);
@@ -143,7 +143,7 @@ public class Controller {
     
     public void setEntityPlacerEntity(Entity e)
     {
-        entityplacer.setEntity(e);
+        placer.setEntity(e);
     }
     
     public void scrolling()
@@ -201,23 +201,25 @@ public class Controller {
         {
             if(ml.isMouseClicked())
             {
-                if(entityplacer.hasEntity())
-                {
-                    if(!selected.isEmpty() && selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
-                    {
-                        Builder b = ((Builder)selected.get(0));
-                        Building building = (Building)entityplacer.getEntity().duplicate();
-                        building.setPosition(entityplacer.getDestination().getGridX() * Game.CELLSIZE, entityplacer.getDestination().getGridY() * Game.CELLSIZE);
-                        b.clearActions();
-                        b.playSound(SoundController.CONFIRM);
-                        b.addAction(new MoveTo(b, new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2)));
-                        b.addAction(new Build(b, building));
-                    } else {
-                        handler.game.mm.addMessage(new ErrorMessage("Building can't be placed here."));
-                    }
-                    entityplacer.clear();
-                    return;
-                }
+                if(!selected.isEmpty())
+                    placer.place(selected.get(0));
+//                if(entityplacer.hasEntity())
+//                {
+//                    if(!selected.isEmpty() && selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
+//                    {
+//                        Builder b = ((Builder)selected.get(0));
+//                        Building building = (Building)entityplacer.getEntity().duplicate();
+//                        building.setPosition(entityplacer.getDestination().getGridX() * Game.CELLSIZE, entityplacer.getDestination().getGridY() * Game.CELLSIZE);
+//                        b.clearActions();
+//                        b.playSound(SoundController.CONFIRM);
+//                        b.addAction(new MoveTo(b, new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2)));
+//                        b.addAction(new Build(b, building));
+//                    } else {
+//                        handler.game.mm.addMessage(new ErrorMessage("Building can't be placed here."));
+//                    }
+//                    entityplacer.clear();
+//                    return;
+//                }
                 if(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity() != null)
                 {
                     selected.clear();
@@ -226,7 +228,7 @@ public class Controller {
                 }
             }
 
-            if(ml.isMouseDown && !entityplacer.hasEntity())
+            if(ml.isMouseDown && !placer.hasEntity())
             {
                 if(selectBox == null)
                 {
@@ -265,9 +267,9 @@ public class Controller {
     
     private void rightMouseClick()
     {
-        if(entityplacer.hasEntity())
+        if(placer.hasEntity())
         {
-            entityplacer.clear();
+            placer.clear();
             return;
         }
 
@@ -404,6 +406,14 @@ public class Controller {
     public void changeActionMenu(ArrayList<UIAction> actionButtons)
     {
         gui.setActionButtons(actionButtons);
+    }
+
+    public void setAction(String action) {
+        placer.setAction(action);
+    }
+
+    public void cancel() {
+        placer.clear();
     }
     
 }

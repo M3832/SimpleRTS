@@ -86,10 +86,9 @@ public abstract class Unit extends Entity {
     
     @Override
     protected void setupActions(){
-        
-        
-        addActionButton(actionButtons, new UIActionButton(Assets.iconMove, () ->{System.out.println("Clicked move");}, "Move"));
-        addActionButton(actionButtons, new UIActionButton(Assets.iconStop, () ->{actions.clear();}, "Stop"));
+        super.setupActions();
+        addActionButton(actionButtons, new UIActionButton(Assets.iconMove, () ->{player.getController().setAction("move"); setCancelMenu();}, "Move", 'm'));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconStop, () ->{actions.clear();}, "Stop", 's'));
     }
     
 //    protected void initGraphics()
