@@ -6,9 +6,11 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import simplerts.audio.SoundController;
 import simplerts.display.Camera;
 import simplerts.entities.units.Builder;
 import simplerts.entities.Building;
+import simplerts.map.Destination;
 import simplerts.messaging.ErrorMessage;
 
 /**
@@ -17,31 +19,41 @@ import simplerts.messaging.ErrorMessage;
  */
 public class Build extends Action {
     
-    private Building building;
+    private final Building building;
+    private final MoveTo moveTo;
 
     public Build(Builder owner, Building building) {
         super(owner);
         this.building = building;
+        owner.playSound(SoundController.CONFIRM);
+        moveTo = new MoveTo(owner, new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2));
     }
 
     @Override
     public void performAction() {
-        if(owner.getPlayer().hasGoldFor(building))
+        if(moveTo.arrived())
         {
-            owner.getPlayer().pay(building.getGoldCost());
-            Building newBuilding = building.build((Builder)owner);
-            owner.getMap().addEntity(newBuilding);
-            owner.removeAction(this);
-            owner.getPlayer().getHandler().game.controller.clearSelection();
+            if(owner.getPlayer().hasGoldFor(building))
+            {
+                owner.getPlayer().pay(building.getGoldCost());
+                Building newBuilding = building.build((Builder)owner);
+                owner.getMap().addEntity(newBuilding);
+                owner.removeAction(this);
+                owner.getPlayer().getHandler().game.controller.clearSelection();
+            } else {
+                owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold!"));
+                owner.getActions().remove(this);
+            }            
         } else {
-            owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold!"));
-            owner.getActions().remove(this);
+            moveTo.performAction();
         }
     }
     
-    public void render(Graphics g, Camera camera)
-    {
-        
-    }
+    @Override
+    public void render(Graphics g, Camera camera){}
     
+    @Override
+    public boolean isMoving(){
+        return moveTo.isMoving();
+    }
 }

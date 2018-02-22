@@ -14,7 +14,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import simplerts.entities.Unit;
+import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
+import simplerts.entities.units.Builder;
 
 /**
  *
@@ -141,8 +143,11 @@ public class Placer {
             }
         }
         
-        if(entity != null){
-            System.out.println("placing " + entity.getClass().getSimpleName());
+        if(entity != null && owner instanceof Builder){
+            Building building = (Building)entity.duplicate();
+            building.setPosition(getDestination().getGridX() * Game.CELLSIZE, getDestination().getGridY() * Game.CELLSIZE);
+            ((Unit)owner).clearActions();
+            ((Unit)owner).addAction(new Build((Builder)owner, building));
         }
         
         entity = null;

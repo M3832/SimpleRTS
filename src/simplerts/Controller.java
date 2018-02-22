@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 import simplerts.audio.SoundController;
 import simplerts.audio.SoundManager;
 import simplerts.display.Camera;
+import simplerts.entities.Building;
 import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveTo;
-import simplerts.entities.units.Builder;
-import simplerts.entities.Building;
 import simplerts.entities.actions.Chop;
 import simplerts.entities.buildings.TownHall;
 import simplerts.entities.interfaces.Lumberman;
+import simplerts.entities.units.Builder;
 import simplerts.gfx.Assets;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
@@ -203,23 +203,7 @@ public class Controller {
             {
                 if(!selected.isEmpty() && selected.get(0).getPlayer() == player)
                     placer.place(selected.get(0));
-//                if(entityplacer.hasEntity())
-//                {
-//                    if(!selected.isEmpty() && selected.get(0) instanceof Builder && entityplacer.isPlaceable(selected.get(0)))
-//                    {
-//                        Builder b = ((Builder)selected.get(0));
-//                        Building building = (Building)entityplacer.getEntity().duplicate();
-//                        building.setPosition(entityplacer.getDestination().getGridX() * Game.CELLSIZE, entityplacer.getDestination().getGridY() * Game.CELLSIZE);
-//                        b.clearActions();
-//                        b.playSound(SoundController.CONFIRM);
-//                        b.addAction(new MoveTo(b, new Destination(building.getGridX() + building.getGridWidth()/2, building.getGridY() + building.getGridHeight()/2)));
-//                        b.addAction(new Build(b, building));
-//                    } else {
-//                        handler.game.mm.addMessage(new ErrorMessage("Building can't be placed here."));
-//                    }
-//                    entityplacer.clear();
-//                    return;
-//                }
+                
                 if(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity() != null)
                 {
                     selected.clear();
