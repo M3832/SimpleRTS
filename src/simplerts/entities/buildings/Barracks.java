@@ -29,8 +29,6 @@ public class Barracks extends Building {
     
     public Barracks(int x, int y, Player player) {
         super(x, y, 3, player, false);
-        uiObjects = new ArrayList<>();
-        actionButtons = new ArrayList<>();
         initVariables();
     }
     
@@ -50,6 +48,7 @@ public class Barracks extends Building {
     @Override
     protected void setupActions()
     {
+        super.setupActions();
         addActionButton(actionButtons, Footman.getUIAction(player, this));
         addActionButton(actionButtons, Archer.getUIAction(player, this));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getController().getCamera().centerOnEntity(this);}, 'e'));

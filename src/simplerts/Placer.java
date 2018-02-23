@@ -14,7 +14,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import simplerts.entities.Unit;
+import simplerts.entities.actions.Attack;
 import simplerts.entities.actions.Build;
+import simplerts.entities.actions.MoveAttack;
 import simplerts.entities.actions.MoveTo;
 import simplerts.entities.units.Builder;
 
@@ -140,6 +142,12 @@ public class Placer {
                 case "move":
                     ((Unit)owner).addAction(new MoveTo((Unit)owner, new Destination(gridX, gridY)));
                     break;
+                case "attack":
+                    if(e != null){
+                        ((Unit)owner).addAction(new Attack((Unit)owner, e));
+                    } else {
+                        ((Unit)owner).addAction(new MoveAttack((Unit)owner, new Destination(gridX, gridY)));
+                    }
             }
         }
         
@@ -149,7 +157,6 @@ public class Placer {
             ((Unit)owner).clearActions();
             ((Unit)owner).addAction(new Build((Builder)owner, building));
         }
-        
         entity = null;
         action = "none";
         owner.setDefaultMenu();

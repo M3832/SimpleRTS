@@ -194,24 +194,14 @@ public class Controller {
             {
                 gui.onClick(ml.posX, ml.posY);
             }
+            
+            if(ml.isMouseClicked()){}
+            if(ml.isRightMouseClicked()){}
         }
         
         //Mouse in game window
         if(ml.posY < Game.HEIGHT)
         {
-            if(ml.isMouseClicked())
-            {
-                if(!selected.isEmpty() && selected.get(0).getPlayer() == player)
-                    placer.place(selected.get(0));
-                
-                if(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity() != null)
-                {
-                    selected.clear();
-                    selected.add(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity());
-                    select();
-                }
-            }
-
             if(ml.isMouseDown && !placer.hasEntity())
             {
                 if(selectBox == null)
@@ -223,6 +213,19 @@ public class Controller {
                     currentDragX = camera.getMouseX();
                     currentDragY = camera.getMouseY();
                     selectBox.setBounds((int)Math.min(startDragX, currentDragX), (int)Math.min(startDragY, currentDragY), (int)Math.abs(startDragX - currentDragX), (int)Math.abs(startDragY - currentDragY));
+                }
+            } else if(ml.isMouseClicked())
+            {
+                if(!selected.isEmpty() && selected.get(0).getPlayer() == player && placer.hasSomething()){
+                    placer.place(selected.get(0));
+                    return;
+                }
+                
+                if(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity() != null)
+                {
+                    selected.clear();
+                    selected.add(renderMap.getCells()[camera.getMouseX()/Game.CELLSIZE][camera.getMouseY()/Game.CELLSIZE].getEntity());
+                    select();
                 }
             } else {
                 if(selectBox != null && selectBox.getSize().getHeight() > 5 && selectBox.getSize().getWidth() > 5)
@@ -290,18 +293,6 @@ public class Controller {
     }
 
     private void renderResources(Graphics g) {
-//        String gold = "Gold: " + player.getGold(), wood = "Wood: " + player.getLumber(), food = "Food: " + player.getCurrentFood() + "/" + player.getMaxFood();
-//        g.setColor(new Color(100, 100, 100, 100));
-//        g.fillRect(Game.WIDTH - resourceWidth, 0, resourceWidth -1, resourceHeight);
-//        g.setColor(Color.BLACK);
-//        g.drawRect(Game.WIDTH - resourceWidth, 0, resourceWidth - 1, resourceHeight);
-//        g.setFont(GUI.BREAD);
-//        g.setColor(Color.YELLOW);
-//        Utilities.drawWithShadow(g, gold, Game.WIDTH - resourceWidth + 10, 30);
-//        g.setColor(Color.GREEN);
-//        Utilities.drawWithShadow(g, wood, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold) + 20, 30);
-//        g.setColor(new Color(255, 50, 50));
-//        Utilities.drawWithShadow(g, food, Game.WIDTH - resourceWidth + g.getFontMetrics(GUI.BREAD).stringWidth(gold + wood) + 30, 30);
         g.drawImage(Assets.resourceBar, Game.WIDTH - Assets.resourceBar.getWidth(), 0, null);
         g.setColor(Color.WHITE);
         g.setFont(GUI.BREAD);

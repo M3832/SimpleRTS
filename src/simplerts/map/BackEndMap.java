@@ -111,7 +111,7 @@ public class BackEndMap {
         {
             if(entities.get(i).timeToRemove())
             {
-                entities.get(i).getPlayer().getEntities().remove(entities.get(i));
+                entities.get(i).getPlayer().removeEntity(entities.get(i));
                 for(int x = entities.get(i).getGridX(); x < entities.get(i).getGridX() + entities.get(i).getGridWidth(); x++)
                 {
                     for(int y = entities.get(i).getGridY(); y < entities.get(i).getGridY() + entities.get(i).getGridHeight(); y++)

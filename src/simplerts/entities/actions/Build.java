@@ -39,7 +39,7 @@ public class Build extends Action {
                 Building newBuilding = building.build((Builder)owner);
                 owner.getMap().addEntity(newBuilding);
                 owner.removeAction(this);
-                owner.getPlayer().getHandler().game.controller.clearSelection();
+                owner.getPlayer().getHandler().game.controller.deselect(owner);
             } else {
                 owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold!"));
                 owner.getActions().remove(this);

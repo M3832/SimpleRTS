@@ -133,6 +133,10 @@ public class Player {
             currentFood++;
         }
     }
+    
+    public void removeEntity(Entity e){
+        entities.remove(e);
+    }
 
     public int getCurrentFood() {
         return currentFood;
@@ -184,6 +188,16 @@ public class Player {
     public void addTask(TimerTask t)
     {
         tasks.add(t);
+    }
+
+    public void died(Entity e) {
+        if(e instanceof FoodProvider)
+        {
+            maxFood -= ((FoodProvider)e).getFoodProduced();
+        } else if (e instanceof Unit)
+        {
+            currentFood--;
+        }
     }
     
     

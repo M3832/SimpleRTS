@@ -201,6 +201,12 @@ public abstract class Unit extends Entity {
         setAnimation();
     }
     
+    @Override
+    public void die(){
+        super.die();
+        actions.clear();
+    }
+    
     public void lateUpdate()
     {
         deltaX = 0;
@@ -364,12 +370,12 @@ public abstract class Unit extends Entity {
         this.foodRequirement = foodRequirement;
     }
 
-    public CopyOnWriteArrayList<Destination> findPath(Unit owner, Destination lastDestination) {
-        return pathFinder.findPath(owner, lastDestination, false);
+    public CopyOnWriteArrayList<Destination> findPath(Destination lastDestination) {
+        return pathFinder.findPath(this, lastDestination, false);
     }
     
-    public CopyOnWriteArrayList<Destination> findPathIncludeUnits(Unit owner, Destination lastDestination) {
-        return pathFinder.findPath(owner, lastDestination, true);
+    public CopyOnWriteArrayList<Destination> findPathIncludeUnits(Destination lastDestination) {
+        return pathFinder.findPath(this, lastDestination, true);
     }
 
     public boolean inSquare() {

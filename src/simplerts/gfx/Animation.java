@@ -66,7 +66,11 @@ public class Animation {
     
     public BufferedImage getCurrentFrame(int direction)
     {
-        return animationSheet[animationIndex][direction];
+        if(direction < animationSheet[0].length){
+            return animationSheet[animationIndex][direction];
+        } else {
+            return animationSheet[animationIndex][0];
+        }
     }
     
     public void update()

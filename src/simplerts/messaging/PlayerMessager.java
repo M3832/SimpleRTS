@@ -23,7 +23,7 @@ public class PlayerMessager {
     private final Controller controller;
     private final List<Integer> excludeList;
     private String currentString = "";
-    private boolean writing;
+    public static boolean WRITING;
     
     public PlayerMessager(Controller controller)
     {
@@ -38,15 +38,15 @@ public class PlayerMessager {
     {
         if(e.getKeyCode() == KeyEvent.VK_ENTER)
         {
-            if(writing && !currentString.isEmpty())
+            if(WRITING && !currentString.isEmpty())
             {
                 controller.sendMessage(currentString);
                 currentString = "";
             }
-            writing = !writing;
+            WRITING = !WRITING;
         }
         
-        if(writing)
+        if(WRITING)
         {
             if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE && !currentString.isEmpty())
             {
@@ -59,7 +59,7 @@ public class PlayerMessager {
     
     public void render(Graphics g)
     {
-        if(writing)
+        if(WRITING)
         {
             g.setColor(Color.gray);
             g.setFont(GUI.BREAD);

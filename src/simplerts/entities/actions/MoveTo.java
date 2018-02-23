@@ -75,13 +75,13 @@ public class MoveTo extends Action {
     private void calcPath()
     {
         if(targetEntity != null) {
-            destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
+            destinations = owner.findPath(owner.getMap().getClosestCell(owner, targetEntity));
             tm.addTask(new TimerTask(1500, () -> {calcPath();}));
             if(!destinations.isEmpty())
                 lastDestination = destinations.get(destinations.size()-1);
             System.out.println("Calculating new path");
         } else {
-            destinations = owner.findPath(owner, lastDestination);
+            destinations = owner.findPath(lastDestination);
         }
     }
 
@@ -136,9 +136,9 @@ public class MoveTo extends Action {
         if(stuck)
         {
             if(targetEntity != null) {
-                destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, targetEntity));
+                destinations = owner.findPath(owner.getMap().getClosestCell(owner, targetEntity));
             } else if (lastDestination != null) {
-                destinations = owner.findPath(owner, owner.getMap().getClosestCell(owner, lastDestination));
+                destinations = owner.findPath(owner.getMap().getClosestCell(owner, lastDestination));
             }
             stuck = false;
         }
@@ -156,9 +156,9 @@ public class MoveTo extends Action {
         if(lastDestination != null && !finalLastDestination && destinations.size() < 3 && destinations.size() > 0 && owner.getMap().checkCollision(destinations.get(destinations.size()-1).getGridX(), destinations.get(destinations.size()-1).getGridY(), owner))
         {
             if(targetEntity != null){
-                destinations = owner.findPathIncludeUnits(owner, owner.getMap().getClosestCell(owner, targetEntity));
+                destinations = owner.findPathIncludeUnits(owner.getMap().getClosestCell(owner, targetEntity));
             } else {
-                destinations = owner.findPathIncludeUnits(owner, owner.getMap().getClosestCell(owner, owner.getMap().getEntityFromCell(lastDestination.getGridX(), lastDestination.getGridY())));
+                destinations = owner.findPathIncludeUnits(owner.getMap().getClosestCell(owner, owner.getMap().getEntityFromCell(lastDestination.getGridX(), lastDestination.getGridY())));
             }
             if(destinations.size() > 0)
                 lastDestination = destinations.get(destinations.size()-1);
@@ -211,7 +211,7 @@ public class MoveTo extends Action {
         {
             if(!owner.getMap().checkCollision(destinations.get(i).getGridX(), destinations.get(i).getGridY(), owner))
             {
-                destinations = owner.findPathIncludeUnits(owner, destinations.get(destinations.size()-1));
+                destinations = owner.findPathIncludeUnits(destinations.get(destinations.size()-1));
                 return;
             }
         }

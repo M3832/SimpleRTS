@@ -94,7 +94,7 @@ public abstract class Building extends Entity {
             builder.exit(grid.getAvailableNeighborCell(this));
             builder = null;
             building = false;
-            setupActions();
+            setDefaultMenu();
         }
     }
     
@@ -108,7 +108,8 @@ public abstract class Building extends Entity {
             unitTraining.setPosition(player.getHandler().map.getAvailableNeighborCell(this));
             player.getHandler().map.addEntity(unitTraining);
             unitTraining = null;
-            uiObjects.stream().forEach((object) -> {if(!((UIAction)object).isVisible()){((UIAction)object).setVisible(true);}});
+//            uiObjects.stream().forEach((object) -> {if(!((UIAction)object).isVisible()){((UIAction)object).setVisible(true);}});
+            setDefaultMenu();
             training = false;
         }
     }
@@ -124,6 +125,7 @@ public abstract class Building extends Entity {
     {
         b.enter();
         builder = b;
+        setCancelMenu();
         return this;
     }
     
@@ -133,7 +135,8 @@ public abstract class Building extends Entity {
         {
             if(player.hasGoldFor(u))
             {
-                uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+//                uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
+                setCancelMenu();
                 training = true;
                 player.pay(u.getCost());
                 unitTraining = u;

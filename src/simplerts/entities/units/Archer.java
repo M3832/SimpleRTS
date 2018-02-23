@@ -71,7 +71,7 @@ public class Archer extends Unit implements Attacker, Ranger {
     public void setupActions()
     {    
         super.setupActions();
-        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {System.out.println("Clicked attack");}, "Attack", 'a'));
+        addActionButton(actionButtons, new UIActionButton(Assets.iconAttack, () -> {player.getController().setAction("attack"); setCancelMenu();}, "Attack", 'a'));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {grid.getHandler().game.controller.getCamera().centerOnEntity(this);}, 'e'));
     }
     

@@ -64,7 +64,7 @@ public class Game implements Runnable {
         mm = new MessageManager(handler);
         map.placeLoadedObjects();
         
-        Player player = new Player(handler, Color.RED);
+        Player player = new Player(handler, new Color(100, 100, 100));
         Player enemy = new Player(handler, Utilities.getRandomColor());
         Player enemy2 = new Player(handler, Utilities.getRandomColor());
         Player enemy3 = new Player(handler, Utilities.getRandomColor());

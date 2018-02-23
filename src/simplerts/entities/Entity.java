@@ -284,6 +284,7 @@ public abstract class Entity {
     protected void die()
     {
         isDead = true;
+        player.died(this);
         taskManager.addTask(new TimerTask(30000, () -> { remove = true;}));
     }
 

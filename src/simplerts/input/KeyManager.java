@@ -20,8 +20,8 @@ public class KeyManager implements KeyListener {
     public static final int ATTACK_KEY = KeyEvent.VK_ENTER;
     public static final int SPELL_KEY = KeyEvent.VK_SPACE;
     public static final int SCORE_KEY = KeyEvent.VK_TAB;
-    private GUI gui;
     
+    private GUI gui;
     private PlayerMessager pm;
     
     public KeyManager(GUI gui){
@@ -65,7 +65,8 @@ public class KeyManager implements KeyListener {
             keysLast[e.getKeyCode()] = false;
         }
         pm.keyPressed(e);
-        gui.pressedKey(e);
+        if(!PlayerMessager.WRITING)
+            gui.pressedKey(e);
     }
     
     public void setPlayerMessager(PlayerMessager pm)
