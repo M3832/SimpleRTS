@@ -154,4 +154,8 @@ public class Placer {
         action = "none";
         owner.setDefaultMenu();
     }
+
+    boolean hasSomething() {
+        return !action.equals("none") || entity != null;
+    }
 }

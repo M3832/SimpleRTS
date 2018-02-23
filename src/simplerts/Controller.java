@@ -251,9 +251,10 @@ public class Controller {
     
     private void rightMouseClick()
     {
-        if(placer.hasEntity())
+        if(placer.hasSomething())
         {
             placer.clear();
+            gui.setActionButtons(selected.get(0).getUIActions());
             return;
         }
 
