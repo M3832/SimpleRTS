@@ -258,14 +258,18 @@ public class Controller {
         if(placer.hasSomething())
         {
             placer.clear();
-            gui.setActionButtons(selected.get(0).getUIActions());
+            selected.get(0).setDefaultMenu();
             return;
         }
 
         selected.sort(Comparator.comparing((Entity e1) -> {return Math.abs(e1.getGridY() - camera.getMouseGridY());})
                 .thenComparing((Entity e1) -> {return Math.abs(e1.getGridX() - camera.getMouseGridX());}));
-        if(!selected.isEmpty() && isPlayerControlled(selected.get(0)))
+        
+        if(!selected.isEmpty() && isPlayerControlled(selected.get(0))){
             selected.get(0).playSound(SoundController.CONFIRM);
+            renderMap.addEffect(new MoveConfirm(camera.getMouseX() - Game.CELLSIZE/2, camera.getMouseY() - Game.CELLSIZE/2));
+        }
+        
         for(Entity e : selected)
         {
             if(isPlayerControlled(e) && e instanceof Unit)
@@ -291,7 +295,6 @@ public class Controller {
                 }
             }
         }
-                        renderMap.addEffect(new MoveConfirm(camera.getMouseX() - Game.CELLSIZE/2, camera.getMouseY() - Game.CELLSIZE/2));
     }
 
     private void renderResources(Graphics g) {
@@ -381,9 +384,11 @@ public class Controller {
         return renderMap;
     }
     
-    public void changeActionMenu(ArrayList<UIAction> actionButtons)
+    public void changeActionMenu(Entity e, ArrayList<UIAction> actionButtons)
     {
-        gui.setActionButtons(actionButtons);
+        if(selected.stream().anyMatch(entity -> entity == e)){
+            gui.setActionButtons(actionButtons);
+        }
     }
 
     public void setAction(String action) {

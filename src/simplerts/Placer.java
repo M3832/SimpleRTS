@@ -19,6 +19,7 @@ import simplerts.entities.actions.Build;
 import simplerts.entities.actions.MoveAttack;
 import simplerts.entities.actions.MoveTo;
 import simplerts.entities.units.Builder;
+import simplerts.gfx.effects.MoveConfirm;
 
 /**
  *
@@ -138,6 +139,8 @@ public class Placer {
     public void place(Entity owner) {
         Entity e = owner.grid.getEntityFromCell(gridX, gridY);
         if(!action.equals("none") && owner instanceof Unit){
+            controller.getMap().addEffect(new MoveConfirm(controller.getCamera().getMouseX() - Game.CELLSIZE/2, controller.getCamera().getMouseY() - Game.CELLSIZE/2));
+            ((Unit)owner).clearActions();
             switch (action){
                 case "move":
                     ((Unit)owner).addAction(new MoveTo((Unit)owner, new Destination(gridX, gridY)));

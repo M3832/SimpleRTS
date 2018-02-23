@@ -38,7 +38,7 @@ public abstract class Entity {
     protected int viewRange;
     protected BufferedImage sprite, icon;
     protected ArrayList<UIObject> uiObjects;
-    protected ArrayList<UIAction> actionButtons, cancelMenu;
+    protected ArrayList<UIAction> actionButtons, cancelMenu, currentMenu;
     protected Player player;
     protected boolean isVisible, isDead, remove;
     public Color color;
@@ -69,6 +69,7 @@ public abstract class Entity {
         taskManager = new TaskManager();
         actionButtons = new ArrayList<>();
         cancelMenu = new ArrayList<>();
+        currentMenu = actionButtons;
         uiObjects = new ArrayList<>();
     }
     
@@ -219,7 +220,7 @@ public abstract class Entity {
     
     public ArrayList<UIAction> getUIActions()
     {
-        return actionButtons;
+        return currentMenu;
     }
     
     public BufferedImage getIcon()
@@ -301,7 +302,7 @@ public abstract class Entity {
     }
     
     protected void cancel(){
-        player.getController().changeActionMenu(actionButtons);
+        setDefaultMenu();
         player.getController().cancel();
     }
     
@@ -315,10 +316,16 @@ public abstract class Entity {
     }
 
     public void setCancelMenu() {
-        player.getController().changeActionMenu(cancelMenu);
+        currentMenu = cancelMenu;
+        updateGUIMenu();
     }
 
     public void setDefaultMenu() {
-        player.getController().changeActionMenu(actionButtons);
+        currentMenu = actionButtons;
+        updateGUIMenu();
+    }
+    
+    protected void updateGUIMenu() {
+        player.getController().changeActionMenu(this, currentMenu);
     }
 }

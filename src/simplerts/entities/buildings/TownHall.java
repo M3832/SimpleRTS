@@ -51,6 +51,7 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver, Lu
     @Override
     protected void setupActions()
     {
+        super.setupActions();
         addActionButton(actionButtons, Builder.getUIAction(player, this));
         uiObjects.add(new UIAction(Game.WIDTH/2 + 100f, Game.HEIGHT + 100f, icon, () -> {player.getHandler().game.controller.getCamera().centerOnEntity(this);}, 'e'));
     }
