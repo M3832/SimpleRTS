@@ -28,6 +28,7 @@ import simplerts.entities.buildings.TownHall;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.entities.units.Builder;
 import simplerts.gfx.Assets;
+import simplerts.gfx.effects.MoveConfirm;
 import simplerts.input.KeyManager;
 import simplerts.input.MouseInput;
 import simplerts.map.FrontEndMap;
@@ -190,7 +191,7 @@ public class Controller {
         //Mouse in GUI
         if(ml.posY > Game.HEIGHT)
         {
-            if(ml.isMouseDown)
+            if(MouseInput.MOUSE_DOWN)
             {
                 gui.onClick(ml.posX, ml.posY);
             }
@@ -202,7 +203,7 @@ public class Controller {
         //Mouse in game window
         if(ml.posY < Game.HEIGHT)
         {
-            if(ml.isMouseDown && !placer.hasEntity())
+            if(MouseInput.MOUSE_DOWN && !placer.hasEntity())
             {
                 if(selectBox == null)
                 {
@@ -290,6 +291,7 @@ public class Controller {
                 }
             }
         }
+                        renderMap.addEffect(new MoveConfirm(camera.getMouseX() - Game.CELLSIZE/2, camera.getMouseY() - Game.CELLSIZE/2));
     }
 
     private void renderResources(Graphics g) {

@@ -24,9 +24,9 @@ public class UIActionButton extends UIAction{
     @Override
     protected void renderToolTip(Graphics g) {
             g.setColor(new Color(25, 25, 25, 245));
-            g.fillRect((int)x - 25, (int)y - 25, 100, 25);
+            g.fillRect((int)x, (int)y - 25, 50, 20);
             g.setColor(Color.black);
-            g.drawRect((int)x - 25, (int)y - 25, 100, 25);
+            g.drawRect((int)x, (int)y - 25, 50, 20);
             g.setColor(Color.WHITE);
             g.setFont(GUI.SMALL);
             Utilities.drawWithShadow(g, title, (int)x + 25 - g.getFontMetrics(GUI.SMALL).stringWidth(title)/2, (int)y - 25 + g.getFontMetrics(GUI.SMALL).getHeight());

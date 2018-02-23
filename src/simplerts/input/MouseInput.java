@@ -19,7 +19,8 @@ import simplerts.ui.GUI;
 public class MouseInput extends MouseAdapter implements MouseMotionListener {
 
     public int posX, posY;
-    public boolean isMouseDown, isMouseClicked, isRightMouseDown, isRightMouseClicked;
+    public boolean isMouseClicked, isRightMouseDown, isRightMouseClicked;
+    public static boolean MOUSE_DOWN;
     public boolean isScrollDown;
     public boolean isHovering = true;
     private GUI gui;
@@ -42,6 +43,8 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
         posX = e.getX();
         posY = e.getY();
         camera.setFinalMouse(posX, posY);
+        gui.onMouseMove(e, true);
+        
     }
 
     @Override
@@ -50,7 +53,7 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
         posY = e.getY();
         camera.setFinalMouse(posX, posY);
         if(gui != null)
-            gui.onMouseMove(e);
+            gui.onMouseMove(e, MOUSE_DOWN);
     }
     
     @Override
@@ -92,8 +95,8 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         if(!isScrollDown && e.getButton() == MouseEvent.BUTTON2)
             isScrollDown = true;
-        if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1)
-            isMouseDown = true;
+        if(!MOUSE_DOWN && e.getButton() == MouseEvent.BUTTON1)
+            MOUSE_DOWN = true;
         if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON3)
             isRightMouseDown = true;
     }
@@ -106,10 +109,10 @@ public class MouseInput extends MouseAdapter implements MouseMotionListener {
         if(!isRightMouseDown && e.getButton() == MouseEvent.BUTTON2){
             isRightMouseClicked = true;
         }
-        if(isMouseDown && e.getButton() == MouseEvent.BUTTON1){
-            isMouseDown = false;
+        if(MOUSE_DOWN && e.getButton() == MouseEvent.BUTTON1){
+            MOUSE_DOWN = false;
         }
-        if(!isMouseDown && e.getButton() == MouseEvent.BUTTON1){
+        if(!MOUSE_DOWN && e.getButton() == MouseEvent.BUTTON1){
             isMouseClicked = true;
         }
         if(isScrollDown && e.getButton() == MouseEvent.BUTTON2)

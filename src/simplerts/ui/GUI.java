@@ -35,7 +35,7 @@ public class GUI {
     private final CopyOnWriteArrayList<UIObject> objects;
     private ArrayList<UIAction> actionButtons, empty;
     private ArrayList<Entity> entities;
-    private int mouseX, mouseY;
+    private boolean isMouseDown;
     
     public GUI(FrontEndMap map, Controller controller) {
         renderMap = map;
@@ -128,24 +128,16 @@ public class GUI {
 //        objects.stream().forEach((UIObject o) -> {o.render(g);});
     }
     
-    public void onMouseMove(MouseEvent e) {
+    public void onMouseMove(MouseEvent e, boolean mouseDown) {
+        this.isMouseDown = mouseDown;
         objects.stream().forEach((UIObject o) -> o.onMouseMove(e));
         actionButtons.stream().forEach((UIObject o) -> o.onMouseMove(e));
-        mouseX = e.getX();
-        mouseY = e.getY();
     }
     
     public void onMouseRelease(MouseEvent e) {
         objects.stream().forEach((UIObject o) -> o.onMouseRelease(e));
         actionButtons.stream().forEach((UIObject o) -> o.onMouseRelease(e));
     }
-    
-//    public void addUIAction(UIAction o) {
-//        o.setY(Game.HEIGHT + 20 + (o.getHeight() + 10) * (objects.size()/3));
-//        o.setX(762 + (o.getWidth() + 10) * (objects.size()%3));
-//        o.updateBounds();
-//        objects.add(o);
-//    }
     
     public void addUIObject(UIObject o) {
         objects.add(o);

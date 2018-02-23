@@ -19,7 +19,7 @@ public abstract class UIObject {
     protected int width;
     protected int height;
     protected Rectangle bounds;
-    protected boolean hovering = false;
+    protected boolean hovering = false, mouseDown = false;
     
     public UIObject(float x, float y, int width, int height){
         this.x = x;
@@ -37,18 +37,21 @@ public abstract class UIObject {
     
     public void onMouseMove(MouseEvent e)
     {
-        if(bounds.contains(e.getX(), e.getY()))
-        {
-            hovering = true;
-        } else {
-            hovering = false;
-        }
+        hovering = bounds.contains(e.getX(), e.getY());
     }
     
     public void onMouseRelease(MouseEvent e)
     {
         if(hovering)
             onClick();
+//        
+//        if(e.getButton() == MouseEvent.BUTTON1){
+//            mouseDown = false;
+//        }
+    }
+    
+    public void setMouseDown(boolean mouseDown){
+        this.mouseDown = mouseDown;
     }
 
     /**

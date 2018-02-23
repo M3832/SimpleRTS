@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import simplerts.Game;
 import simplerts.Player;
 import simplerts.display.Camera;
 import simplerts.entities.Entity;
+import simplerts.gfx.effects.Effect;
 import simplerts.ui.MiniMap;
 
 /**
@@ -31,6 +33,7 @@ public class FrontEndMap {
     private final BackEndMap map;
     private final Cell[][] cells;
     private final CopyOnWriteArrayList<Entity> entities;
+    private final CopyOnWriteArrayList<Effect> effects;
     private final boolean[][] mapVisibility;
     private Controller controller;
     
@@ -40,6 +43,7 @@ public class FrontEndMap {
         this.cells = map.getCells();
         this.entities = map.getEntities();
         mapVisibility = new boolean[cells.length][cells[0].length];
+        effects = new CopyOnWriteArrayList<>();
     }
     
     public void setController(Controller controller)
@@ -74,6 +78,14 @@ public class FrontEndMap {
                 }
             }            
         }
+        
+        for(int i = effects.size() - 1; i >= 0; i--){
+            effects.get(i).update();
+            if(effects.get(i).timeToRemove()){
+                effects.remove(effects.get(i));
+            }
+        }
+        
     }
     
     public void render(Graphics g, Camera camera)
@@ -128,6 +140,7 @@ public class FrontEndMap {
                 }
             }
         }
+        effects.stream().forEach((Effect e) -> e.render(g, camera));
     }
     
     public boolean inView(Entity e, float offsetX, float offsetY)
@@ -225,6 +238,10 @@ public class FrontEndMap {
                 mapVisibility1[j] = true;
             }
         }
+    }
+    
+    public void addEffect(Effect e){
+        effects.add(e);
     }
     
 }

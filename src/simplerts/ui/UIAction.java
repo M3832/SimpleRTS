@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import simplerts.Game;
+import simplerts.input.MouseInput;
 import simplerts.utils.Utilities;
 
 /**
@@ -53,7 +54,11 @@ public class UIAction extends UIObject {
             if(hovering && action)
             {
                 renderToolTip(g);
-                g.setColor(new Color(20, 20, 20, 175));
+                if(MouseInput.MOUSE_DOWN){
+                    g.setColor(new Color(20, 20, 20, 175));
+                } else {
+                    g.setColor(new Color(100, 100, 100, 175));
+                }
                 g.fillRect((int)x, (int)y, width, height);
             }
         }

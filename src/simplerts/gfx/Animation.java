@@ -37,6 +37,11 @@ public class Animation {
         looped = false;
     }
     
+    public Animation(BufferedImage sheet, int animationSpeed){
+        this(sheet);
+        this.animationSpeed = animationSpeed;
+    }
+    
     public Animation(BufferedImage sheet, boolean looping)
     {
         this(sheet);
