@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.awt.Color;
 import javax.swing.JFileChooser;
 import simplerts.editor.MapEditor;
+import simplerts.entities.buildings.Barracks;
 import simplerts.entities.units.Archer;
 import simplerts.messaging.Message;
 import simplerts.messaging.MessageManager;
@@ -79,6 +80,7 @@ public class Game implements Runnable {
         map.addEntity(new Footman(26, 25, player));
         map.addEntity(new Footman(26, 26, player));
         map.addEntity(new Archer(25, 25, player));
+
         map.addEntity(new Archer(25, 26, enemy));
         
         map.start(players, 500, 0, 3);

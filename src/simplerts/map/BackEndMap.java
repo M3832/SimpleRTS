@@ -34,6 +34,7 @@ import simplerts.entities.units.Healer;
 public class BackEndMap {
     
     private final CopyOnWriteArrayList<Entity> entities;
+    private CopyOnWriteArrayList<Player> players;
     private final Cell[][] cells;
     private final ArrayList<LoadedObject> loadObjects;
     private final ArrayList<Destination> startLocations; 
@@ -55,6 +56,7 @@ public class BackEndMap {
         pathFinder = new PathFinder(this);
         loadObjects = new ArrayList<>();
         startLocations = new ArrayList<>();
+        players = new CopyOnWriteArrayList<>();
     }
     
     public void setHandler(Handler handler)
@@ -72,6 +74,7 @@ public class BackEndMap {
     
     public void start(CopyOnWriteArrayList<Player> players, int startGold, int startLumber, int startWorkers)
     {
+        this.players = players;
         players.stream().map((p) -> {
             p.setGold(startGold);
             p.setLumber(startLumber);
@@ -107,6 +110,7 @@ public class BackEndMap {
     public void update()
     {
         entities.stream().forEach(e -> e.update());
+        players.stream().forEach((Player p) -> p.update());
         for(int i = entities.size() - 1; i >= 0; i--)
         {
             if(entities.get(i).timeToRemove())

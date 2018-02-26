@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.interfaces.FoodProvider;
 import simplerts.entities.Unit;
 import simplerts.gfx.SpriteManager;
+import simplerts.utils.TaskManager;
 import simplerts.utils.TimerTask;
 
 /**
@@ -24,7 +25,7 @@ public class Player {
     private CopyOnWriteArrayList<Entity> entities;
     private SpriteManager spritemanager;
     private Controller controller;
-    private CopyOnWriteArrayList<TimerTask> tasks;
+    private TaskManager tm;
 
     private Handler handler;
     
@@ -37,22 +38,13 @@ public class Player {
         maxFood = 0;
         currentFood = 0;
         teamColor = color;
-        tasks = new CopyOnWriteArrayList<>();
+        tm = new TaskManager();
         this.spritemanager = new SpriteManager(teamColor);
     }
     
     public void update()
     {
-        if(!tasks.isEmpty())
-        {
-            for(int i = Math.max(0, tasks.size() - 1); i >= 0; i--)
-            {
-                if(tasks.get(i).run())
-                {
-                    tasks.remove(tasks.get(i));
-                }
-            }
-        }
+        tm.update();
     }
     
     public SpriteManager getSpriteManager()
@@ -114,7 +106,9 @@ public class Player {
     
     public void addGold(int gold)
     {
-        this.gold += gold;
+        for(int i = 0; i < gold; i++){
+            tm.addTask(new TimerTask(i+1, () -> {this.gold += 1;}));
+        }
     }
     
     public int getGold()
@@ -175,7 +169,9 @@ public class Player {
     }
 
     public void addLumber(int lumber) {
-        this.lumber += lumber;
+        for(int i = 0; i < lumber; i++){
+            tm.addTask(new TimerTask(i+1, () -> {this.lumber += 1;}));
+        }
     }
 
     public void deselectEntity(Entity e) {
@@ -183,11 +179,6 @@ public class Player {
         {
             controller.deselect(e);
         }
-    }
-    
-    public void addTask(TimerTask t)
-    {
-        tasks.add(t);
     }
 
     public void died(Entity e) {

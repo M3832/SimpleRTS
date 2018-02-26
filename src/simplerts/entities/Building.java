@@ -68,7 +68,6 @@ public abstract class Building extends Entity {
     public void setBuilt()
     {
         currentTime = buildTime;
-        setupActions();
     }
     
     @Override
@@ -125,6 +124,25 @@ public abstract class Building extends Entity {
         builder = b;
         setCancelMenu();
         return this;
+    }
+    
+    @Override
+    public void cancel(){
+        setDefaultMenu();
+        System.out.println("cancelling");
+        building = false;
+        training = false;
+        if(unitTraining != null){
+            player.addGold(unitTraining.getGoldCost());
+            unitTraining = null;
+            trainTime = 0;
+            currentTrainTime = 0;
+        } else {
+            remove = true;
+            player.addGold(goldCost);
+            builder.exit(builder.getDestination());
+            player.getController().deselect(this);
+        }
     }
     
     public void train(Unit u)
