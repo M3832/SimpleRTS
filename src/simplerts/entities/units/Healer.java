@@ -40,8 +40,6 @@ public class Healer extends Unit {
         attackDamage = 5;
         ac = player.getSpriteManager().getHealerAC();
         name = "Healer";
-        initGraphics();
-        setupActions();
     }
     
     @Override
@@ -53,6 +51,7 @@ public class Healer extends Unit {
     @Override
     public void setupActions()
     {     
+        super.setupActions();
         uiObjects.add(new UIAction(Game.WIDTH/2 + 75f, Game.HEIGHT + 75f, icon, () -> {grid.getHandler().game.controller.getCamera().centerOnEntity(this);}, 'e'));
     }
 

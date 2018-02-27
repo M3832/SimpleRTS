@@ -16,6 +16,7 @@ import simplerts.Controller;
 import simplerts.entities.Entity;
 import simplerts.gfx.Assets;
 import simplerts.Game;
+import simplerts.entities.interfaces.Attacker;
 import simplerts.map.FrontEndMap;
 
 /**
@@ -91,6 +92,17 @@ public class GUI {
                     addUIObject(a);
                 }
             }            
+        } else {
+            if(!entities.isEmpty() && controller.isPlayerControlled(entities.get(0)))
+            {
+                if(entities.stream().anyMatch(a -> a instanceof Attacker)){
+                    setActionButtons(entities.stream().filter(a -> a instanceof Attacker).findFirst().get().getUIActions());
+                }
+            }
+            
+            if(entities.isEmpty()){
+                actionButtons = empty;
+            }
         }
     }
     
@@ -109,8 +121,6 @@ public class GUI {
             g.setColor(Color.WHITE);
             g.setFont(HEADER);
             entities.get(0).renderGUI(g);
-            if(actionButtons != null)
-                actionButtons.stream().forEach((UIAction button) -> button.render(g));
         } else if (entities != null && entities.size() > 1 && entities.size() < 6)
         {
             for(int i = 0; i < entities.size(); i++)
@@ -124,6 +134,9 @@ public class GUI {
                 g.drawImage(entities.get(i).getIcon(), (300 + ((i%5) * 75)), Game.HEIGHT + 50 + (75 * (i/5)), null);
             }
         }
+        
+        if(actionButtons != null)
+            actionButtons.stream().forEach((UIAction button) -> button.render(g));
         
 //        objects.stream().forEach((UIObject o) -> {o.render(g);});
     }

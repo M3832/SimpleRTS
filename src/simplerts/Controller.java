@@ -218,7 +218,7 @@ public class Controller {
             } else if(ml.isMouseClicked())
             {
                 if(!selected.isEmpty() && selected.get(0).getPlayer() == player && placer.hasSomething()){
-                    placer.place(selected.get(0));
+                    placer.place(selected);
                     return;
                 }
                 

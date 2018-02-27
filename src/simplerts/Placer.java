@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import simplerts.entities.Unit;
 import simplerts.entities.actions.Attack;
 import simplerts.entities.actions.Build;
@@ -33,9 +34,9 @@ public class Placer {
     
     private Entity entity;
     private String action;
-    private Controller controller;
-    private Color color;
-    private Color errorColor;
+    private final Controller controller;
+    private final Color color;
+    private final Color errorColor;
     private int gridX, gridY, cellWidth, cellHeight, x, y;
     private BufferedImage image;
     
@@ -175,6 +176,13 @@ public class Placer {
         entity = null;
         action = "none";
         owner.setDefaultMenu();
+    }
+    
+    public void place(ArrayList<Entity> owners)
+    {
+        String temp = action;
+        if(action != null)
+            owners.stream().forEach(e -> {setAction(temp); place(e);});
     }
 
     boolean hasSomething() {
