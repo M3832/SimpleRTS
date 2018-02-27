@@ -27,6 +27,7 @@ public class Tower extends Building{
         sprite = Assets.makeTeamColor(Assets.loadAndResizeImage("/tower.png", width, height),
                                                      Assets.loadAndResizeImage("/towerteamcolor.png", width, height), color);
         goldCost = GOLDCOST;
+        lumberCost = 25;
     }
     
     public Tower(int x, int y, int gridSize, Player player, boolean built)

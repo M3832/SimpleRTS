@@ -89,15 +89,6 @@ public class BackEndMap {
                 Builder b = new Builder(target.getGridX(), target.getGridY(), p);
                 addEntity(b);
             }
-            Destination target = getAvailableNeighborCell(th);
-            Archer a = new Archer(target.getGridX(), target.getGridY(), p);
-            addEntity(a);
-            target = getAvailableNeighborCell(th);
-            Footman f = new Footman(target.getGridX(), target.getGridY(), p);
-            addEntity(f);
-            target = getAvailableNeighborCell(th);
-            Healer h = new Healer(target.getGridX(), target.getGridY(), p);
-            addEntity(h);
             startLocations.remove(startLocation);
         });
     }

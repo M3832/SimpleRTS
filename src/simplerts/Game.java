@@ -75,15 +75,7 @@ public class Game implements Runnable {
         players.add(enemy2);
         players.add(enemy3);
         
-//        map.addEntity(new Footman(25, 25, player));
-//        map.addEntity(new Footman(25, 26, player));
-        map.addEntity(new Footman(26, 25, player));
-        map.addEntity(new Footman(26, 26, player));
-        map.addEntity(new Archer(25, 25, player));
-
-        map.addEntity(new Archer(25, 26, enemy));
-        
-        map.start(players, 500, 0, 3);
+        map.start(players, 200, 25, 3);
         controller.start();
         
         long next_game_tick = System.currentTimeMillis();

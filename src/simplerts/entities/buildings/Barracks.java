@@ -34,8 +34,9 @@ public class Barracks extends Building {
     
     private void initVariables()
     {
-        goldCost = 0;
-        buildTime = 1;
+        goldCost = GOLDCOST;
+        buildTime = 40 * Game.TICKS_PER_SECOND;
+
     }
     
     @Override

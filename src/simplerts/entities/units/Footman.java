@@ -52,6 +52,9 @@ public class Footman extends Unit implements Attacker {
         attackDamage = 5;
         ac = player.getSpriteManager().getFootmanAC();
         name = "Footman";
+        goldCost = GOLDCOST;
+        trainTime = 20 * Game.TICKS_PER_SECOND;
+
     }
     
     @Override

@@ -34,8 +34,8 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     private int gold, lumber, lumberCapacity;
     private GoldProvider latestGoldMine;
     private Destination latestForestDestination;
-    private final int goldCapacity = 25;
-    private static int GOLDCOST = 0;
+    private final int goldCapacity = 10;
+    private static int GOLDCOST = 50;
     private boolean chopping;
     private ArrayList<UIAction> buildMenu;
     
@@ -60,7 +60,7 @@ public class Builder extends Unit implements Goldminer, Lumberman{
     {
         moveSpeed = 3;
         attackDamage = 5;
-        trainTime = 1 * Game.TICKS_PER_SECOND;
+        trainTime = 15 * Game.TICKS_PER_SECOND;
         ac = player.getSpriteManager().getPeasantAC();
         gold = 0;
         lumber = 0;

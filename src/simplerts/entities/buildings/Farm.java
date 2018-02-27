@@ -44,7 +44,8 @@ public class Farm extends Building implements FoodProvider {
     private void initVariables()
     {
         goldCost = GOLDCOST;
-        buildTime = 1 * Game.TICKS_PER_SECOND;
+        lumberCost = 25;
+        buildTime = 30 * Game.TICKS_PER_SECOND;
     }
     
     public static UIAction getUIAction(Player player)
@@ -52,6 +53,7 @@ public class Farm extends Building implements FoodProvider {
         UIAction a = new UIAction(Assets.resizeImage(getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Farm(0, 0, 2, player));}, 'f');
         a.setTitle("Farm");
         a.setGoldCost(GOLDCOST + "");
+        a.setLumberCost(25 + "");
         return a;
     }
     

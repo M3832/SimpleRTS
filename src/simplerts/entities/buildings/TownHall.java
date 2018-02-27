@@ -28,7 +28,7 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver, Lu
     
     public TownHall(int x, int y, int gridSize, Player player) {
         super(x, y, gridSize, player, false);
-        buildTime = 1 * Game.TICKS_PER_SECOND;
+        buildTime = 60 * Game.TICKS_PER_SECOND;
         goldCost = GOLDCOST;
         viewRange = 5;
     }
@@ -36,7 +36,10 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver, Lu
     public TownHall(int x, int y, int gridSize, Player player, boolean built)
     {
         this(x, y, gridSize, player);
-        if(built) setBuilt();
+        if(built){
+            setBuilt();
+            player.addFoodCapacity(getFoodProduced());
+        }
     }
     
     @Override
@@ -61,7 +64,7 @@ public class TownHall extends Building implements FoodProvider, GoldReceiver, Lu
 
     @Override
     public int getFoodProduced() {
-        return 25;
+        return 5;
     }
     
     public static BufferedImage getUIIcon(Color color)

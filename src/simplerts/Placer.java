@@ -166,7 +166,7 @@ public class Placer {
                     break;
             }
         }
-        
+        System.out.println("placing");
         if(entity != null && owner instanceof Builder){
             Building building = (Building)entity.duplicate();
             building.setPosition(getDestination().getGridX() * Game.CELLSIZE, getDestination().getGridY() * Game.CELLSIZE);
@@ -181,8 +181,11 @@ public class Placer {
     public void place(ArrayList<Entity> owners)
     {
         String temp = action;
-        if(action != null)
+        if(!action.equals("none")){
             owners.stream().forEach(e -> {setAction(temp); place(e);});
+        } else if (owners.size() == 1){
+            place(owners.get(0));
+        }
     }
 
     boolean hasSomething() {

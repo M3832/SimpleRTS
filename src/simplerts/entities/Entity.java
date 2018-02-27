@@ -343,4 +343,8 @@ public abstract class Entity {
     public Color getColor() {
         return color;
     }
+
+    public int getLumberCost() {
+        return lumberCost;
+    }
 }

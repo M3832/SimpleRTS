@@ -6,6 +6,7 @@
 package simplerts.entities.actions;
 
 import java.awt.Graphics;
+import java.util.stream.Collectors;
 import simplerts.display.Camera;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
@@ -41,7 +42,7 @@ public class TurnInLumber extends Action {
         {
             movePath.performAction();
         } else {
-            for(Entity e : owner.getPlayer().getEntities())
+            for(Entity e : owner.getPlayer().getEntities().stream().filter(e -> e instanceof LumberReceiver).collect(Collectors.toList()))
             {
                 if(e instanceof LumberReceiver)
                 {

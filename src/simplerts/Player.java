@@ -119,10 +119,7 @@ public class Player {
     public void addEntity(Entity e)
     {
         entities.add(e);
-        if(e instanceof FoodProvider)
-        {
-            maxFood += ((FoodProvider)e).getFoodProduced();
-        } else if (e instanceof Unit)
+        if (e instanceof Unit)
         {
             currentFood++;
         }
@@ -149,9 +146,14 @@ public class Player {
     public boolean hasGoldFor(Entity e) {
         return gold - e.getGoldCost() >= 0;
     }
+    
+    public boolean hasLumberFor(Entity e) {
+        return lumber - e.getLumberCost() >= 0;
+    }
 
-    public void pay(int cost) {
+    public void pay(int cost, int lumberCost) {
         this.gold -= cost;
+        this.lumber -= lumberCost;
     }
 
     /**
@@ -172,6 +174,10 @@ public class Player {
         for(int i = 0; i < lumber; i++){
             tm.addTask(new TimerTask(i+1, () -> {this.lumber += 1;}));
         }
+    }
+    
+    public void addFoodCapacity(int sum){
+        maxFood += sum;
     }
 
     public void deselectEntity(Entity e) {

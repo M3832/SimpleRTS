@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import simplerts.Game;
 import simplerts.Player;
 import simplerts.display.Camera;
+import simplerts.entities.interfaces.FoodProvider;
 import simplerts.utils.Utilities;
 import simplerts.gfx.Assets;
 import simplerts.messaging.ErrorMessage;
@@ -88,10 +89,17 @@ public abstract class Building extends Entity {
             currentTime += 1 * Game.GAMESPEED;
         } else if (builder != null && currentTime == buildTime)
         {
-            builder.exit(grid.getAvailableNeighborCell(this));
-            builder = null;
-            building = false;
-            setDefaultMenu();
+            finishedBuilding();
+        }
+    }
+    
+    protected void finishedBuilding(){
+        builder.exit(grid.getAvailableNeighborCell(this));
+        builder = null;
+        building = false;
+        setDefaultMenu();
+        if(this instanceof FoodProvider){
+            player.addFoodCapacity(((FoodProvider)this).getFoodProduced());
         }
     }
     
@@ -140,6 +148,7 @@ public abstract class Building extends Entity {
         } else {
             remove = true;
             player.addGold(goldCost);
+            player.addLumber(lumberCost);
             builder.exit(builder.getDestination());
             player.getController().deselect(this);
         }
@@ -149,17 +158,17 @@ public abstract class Building extends Entity {
     {
         if(player.hasRoomFor(u))
         {
-            if(player.hasGoldFor(u))
+            if(player.hasGoldFor(u) && player.hasLumberFor(u))
             {
 //                uiObjects.stream().forEach((object) -> {if(((UIAction)object).isVisible()){((UIAction)object).setVisible(false);}});
                 setCancelMenu();
                 training = true;
-                player.pay(u.getCost());
+                player.pay(u.getCost(), u.getLumberCost());
                 unitTraining = u;
                 currentTrainTime = 0;
                 trainTime = u.getTrainTime();
             } else {
-                player.getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold."));
+                player.getHandler().game.mm.addMessage(new ErrorMessage("You need more resources."));
             }
         } else {
             player.getHandler().game.mm.addMessage(new ErrorMessage("Not enough food. Create more farms."));

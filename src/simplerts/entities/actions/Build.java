@@ -33,15 +33,15 @@ public class Build extends Action {
     public void performAction() {
         if(moveTo.arrived())
         {
-            if(owner.getPlayer().hasGoldFor(building))
+            if(owner.getPlayer().hasGoldFor(building) && owner.getPlayer().hasLumberFor(building))
             {
-                owner.getPlayer().pay(building.getGoldCost());
+                owner.getPlayer().pay(building.getGoldCost(), building.getLumberCost());
                 Building newBuilding = building.build((Builder)owner);
                 owner.getMap().addEntity(newBuilding);
                 owner.removeAction(this);
                 owner.getPlayer().getHandler().game.controller.deselect(owner);
             } else {
-                owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("Not enough gold!"));
+                owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("You need more resources."));
                 owner.getActions().remove(this);
             }            
         } else {

@@ -32,7 +32,7 @@ import simplerts.utils.TimerTask;
  */
 public class Archer extends Unit implements Attacker, Ranger {
     
-    public static int GOLDCOST = 400;
+    public static int GOLDCOST = 100;
     
     private int range, attackSpeed;
     private boolean hasAttacked;
@@ -54,11 +54,14 @@ public class Archer extends Unit implements Attacker, Ranger {
     {
         range = 5;
         hasAttacked = false;
+        trainTime = 20 * Game.TICKS_PER_SECOND;
         attackSpeed = 800;
         attackDamage = 5;
         ac = player.getSpriteManager().getArcherAC();
         name = "Archer";
         projectiles = new CopyOnWriteArrayList<>();
+        goldCost = GOLDCOST;
+        lumberCost = 25;
     }
     
     @Override
@@ -155,6 +158,7 @@ public class Archer extends Unit implements Attacker, Ranger {
         }, 'a');
         a.setTitle("Archer");
         a.setGoldCost(GOLDCOST + "");
+        a.setLumberCost(25 + "");
         return a;
     }
 }
