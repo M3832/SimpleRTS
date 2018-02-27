@@ -44,7 +44,7 @@ public class MiniMap {
         g.drawImage(minimap, 0, 0, null);
         for(Entity e: renderMap.getBackEnd().getEntities())
         {
-            g.setColor(e.getPlayer() == renderMap.getControllingPlayer() ? Color.WHITE : e.color );
+            g.setColor(e.getPlayer() == renderMap.getControllingPlayer() ? Color.WHITE : e.getColor() );
             if(renderMap.isNotMasked(e) && !e.isDead() && e.isVisible())
                 g.fillRect((int)(e.getGridX() * squaresize), (int)(e.getGridY() * squaresize), (int)(squaresize * e.getGridWidth()), (int)(squaresize * e.getGridHeight()));
         }

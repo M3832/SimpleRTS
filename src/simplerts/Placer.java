@@ -137,7 +137,7 @@ public class Placer {
     }
 
     public void place(Entity owner) {
-        Entity e = owner.grid.getEntityFromCell(gridX, gridY);
+        Entity e = owner.getMap().getEntityFromCell(gridX, gridY);
         if(!action.equals("none") && owner instanceof Unit){
             controller.getMap().addEffect(new MoveConfirm(controller.getCamera().getMouseX() - Game.CELLSIZE/2, controller.getCamera().getMouseY() - Game.CELLSIZE/2));
             ((Unit)owner).clearActions();

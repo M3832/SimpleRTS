@@ -37,12 +37,13 @@ public abstract class Entity {
     protected int offsetX, offsetY;
     protected int viewRange;
     protected BufferedImage sprite, icon;
+    protected UIObject portrait;
     protected ArrayList<UIObject> uiObjects;
     protected ArrayList<UIAction> actionButtons, cancelMenu, currentMenu;
     protected Player player;
     protected boolean isVisible, isDead, remove;
-    public Color color;
-    public BackEndMap grid;
+    protected Color color;
+    protected BackEndMap grid;
     protected SoundController soundManager;
     protected TaskManager taskManager;
     
@@ -327,5 +328,13 @@ public abstract class Entity {
     
     protected void updateGUIMenu() {
         player.getController().changeActionMenu(this, currentMenu);
+    }
+    
+    public BackEndMap getMap(){
+        return grid;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

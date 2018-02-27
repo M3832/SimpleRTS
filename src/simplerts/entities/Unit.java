@@ -8,27 +8,26 @@ package simplerts.entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.map.BackEndMap;
 import simplerts.Player;
-import simplerts.audio.SoundController;
 import simplerts.display.Camera;
 import simplerts.utils.Utilities;
 import simplerts.entities.actions.Action;
+import simplerts.entities.actions.Attack;
 import simplerts.map.Destination;
 import simplerts.entities.actions.Follow;
 import simplerts.entities.actions.MoveTo;
+import simplerts.entities.interfaces.Attacker;
 import simplerts.gfx.Assets;
-import simplerts.gfx.Animation;
 import simplerts.gfx.AnimationController;
 import simplerts.map.PathFinder;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
-import simplerts.ui.UIAction;
 import simplerts.ui.UIActionButton;
 import simplerts.ui.UIObject;
-import simplerts.utils.TimerTask;
 
 /**
  *
@@ -196,6 +195,15 @@ public abstract class Unit extends Entity {
         if(actions.size() > 0)
         {
             actions.get(0).performAction();
+        } else {
+            if(this instanceof Attacker){
+                Rectangle r = new Rectangle(Math.max(0, x - 2 * Game.CELLSIZE), Math.max(0, y - 2 * Game.CELLSIZE), Math.min(4 * Game.CELLSIZE, grid.getCells().length * Game.CELLSIZE - x), Math.min(4 * Game.CELLSIZE, grid.getCells()[0].length * Game.CELLSIZE - y));
+                List<Entity> closeEntities = grid.getEntitiesInSelection(r);
+                if(closeEntities.stream().anyMatch(e -> e.getPlayer() != grid.getNeutral() && e.getPlayer() != player)){
+                    Entity ent = closeEntities.stream().filter(e -> e.getPlayer() != grid.getNeutral() && e.getPlayer() != player).findFirst().get();
+                    addAction(new Attack(this, ent));
+                }                
+            }
         }
         
         setAnimation();
@@ -312,7 +320,8 @@ public abstract class Unit extends Entity {
     }
 
     public void addAction(Action action) {
-        actions.add(action);
+        if(!isDead)
+            actions.add(action);
     }
     
     public void addAction(int index, Action action) {

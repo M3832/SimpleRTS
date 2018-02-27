@@ -11,7 +11,6 @@ import simplerts.display.Camera;
 import simplerts.entities.interfaces.Attacker;
 import simplerts.entities.Entity;
 import simplerts.entities.Unit;
-import simplerts.map.Destination;
 
 /**
  *
@@ -21,20 +20,23 @@ public class Attack extends Action {
     
     public static final Color ATTACK_COLOR = new Color(120, 0, 0);
     
-    private Entity target;
-    private Follow follow;
+    private final Entity target;
+    private final Follow follow;
     
     public Attack(Unit owner, Entity target) {
         super(owner);
         this.target = target;
         follow = new Follow(owner, target);
-        System.out.println("Attacking?");
     }
 
     @Override
     public void performAction() {
         int deltaX = Math.abs(owner.getMap().getClosestCell(owner, target).getGridX() - owner.getGridX());
         int deltaY = Math.abs(owner.getMap().getClosestCell(owner, target).getGridY() - owner.getGridY());
+        if(!(owner instanceof Attacker)){
+            owner.removeAction(this);
+            return;
+        }
         if(deltaX < ((Attacker)owner).getRange() && deltaY < ((Attacker)owner).getRange() && !target.isDead() && owner.inSquare())
         {
             ((Attacker)owner).attack(target);
