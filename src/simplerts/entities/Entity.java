@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.Game;
 import simplerts.map.BackEndMap;
@@ -323,6 +324,11 @@ public abstract class Entity {
 
     public void setDefaultMenu() {
         currentMenu = actionButtons;
+        updateGUIMenu();
+    }
+    
+    public void setCurrentMenu(ArrayList<UIAction> menu){
+        currentMenu = menu;
         updateGUIMenu();
     }
     

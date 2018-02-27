@@ -16,8 +16,12 @@ import java.awt.image.BufferedImage;
 import simplerts.entities.Unit;
 import simplerts.entities.actions.Attack;
 import simplerts.entities.actions.Build;
+import simplerts.entities.actions.Chop;
+import simplerts.entities.actions.Gather;
 import simplerts.entities.actions.MoveAttack;
 import simplerts.entities.actions.MoveTo;
+import simplerts.entities.interfaces.GoldProvider;
+import simplerts.entities.interfaces.Lumberman;
 import simplerts.entities.units.Builder;
 import simplerts.gfx.effects.MoveConfirm;
 
@@ -151,6 +155,14 @@ public class Placer {
                     } else {
                         ((Unit)owner).addAction(new MoveAttack((Unit)owner, new Destination(gridX, gridY)));
                     }
+                    break;
+                case "gather":
+                    if(e != null && e instanceof GoldProvider){
+                        ((Unit)owner).addAction(new Gather((Unit)owner, (GoldProvider)e));
+                    } else if (owner.getMap().getCells()[gridX][gridY].isForest() && !owner.getMap().getCells()[gridX][gridY].getForest().isBarren() && owner instanceof Lumberman){
+                        ((Unit)owner).addAction(new Chop((Unit)owner, owner.getMap().getCells()[gridX][gridY]));
+                    }
+                    break;
             }
         }
         
