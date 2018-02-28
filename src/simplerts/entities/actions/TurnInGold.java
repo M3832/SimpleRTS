@@ -53,7 +53,7 @@ public class TurnInGold extends Action {
             {
                 movePath = new MoveTo(owner, (Entity)gr);
             } else {
-                owner.getPlayer().getHandler().game.mm.addMessage(new ErrorMessage("There's nowhere to turn in gold."));
+                owner.getPlayer().sendErrorMessage("There's nowhere to turn in gold.");
                 owner.getActions().remove(this);
                 return;
             }
@@ -64,7 +64,8 @@ public class TurnInGold extends Action {
             gr.receiveGold(((Goldminer)owner));
             ((Goldminer)owner).enter();
             owner.addTask(new TimerTask(1000, () -> {
-                ((Goldminer)owner).exit(owner.getMap().getClosestCell((Entity)((Goldminer)owner).getLatestMine(), (Entity)gr));
+//                ((Goldminer)owner).exit(owner.getMap().getClosestCell((Entity)((Goldminer)owner).getLatestMine(), (Entity)gr));
+                ((Goldminer)owner).exit(owner.getDestination());
                 if(((Goldminer)owner).getLatestMine() != null)
                 {
                     owner.addAction(new Gather(owner, ((Goldminer)owner).getLatestMine()));

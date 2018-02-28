@@ -35,6 +35,7 @@ public class Barracks extends Building {
     private void initVariables()
     {
         goldCost = GOLDCOST;
+        lumberCost = 100;
         buildTime = 40 * Game.TICKS_PER_SECOND;
 
     }
@@ -60,6 +61,7 @@ public class Barracks extends Building {
         UIAction a = new UIAction(Assets.resizeImage(getUIIcon(player.getColor()), 55, 55), () -> {player.getHandler().game.controller.setEntityPlacerEntity(new Barracks(0, 0, player));}, 'b');
         a.setTitle("Barracks");
         a.setGoldCost(GOLDCOST + "");
+        a.setLumberCost(100 + "");
         return a;
     }
     

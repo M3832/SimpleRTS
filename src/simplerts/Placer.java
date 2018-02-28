@@ -25,6 +25,7 @@ import simplerts.entities.interfaces.GoldProvider;
 import simplerts.entities.interfaces.Lumberman;
 import simplerts.entities.units.Builder;
 import simplerts.gfx.effects.MoveConfirm;
+import simplerts.messaging.ErrorMessage;
 
 /**
  *
@@ -166,12 +167,14 @@ public class Placer {
                     break;
             }
         }
-        System.out.println("placing");
-        if(entity != null && owner instanceof Builder){
+
+        if(entity != null && owner instanceof Builder && isPlaceable(owner)){
             Building building = (Building)entity.duplicate();
             building.setPosition(getDestination().getGridX() * Game.CELLSIZE, getDestination().getGridY() * Game.CELLSIZE);
             ((Unit)owner).clearActions();
             ((Unit)owner).addAction(new Build((Builder)owner, building));
+        } else {
+            owner.getPlayer().sendErrorMessage("Building can't be placed here");
         }
         entity = null;
         action = "none";

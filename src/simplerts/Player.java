@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import simplerts.entities.interfaces.FoodProvider;
 import simplerts.entities.Unit;
 import simplerts.gfx.SpriteManager;
+import simplerts.messaging.ErrorMessage;
 import simplerts.utils.TaskManager;
 import simplerts.utils.TimerTask;
 
@@ -194,6 +195,12 @@ public class Player {
         } else if (e instanceof Unit)
         {
             currentFood--;
+        }
+    }
+
+    public void sendErrorMessage(String message) {
+        if(controller != null){
+            controller.sendMessage(new ErrorMessage(message));
         }
     }
     
