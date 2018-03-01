@@ -322,6 +322,10 @@ public class Controller {
     {
         handler.game.mm.addMessage(new Message(message));
     }
+    
+    public void sendMessage(Message message){
+        handler.game.mm.addMessage(message);
+    }
 
     public Player getPlayer() {
         return player;

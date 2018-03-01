@@ -16,5 +16,4 @@ public class ErrorMessage extends Message {
         font = Message.DEFAULT_MESSAGE;
         color = Message.ERROR_MESSAGE_COLOR;
     }
-    
 }
