@@ -16,6 +16,7 @@ import simplerts.display.Camera;
 import simplerts.entities.interfaces.FoodProvider;
 import simplerts.utils.Utilities;
 import simplerts.gfx.Assets;
+import simplerts.gfx.effects.Fire;
 import simplerts.messaging.ErrorMessage;
 import simplerts.ui.GUI;
 import static simplerts.ui.GUI.HEADER;
@@ -36,6 +37,7 @@ public abstract class Building extends Entity {
     protected Builder builder;
     protected Unit unitTraining;
     protected boolean training, building;
+    protected Fire fire;
     
     public Building(int x, int y, int cellSize, Player player, boolean built)
     {
@@ -54,6 +56,7 @@ public abstract class Building extends Entity {
         currentTrainTime = 0;
         training = false;
         building = !built;
+        fire = new Fire(getDestination());
     }
     
     public void setImage(BufferedImage image)
@@ -80,6 +83,9 @@ public abstract class Building extends Entity {
         
         if(training)
             training();
+        
+        if(health < maxHealth)
+            fire.update();
     }
     
     private void building()
@@ -124,6 +130,10 @@ public abstract class Building extends Entity {
     {
         super.render(g, camera);
         g.drawImage(sprite.getSubimage(width * (int)((1f * currentTime/buildTime) * (sprite.getWidth()/width - 1)), 0, width, height), (int)(x - offsetX), (int)(y - offsetY), width, height, null);
+        
+        if(health < maxHealth/2){
+            g.drawImage(fire.getFrame(), x - offsetX, y - offsetY - height/4, width, height, null);
+        }
     }
     
     public Building build(Builder b)
@@ -206,6 +216,17 @@ public abstract class Building extends Entity {
             Utilities.drawWithShadow(g, "Armor: " + armor, 300, Game.HEIGHT + 150);
         }
         
+    }
+    
+    @Override
+    public void die(){
+        isDead = true;
+        remove = true;
+        if(building){
+            builder.exit(builder.getDestination());
+        } else {
+            player.died(this);
+        }
     }
     
     public void renderBuilding(Graphics g)

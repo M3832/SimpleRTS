@@ -65,6 +65,10 @@ public class MessageManager {
                 Game.DEBUG = !Game.DEBUG;
                 addMessage(new Message("Debug: " + Game.DEBUG));
                 break;
+            case "resourceme":
+                handler.game.controller.getPlayer().addGold(2000);
+                handler.game.controller.getPlayer().addLumber(500);
+                break;
         }
     }
     

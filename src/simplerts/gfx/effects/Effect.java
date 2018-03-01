@@ -10,7 +10,6 @@ import simplerts.Game;
 import simplerts.display.Camera;
 import simplerts.gfx.Animation;
 import simplerts.map.Destination;
-import simplerts.utils.TaskManager;
 
 /**
  *
@@ -40,7 +39,7 @@ public abstract class Effect {
     
     public void update(){
         animation.update();
-        if(System.currentTimeMillis() > timeAlive){
+        if(timeAlive != -1 && System.currentTimeMillis() > timeAlive){
             remove = true;
         }
     }

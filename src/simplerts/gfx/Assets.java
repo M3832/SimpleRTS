@@ -199,5 +199,9 @@ public class Assets {
         gbi.drawImage(teamColor, 0, 0, null);
         return result;
     }
+    
+    public static BufferedImage getUnitAnimationSheet(String url, Color color){
+        return makeTeamColor(loadToCompatibleImage(url), loadToCompatibleImage(url.substring(0, url.length() - 4) + "tc.png"), color);
+    }
 
 }

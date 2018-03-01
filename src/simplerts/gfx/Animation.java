@@ -25,21 +25,22 @@ public class Animation {
     public static final int NORTHEAST = 7;
     
     private BufferedImage[][] animationSheet;
-    private int animationSpeed = 75, animationIndex = 0;
+    private int animationSpeed, animationIndex, spriteSize;
     private long timeNextFrame = 0;
     private boolean looping, looped;
     
     public Animation(BufferedImage sheet)
     {
-        animationSheet = new BufferedImage[sheet.getWidth()/64][sheet.getHeight()/64];
-        setupAnimation(sheet);
-        looping = true;
-        looped = false;
+        this(sheet, 75, 64, true);
     }
     
-    public Animation(BufferedImage sheet, int animationSpeed){
-        this(sheet);
+    public Animation(BufferedImage sheet, int animationSpeed, int spriteSize, boolean resize){
+        animationSheet = new BufferedImage[sheet.getWidth()/spriteSize][sheet.getHeight()/spriteSize];
+        looping = true;
+        looped = false;
+        this.spriteSize = spriteSize;
         this.animationSpeed = animationSpeed;
+        setupAnimation(sheet, resize);
     }
     
     public Animation(BufferedImage sheet, boolean looping)
@@ -51,6 +52,7 @@ public class Animation {
     public Animation(Animation a)
     {
         this.looping = a.isLooping();
+        this.animationSpeed = a.animationSpeed;
         animationSheet = new BufferedImage[a.animationSheet.length][a.animationSheet[0].length];
         for(int i = 0; i < a.animationSheet.length; i++)
         {
@@ -58,13 +60,14 @@ public class Animation {
         }
     }
     
-    private void setupAnimation(BufferedImage sheet)
+    private void setupAnimation(BufferedImage sheet, boolean resize)
     {
         for(int i = 0; i < animationSheet.length; i++)
         {
             for(int j = 0; j < animationSheet[0].length; j++)
             {
-                animationSheet[i][j] = GraphicsUtil.resize(sheet.getSubimage(i * 64, j * 64, 64, 64), Game.CELLSIZE, Game.CELLSIZE);
+                BufferedImage tempImage = sheet.getSubimage(i * spriteSize, j * spriteSize, spriteSize, spriteSize);
+                animationSheet[i][j] = resize ? Assets.resizeImage(tempImage, Game.CELLSIZE, Game.CELLSIZE) : tempImage;
             }
         }
     }

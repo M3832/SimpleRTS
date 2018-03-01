@@ -75,6 +75,10 @@ public class Game implements Runnable {
         players.add(enemy2);
         players.add(enemy3);
         
+        map.addEntity(new Archer(25, 25, player));
+        map.addEntity(new Archer(25, 26, player));
+        map.addEntity(new Archer(26, 25, player));
+        
         map.start(players, 200, 25, 3);
         controller.start();
         

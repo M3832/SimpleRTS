@@ -23,53 +23,33 @@ public class SpriteManager {
     public SpriteManager(Color color)
     {
         peasant = new AnimationController();
-        peasant.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/walk.png"),
-                                             Assets.loadToCompatibleImage("/Units/Peasant/walktc.png"), color)));
-        peasant.addAnimation("walkTree", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/walkTree.png"),
-                                             Assets.loadToCompatibleImage("/Units/Peasant/walkTreetc.png"), color)));
-        peasant.addAnimation("walkGold", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/walkGold.png"),
-                                             Assets.loadToCompatibleImage("/Units/Peasant/walkGoldtc.png"), color)));
-        peasant.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/stand.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/standtc.png"), color)));
-        peasant.addAnimation("standTree", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/standTree.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/standTreetc.png"), color)));
-        peasant.addAnimation("standGold", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/standGold.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/standGoldtc.png"), color)));
-        peasant.addAnimation("chop", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/chop.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/choptc.png"), color), false));
-        peasant.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Peasant/death.png"),
-                                                     Assets.loadToCompatibleImage("/Units/Peasant/deadtc.png"), color), false));
+        peasant.addAnimation("stand", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/stand.png", color)));
+        peasant.addAnimation("standTree", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/standTree.png", color)));
+        peasant.addAnimation("standGold", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/standGold.png", color)));
+        peasant.addAnimation("walk", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/walk.png", color)));
+        peasant.addAnimation("walkTree", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/walkTree.png", color)));
+        peasant.addAnimation("walkGold", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/walkGold.png", color)));
+        peasant.addAnimation("chop", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/chop.png", color), false));
+        peasant.addAnimation("dead", new Animation(Assets.getUnitAnimationSheet("/Units/Peasant/death.png", color), false));
         
         footman = new AnimationController();
-        footman.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/walk.png"),
-                                             Assets.loadToCompatibleImage("/Units/Footman/walktc.png"), color)));
-        footman.addAnimation("attack", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/attack.png"),
-                                             Assets.loadToCompatibleImage("/Units/Footman/attacktc.png"), color), false));
-        footman.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/stand.png"),
-                                             Assets.loadToCompatibleImage("/Units/Footman/standtc.png"), color)));
-        footman.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Footman/death.png"),
-                                             Assets.loadToCompatibleImage("/Units/Footman/deathtc.png"), color), false));
+        footman.addAnimation("stand", new Animation(Assets.getUnitAnimationSheet("/Units/Footman/stand.png", color)));
+        footman.addAnimation("walk", new Animation(Assets.getUnitAnimationSheet("/Units/Footman/walk.png", color)));
+        footman.addAnimation("attack", new Animation(Assets.getUnitAnimationSheet("/Units/Footman/attack.png", color), false));
+        footman.addAnimation("dead", new Animation(Assets.getUnitAnimationSheet("/Units/Footman/death.png", color), false));
         
         archer = new AnimationController();
-        archer.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/walk.png"),
-                                             Assets.loadToCompatibleImage("/Units/Archer/walktc.png"), color)));
-        archer.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/stand.png"),
-                                             Assets.loadToCompatibleImage("/Units/Archer/standtc.png"), color)));
-        archer.addAnimation("attack", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/attack.png"),
-                                     Assets.loadToCompatibleImage("/Units/Archer/attacktc.png"), color), false));
-        archer.addAnimation("dead", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Archer/death.png"),
-                                             Assets.loadToCompatibleImage("/Units/Archer/deathtc.png"), color), false));
+        archer.addAnimation("stand", new Animation(Assets.getUnitAnimationSheet("/Units/Archer/stand.png", color)));
+        archer.addAnimation("walk", new Animation(Assets.getUnitAnimationSheet("/Units/Archer/walk.png", color)));
+        archer.addAnimation("attack", new Animation(Assets.getUnitAnimationSheet("/Units/Archer/attack.png", color), false));
+        archer.addAnimation("dead", new Animation(Assets.getUnitAnimationSheet("/Units/Archer/death.png", color), false));
         
         healer = new AnimationController();
-        healer.addAnimation("stand", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Healer/stand2.png"),
-                                             Assets.loadToCompatibleImage("/Units/Healer/stand2tc.png"), color)));
-        healer.addAnimation("walk", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Units/Healer/walk.png"),
-                                             Assets.loadToCompatibleImage("/Units/Healer/walktc.png"), color)));
+        healer.addAnimation("stand", new Animation(Assets.getUnitAnimationSheet("/Units/Healer/stand2.png", color)));
+        healer.addAnimation("walk", new Animation(Assets.getUnitAnimationSheet("/Units/Healer/walk.png", color)));
         
         arrow = new AnimationController();
-        arrow.addAnimation("default", new Animation(Assets.makeTeamColor(Assets.loadToCompatibleImage("/Other/Projectiles/arrow.png"),
-                                                Assets.loadToCompatibleImage("/Other/Projectiles/arrowtc.png"), color)));
-        
+        arrow.addAnimation("default", new Animation(Assets.getUnitAnimationSheet("/Other/Projectiles/arrow.png", color)));
     }
     
     public AnimationController getPeasantAC()
