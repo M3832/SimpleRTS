@@ -24,18 +24,18 @@ public abstract class Projectile {
     protected AnimationController ac;
     protected int speed, currentUpdate;
     protected int damage;
-    protected int x, y;
+    protected int x, y, targetX, targetY, startX, startY;
     protected Entity owner, target;
-    protected Destination targetDestination, startDestination;
-    
     public Projectile(Attacker owner, Entity target)
     {
         this.owner = (Entity)owner;
         this.target = target;
-        this.targetDestination = target.getDestination();
-        this.startDestination = this.owner.getDestination();
         this.x = this.owner.getX();
         this.y = this.owner.getY();
+        startX = this.owner.getX();
+        startY = this.owner.getY();
+        targetX = target.getX() + target.getWidth()/2 - Game.CELLSIZE/2;
+        targetY = target.getY() + target.getHeight()/2 - Game.CELLSIZE/2;
         speed = 1000;
         currentUpdate = 3;
         damage = owner.getDamage();
@@ -49,8 +49,8 @@ public abstract class Projectile {
     public void update()
     {
         float tempSpeed = speed*Math.max(Math.abs(owner.getGridX() - target.getGridX()), Math.abs(owner.getGridY() - target.getGridY()));
-        x = (int)((((float)targetDestination.getGridX() * Game.CELLSIZE) - ((float)startDestination.getGridX() * Game.CELLSIZE)) * ((float)currentUpdate/tempSpeed)) + startDestination.getGridX() * Game.CELLSIZE;
-        y = (int)((((float)targetDestination.getGridY() * Game.CELLSIZE) - ((float)startDestination.getGridY() * Game.CELLSIZE)) * ((float)currentUpdate/tempSpeed)) + startDestination.getGridY() * Game.CELLSIZE;
+        x = (int)((((float)targetX) - ((float)startX)) * ((float)currentUpdate/tempSpeed)) + startX;
+        y = (int)((((float)targetY) - ((float)startY)) * ((float)currentUpdate/tempSpeed)) + startY;
         
         if(currentUpdate == tempSpeed)
             arrive();

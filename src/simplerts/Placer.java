@@ -143,9 +143,9 @@ public class Placer {
     }
 
     public void place(Entity owner) {
+        boolean effect = true;
         Entity e = owner.getMap().getEntityFromCell(gridX, gridY);
         if(!action.equals("none") && owner instanceof Unit){
-            controller.getMap().addEffect(new MoveConfirm(controller.getCamera().getMouseX() - Game.CELLSIZE/2, controller.getCamera().getMouseY() - Game.CELLSIZE/2));
             ((Unit)owner).clearActions();
             switch (action){
                 case "move":
@@ -154,6 +154,7 @@ public class Placer {
                 case "attack":
                     if(e != null){
                         ((Unit)owner).addAction(new Attack((Unit)owner, e));
+                        effect = false;
                     } else {
                         ((Unit)owner).addAction(new MoveAttack((Unit)owner, new Destination(gridX, gridY)));
                     }
@@ -166,16 +167,20 @@ public class Placer {
                     }
                     break;
             }
+            if(effect)
+                controller.getMap().addEffect(new MoveConfirm(controller.getCamera().getMouseX() - Game.CELLSIZE/2, controller.getCamera().getMouseY() - Game.CELLSIZE/2));
         }
 
-        if(entity != null && owner instanceof Builder && isPlaceable(owner)){
-            Building building = (Building)entity.duplicate();
-            building.setPosition(getDestination().getGridX() * Game.CELLSIZE, getDestination().getGridY() * Game.CELLSIZE);
-            ((Unit)owner).clearActions();
-            ((Unit)owner).addAction(new Build((Builder)owner, building));
-        } else {
-            owner.getPlayer().sendErrorMessage("Building can't be placed here");
-        }
+        if(entity != null && owner instanceof Builder){
+            if(isPlaceable(owner)){
+                Building building = (Building)entity.duplicate();
+                building.setPosition(getDestination().getGridX() * Game.CELLSIZE, getDestination().getGridY() * Game.CELLSIZE);
+                ((Unit)owner).clearActions();
+                ((Unit)owner).addAction(new Build((Builder)owner, building));
+            } else {
+                owner.getPlayer().sendErrorMessage("Building can't be placed here");
+            }
+        } 
         entity = null;
         action = "none";
         owner.setDefaultMenu();

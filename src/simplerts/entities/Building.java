@@ -222,7 +222,7 @@ public abstract class Building extends Entity {
     public void die(){
         isDead = true;
         remove = true;
-        if(building){
+        if(building && builder != null){
             builder.exit(builder.getDestination());
         } else {
             player.died(this);
