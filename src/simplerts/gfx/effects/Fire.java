@@ -18,7 +18,7 @@ public class Fire extends Effect {
 
     public Fire(int x, int y){
         super(x, y);
-        animation = new Animation(Assets.loadToCompatibleImage("/Other/Effects/fire.png"), 75, 100, false);
+        animation = new Animation(Assets.loadToCompatibleImage("/Other/Effects/fire.png"), 75, 200, false);
         timeAlive = -1;
     }
     
